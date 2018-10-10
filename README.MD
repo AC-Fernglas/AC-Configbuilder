@@ -33,6 +33,8 @@ _hier muss die spätere Strucktur erklärt werden_
 * added test/
 * added and updated README.md
 
+**Version 00.02**
+*added Examples
 
 Danke das du dir die Zeit genommen hast mich zu lesen. 
 Habe einen schönen Tag :)
