@@ -13,7 +13,7 @@ Hier werde ich auflisten was neu ist, oder was ich genändert habe damit man ein
 
 **Version 00.01**
 * added src/
-* added [samples/](https://github.com/AC-Fernglas/AC-Configbuilder/tree/Version_00/exmp)
+* added [samples/](https://github.com/AC-Fernglas/AC-Configbuilder/tree/Version_00/samples)
 * added docs/
 * added test/
 * added and updated [README](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/README.MD)
