@@ -1,5 +1,5 @@
 # Release Note
-Hier werde ich auflisten was neu ist, oder was ich genändert habe damit man einen schnellen überblick bekommt.
+Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man einen schnellen überblick bekommt.
 
 ## Realease Note 
 <details close>
