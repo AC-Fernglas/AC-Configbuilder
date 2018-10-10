@@ -28,7 +28,7 @@ _hier muss die spätere Strucktur erklärt werden_
 
 **Version 00.01**
 * added src/
-* added exmp/
+* added [exmp/](https://github.com/AC-Fernglas/AC-Configbuilder/tree/Version_00/exmp)
 * added docs/
 * added test/
 * added and updated README.md
