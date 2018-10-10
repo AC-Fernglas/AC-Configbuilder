@@ -1,0 +1,29 @@
+configure network
+   network-dev 12
+      vlan-id 132
+      underlying-if quark
+      name Dendi
+      tagging tagged
+      activate
+   exit
+exit
+
+configure network
+   network-dev 176
+      vlan-id 1324
+      underlying-if mehl
+      name MidOne
+      tagging untagged
+      activate
+   exit
+exit
+
+configure network
+   network-dev 72
+      vlan-id 1122
+      underlying-if eier
+      name Miracle
+      tagging tagged
+      activate
+   exit
+exit

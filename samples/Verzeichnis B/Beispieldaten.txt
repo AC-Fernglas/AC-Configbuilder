@@ -1,0 +1,29 @@
+configure network
+   network-dev 14
+      vlan-id 1322
+      underlying-if butter
+      name Yapzor
+      tagging untagged
+      activate
+   exit
+exit
+
+configure network
+   network-dev 16
+      vlan-id 14
+      underlying-if milch
+      name KuRoKy
+      tagging untagged
+      activate
+   exit
+exit
+
+configure network
+   network-dev 82
+      vlan-id 622
+      underlying-if zucker
+      name Bulldog
+      tagging tagged
+      activate
+   exit
+exit

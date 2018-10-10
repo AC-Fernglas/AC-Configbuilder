@@ -1,0 +1,29 @@
+configure network
+   network-dev 278
+      vlan-id 176
+      underlying-if strom
+      name MindControl
+      tagging tagged
+      activate
+   exit
+exit
+
+configure network
+   network-dev 234
+      vlan-id 112
+      underlying-if mixer
+      name Puppey
+      tagging untagged
+      activate
+   exit
+exit
+
+configure network
+   network-dev 4
+      vlan-id 10234
+      underlying-if schüssel
+      name Ace
+      tagging untagged
+      activate
+   exit
+exit
