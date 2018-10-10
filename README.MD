@@ -19,7 +19,7 @@ _hier muss die spätere Strucktur erklärt werden_
 * n-viele Konfiguratioenn einspielen [GUID](https://www.audiocodes.com/media/13528/rest-api-for-mediant-devices-ver-72.pdf)
 * multible Devices zulassen
 
-### [Realease Note]()
+### [Realease Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/RealeaseNote.md)
 
 Danke das du dir die Zeit genommen hast mich zu lesen. 
 Habe einen schönen Tag :)
