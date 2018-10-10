@@ -21,6 +21,6 @@ Hier werde ich auflisten was neu ist, oder was ich genändert habe damit man ein
 **Version 00.02**
 * added Examples
 * moved ReleaseNotes from [README](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/README.MD)
-* modified Releas Notes
+* modified Releas Notes and [README](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/README.MD)
 
 
