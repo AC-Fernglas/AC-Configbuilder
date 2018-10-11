@@ -1,28 +1,3 @@
 {	
-    "Datasettingsbydefault" :
-    {
-    "network_dev": 322,
-	"vlan_id": 322,
-
-	"underlying_if": "Kaffee",
-	"name": "Dendi",
-    "tagging": "tagged",
-    
-    "interface network-if": 19, 
-    "ip-address": "192.168.0.2", 
-    "gateway": "192.168.0.1", 
-    "primary-dns": "192.168.0.1", 
-    "underlying-dev": "vlan 5", 
-
-    "use-specific-interface": "enable",
-    "network-interface-name": "ITSP",
-    "allow-type": "allow",
-    "packet-size": 1500
-    },
-    
-    
-    "Usersettings" :
-    {
-   
-    }
+  
 }
