@@ -1,29 +1,77 @@
 configure network
-   network-dev 278
-      vlan-id 176
-      underlying-if strom
-      name MindControl
+   access-list
+      use-specific-interface enable
+      network-interface-name ITSP
+      allow-type allow
+      packet-size 1500
+   exit
+ 
+   network-dev 43
+      vlan-id 28
+      underlying-if 9
+      name "vlan 28"
       tagging tagged
       activate
    exit
+
+   interface network-if 43 
+    ip-address 192.168.0.2 
+    gateway 192.168.0.1 
+    name "Voice" 
+    primary-dns 192.168.0.1 
+    underlying-dev "vlan 28" 
+    activate 
+  exit
 exit
 
 configure network
-   network-dev 234
-      vlan-id 112
-      underlying-if mixer
-      name Puppey
-      tagging untagged
+   access-list
+      use-specific-interface enable
+      network-interface-name ITSP
+      allow-type allow
+      packet-size 1500
+   exit
+ 
+   network-dev 78
+      vlan-id 68
+      underlying-if 2
+      name "vlan 68"
+      tagging tagged
       activate
    exit
+
+   interface network-if 78 
+    ip-address 192.168.0.2 
+    gateway 192.168.0.1 
+    name "Voice" 
+    primary-dns 192.168.0.1 
+    underlying-dev "vlan 68" 
+    activate 
+  exit
 exit
 
 configure network
-   network-dev 4
-      vlan-id 10234
-      underlying-if schüssel
-      name Ace
-      tagging untagged
+   access-list
+      use-specific-interface enable
+      network-interface-name ITSP
+      allow-type allow
+      packet-size 1500
+   exit
+ 
+   network-dev 75
+      vlan-id 234
+      underlying-if 78
+      name "vlan 234"
+      tagging tagged
       activate
    exit
+
+   interface network-if 75 
+    ip-address 192.168.0.2 
+    gateway 192.168.0.1 
+    name "Voice" 
+    primary-dns 192.168.0.1 
+    underlying-dev "vlan 234" 
+    activate 
+  exit
 exit

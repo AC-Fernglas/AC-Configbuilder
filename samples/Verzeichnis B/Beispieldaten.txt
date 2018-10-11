@@ -1,29 +1,77 @@
 configure network
-   network-dev 14
-      vlan-id 1322
-      underlying-if butter
-      name Yapzor
-      tagging untagged
-      activate
+   access-list
+      use-specific-interface enable
+      network-interface-name ITSP
+      allow-type allow
+      packet-size 1500
    exit
-exit
-
-configure network
-   network-dev 16
-      vlan-id 14
-      underlying-if milch
-      name KuRoKy
-      tagging untagged
-      activate
-   exit
-exit
-
-configure network
-   network-dev 82
-      vlan-id 622
-      underlying-if zucker
-      name Bulldog
+ 
+   network-dev 3
+      vlan-id 11
+      underlying-if 91
+      name "vlan 11"
       tagging tagged
       activate
    exit
+
+   interface network-if 3 
+    ip-address 192.168.0.2 
+    gateway 192.168.0.1 
+    name "Voice" 
+    primary-dns 192.168.0.1 
+    underlying-dev "vlan 11" 
+    activate 
+  exit
+exit
+
+configure network
+   access-list
+      use-specific-interface enable
+      network-interface-name ITSP
+      allow-type allow
+      packet-size 1500
+   exit
+ 
+   network-dev 17
+      vlan-id 15
+      underlying-if 2
+      name "vlan 15"
+      tagging tagged
+      activate
+   exit
+
+   interface network-if 17 
+    ip-address 192.168.0.2 
+    gateway 192.168.0.1 
+    name "Voice" 
+    primary-dns 192.168.0.1 
+    underlying-dev "vlan 15" 
+    activate 
+  exit
+exit
+
+configure network
+   access-list
+      use-specific-interface enable
+      network-interface-name ITSP
+      allow-type allow
+      packet-size 1500
+   exit
+ 
+   network-dev 22
+      vlan-id 29
+      underlying-if 78
+      name "vlan 29"
+      tagging tagged
+      activate
+   exit
+
+   interface network-if 22 
+    ip-address 192.168.0.2 
+    gateway 192.168.0.1 
+    name "Voice" 
+    primary-dns 192.168.0.1 
+    underlying-dev "vlan 29" 
+    activate 
+  exit
 exit
