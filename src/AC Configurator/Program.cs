@@ -5,64 +5,49 @@ using Newtonsoft.Json;
 using System.IO;
 namespace AC_Configurator
 {
-    class Program
+    class programm
     {
-        static void Main(string[] args)
+        public static void  Main(string[] args)
         {
-            explanations.Introduction();
+            jsoncoverter.getjson();
         }
     }
-
-     class explanations
+    class jsoncoverter
     {
-        public void Introduction()
+        public static void getjson()
         {
-            Console.WriteLine("Hallo, Willkommen im AC-Konfigurator");
-            Console.Write("Möchtest du die Konfiguration bearbeiten? Y/N :");
-            while (Console.ReadLine() != "y" && Console.ReadLine() != "Y" && Console.ReadLine() != "N" && Console.ReadLine() != "n")
-            {
-                Console.WriteLine("Flasche Eingabewerte.");
-                Console.Write("Möchtest du die Konfiguration bearbeiten? Y/N :");
+            string json = JsonConvert.SerializeObject(File.ReadAllText(@"C:\Develop\AC-Configbuilder\config\Konfigurationen.json"), Formatting.Indented);
+            Console.WriteLine(json);
 
-            }
-            if (Console.ReadLine() == "y" || Console.ReadLine() == "Y")
+            jsonconstructor Baum = new jsonconstructor
             {
-               Konfigurationen.RdWrJsonFile();
-                Console.ReadLine();
-                
-            }
-      
+                ALTER = 12,
+                HÖHE = 1234,
+                GEWICHT = 23476,
+                ART = "Eiche"
+
+            };
+
+          string myjson = JsonConvert.SerializeObject(Baum, Formatting.Indented);
+            Console.ReadLine();
+        }
+
+    }
+
+    class jsonconstructor
+    {
+        public int  ALTER { get; set; }
+        public int HÖHE { get; set; }
+        public int GEWICHT { get; set; }
+        public string ART { get; set; }
+
+        public void construct(int age, int height, int weight, string species)
+        {
+            ALTER = age;
+            HÖHE = height;
+            GEWICHT = weight;
+            ART = species;
+
         } 
-
     }
-
-         class Konfigurationen
-    {
-        public int network_dev { get; set; }
-        public int vLan_id { get; set; }
-        public string underlying_if { get; set; }
-        public string name { get; set; }
-        public string tagged { get; set; }
-     
-           
-        
-        public static void RdWrJsonFile()
-        {
-            string filepath = "../config/Konfigurationen.json";
-            string readResult = string.Empty;
-            string writeResult = string.Empty;
-            using (StreamReader r = new StreamReader(filepath))
-            {
-                var json = r.ReadToEnd();
-                var jobj = JObject.Parse(json);
-                readResult = jobj.ToString();
-              
-                writeResult = jobj.ToString();
-                Console.WriteLine(writeResult);
-            }
-            Console.WriteLine(readResult);
-            File.WriteAllText(filepath, writeResult);
-        }
-    }
-}
 }
