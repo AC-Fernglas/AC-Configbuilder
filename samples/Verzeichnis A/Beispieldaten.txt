@@ -1,77 +1,10 @@
 configure network
-   access-list
-      use-specific-interface enable
-      network-interface-name ITSP
-      allow-type allow
-      packet-size 1500
-   exit
- 
-   network-dev 12
+network-dev 12
       vlan-id 1
       underlying-if 9
       name "vlan 1"
       tagging tagged
       activate
    exit
-
-   interface network-if 12 
-    ip-address 192.168.0.2 
-    gateway 192.168.0.1 
-    name "Voice" 
-    primary-dns 192.168.0.1 
-    underlying-dev "vlan 1" 
-    activate 
-  exit
 exit
 
-configure network
-   access-list
-      use-specific-interface enable
-      network-interface-name ITSP
-      allow-type allow
-      packet-size 1500
-   exit
- 
-   network-dev 19
-      vlan-id 5
-      underlying-if 2
-      name "vlan 5"
-      tagging tagged
-      activate
-   exit
-
-   interface network-if 19 
-    ip-address 192.168.0.2 
-    gateway 192.168.0.1 
-    name "Voice" 
-    primary-dns 192.168.0.1 
-    underlying-dev "vlan 5" 
-    activate 
-  exit
-exit
-
-configure network
-   access-list
-      use-specific-interface enable
-      network-interface-name ITSP
-      allow-type allow
-      packet-size 1500
-   exit
- 
-   network-dev 32
-      vlan-id 19
-      underlying-if 78
-      name "vlan 19"
-      tagging tagged
-      activate
-   exit
-
-   interface network-if 32 
-    ip-address 192.168.0.2 
-    gateway 192.168.0.1 
-    name "Voice" 
-    primary-dns 192.168.0.1 
-    underlying-dev "vlan 19" 
-    activate 
-  exit
-exit

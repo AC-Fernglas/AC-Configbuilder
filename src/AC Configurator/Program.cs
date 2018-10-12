@@ -7,72 +7,43 @@ namespace AC_Configurator
 {
     class programm
     {
-        public static void  Main(string[] args)
+        public static void Main(string[] args)
         {
-            jsonconstructor.getjson();
-            jsonconstructor.constructjson();
+            Console.WriteLine("Willkommen bei AC-Configurator");
+            Console.Write("Möchtest du deine Configeinstellungen bearbeiten? Y/N: ");
+            string qs = Console.ReadLine();
+            if (qs == "Y" || qs == "y")
+            {
+                jsonconstructor.getjson();
+            }else if (qs == "N" || qs == "n") { 
+
+                    Console.WriteLine("In Welchem Verzeichnis möchtest du arbeiten?");
+                    string subdictionary = Console.ReadLine();
+                    Console.WriteLine("Wie heißt die Datei?");
+                    string filename = Console.ReadLine();
+                    
+                    Console.Write("Sollen diese Daten als Vorlage für dieses Verzeiniss verwendet werden? Y/N :");
+                    qs = Console.ReadLine();
+                if (qs == "Y" || qs == "y")
+                {
+                    jsonconverter.getdata(qwert.loadfilesetting(subdictionary, filename));
+
+
+                }
+            }
         }
     }
-    class jsoncoverter
-    {
-       
 
+    class qwert
+    { // ordentliche benennung überlegen
+        public static string loadfilesetting(string verzeichniss , string filename )
+        {
+          return File.ReadAllText($@"..\..\..\..\samples\{verzeichniss}\{filename}.txt");
       
-    }
-
-    class jsonconstructor  // funktioniert
-    {
-        public int  ALTER { get; set; }
-        public int HÖHE { get; set; }
-        public int GEWICHT { get; set; }
-        public string ART { get; set; }
-
-        private void construct(int age, int height, int weight, string species)
-        {
-            ALTER = age;
-            HÖHE = height;
-            GEWICHT = weight;
-            ART = species;
-
+            
         }
 
-        public static void constructjson()
-        {
-            jsonconstructor Baum = new jsonconstructor
-            {
-                ALTER = 12,
-                HÖHE = 1234,
-                GEWICHT = 23476,
-                ART = "Eiche"
-            };
 
-            string myjson = JsonConvert.SerializeObject(Baum, Formatting.Indented);
-            Console.WriteLine(myjson);
-            setjson(Baum);
-            Console.ReadLine();
-        }
 
-        public static void getjson()
-        {
-            jsonconstructor Baum1 = new jsonconstructor();
-            using (StreamReader file = File.OpenText(@"..\..\..\..\config\Konfigurationen.json"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                
-                Baum1 = (jsonconstructor)serializer.Deserialize(file, typeof(jsonconstructor));
-            }
-            Console.WriteLine(Baum1.ALTER);
-            setjson(Baum1);
-            Console.ReadLine();
-        }
-
-        public static void setjson(jsonconstructor myjson)
-        {
-            using (StreamWriter file = File.CreateText(@"..\..\..\..\config\Konfigurationen.json"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, myjson);
-            }
-        }
     }
 }
