@@ -5,31 +5,46 @@ using Newtonsoft.Json;
 using System.IO;
 namespace AC_Configurator
 {
-    class programm
+    class program
     {
+      
         public static void Main(string[] args)
         {
-            Console.WriteLine("Willkommen bei AC-Configurator");
-            Console.Write("Möchtest du deine Configeinstellungen bearbeiten? Y/N: ");
-            string qs = Console.ReadLine();
-            if (qs == "Y" || qs == "y")
+          Console.WriteLine("Willkommen bei AC-Configurator");
+            Console.WriteLine("Bitte gib den Befehle ein, mit welchem du arbeiten möchtest.");
+            Console.WriteLine("Gibt --help ein um eine übersicht über alle Befehle zu bekommen.");
+            command(Console.ReadLine());
+
+          
+        }
+
+
+        public static void command(string commandinput)
+        {
+            switch (commandinput)
             {
-                jsonconstructor.getjson();
-            }else if (qs == "N" || qs == "n") { 
-
-                    Console.WriteLine("In Welchem Verzeichnis möchtest du arbeiten?");
-                    string subdictionary = Console.ReadLine();
-                    Console.WriteLine("Wie heißt die Datei?");
-                    string filename = Console.ReadLine();
-                    
-                    Console.Write("Sollen diese Daten als Vorlage für dieses Verzeiniss verwendet werden? Y/N :");
-                    qs = Console.ReadLine();
-                if (qs == "Y" || qs == "y")
-                {
-                    jsonconverter.getdata(qwert.loadfilesetting(subdictionary, filename));
-
-
-                }
+                case "--help":
+                    Console.Clear();
+                    Console.WriteLine("Befehlsübersicht");
+                    Console.WriteLine();
+                    Console.WriteLine("--help       Dieser Befehl zeigt eine Übersicht über alle verfügbaren Befehle.");
+                    Console.WriteLine("--config     Dieser Befehl ruft die derzeitige Kofiguration auf und lässt sie dich bearbeiten.");
+                    Console.WriteLine("--safe       Dieser Befehl speichert deine Konfigurationsänderungen");
+                    command(Console.ReadLine());
+                    break;
+                case "--config":
+                    Console.Clear();
+                    Console.WriteLine("Konfigurationseditor");
+                    Console.WriteLine();
+                    jsonconstructor.getjson();
+                    break;
+                case "--loadconfig": //config aus bestehendem sampel bauen
+                    break;
+                default:
+                    Console.WriteLine("Dein Befehl existiert nicht.");
+                    Console.WriteLine("Bitte gebe den Befehl ein mit dem du arbeiten möchtest.");
+                    command(Console.ReadLine());
+                    break;
             }
         }
     }

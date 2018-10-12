@@ -43,3 +43,8 @@ Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man eine
 
 **Version 01.02**
 * modified Konfiguration.json
+
+**Version 01.03**
+* modified Konfiguration.json
+* modified AC-Konfigurator
+* add jsonclass.cs
