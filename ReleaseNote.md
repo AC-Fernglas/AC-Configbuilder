@@ -50,5 +50,6 @@ Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man eine
 * modified Konfiguration.json
 * modified AC-Konfigurator
 * add jsonclass.cs
-=======
->>>>>>> 850f38d154ad7784007579b279e8ad8757b6032c
+
+**Version 01.04**
+* rework AC-Konfigurator to like command console function
