@@ -27,7 +27,6 @@ Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man eine
 * modified Examples
 * added subdirectory to [samples/](https://github.com/AC-Fernglas/AC-Configbuilder/tree/Version_00/samples)
 
-</details>
 
 <details close>
 <summary>Version 01</summary>
@@ -44,7 +43,6 @@ Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man eine
 
 **Version 01.02**
 * modified Konfiguration.json
-<<<<<<< HEAD
 
 **Version 01.03**
 * modified Konfiguration.json
