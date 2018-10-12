@@ -10,17 +10,20 @@ namespace AC_Configurator
       
         public static void Main(string[] args)
         {
-          Console.WriteLine("Willkommen bei AC-Configurator");
+            program obj = new program();
+
+            Console.WriteLine("Willkommen bei AC-Configurator");
             Console.WriteLine("Bitte gib den Befehle ein, mit welchem du arbeiten möchtest.");
             Console.WriteLine("Gibt --help ein um eine übersicht über alle Befehle zu bekommen.");
-            command(Console.ReadLine());
+            obj.command(Console.ReadLine());
 
           
         }
 
 
-        public static void command(string commandinput)
+        public void command(string commandinput)
         {
+            
             switch (commandinput)
             {
                 case "--help":

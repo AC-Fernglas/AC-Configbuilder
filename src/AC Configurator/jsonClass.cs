@@ -7,7 +7,8 @@ namespace AC_Configurator
 { 
     class jsonconstructor  // funktioniert
     {
-      
+
+        
      
         public int network_dev { get; set; }
         public int vlan_id { get; set; }
@@ -25,7 +26,7 @@ namespace AC_Configurator
 
         }
 
-        public static void constructjson(int NDEV, int vlan, int ulif, string NAme, string tag)
+        public void constructjson(int NDEV, int vlan, int ulif, string NAme, string tag)
         {
             jsonconstructor Config = new jsonconstructor
             {
@@ -44,6 +45,7 @@ namespace AC_Configurator
 
         public static void getjson()
         {
+
            jsonconstructor loadedjson = new jsonconstructor();
             using (StreamReader file = File.OpenText(@"..\..\..\..\config\Konfigurationen.json"))
             {
@@ -54,12 +56,23 @@ namespace AC_Configurator
 
             Console.WriteLine("Welches Attribut möchtest du ändern ?");
             Console.WriteLine("Gib --help ein wenn du Hilfe brauchst.");
-            gethelp(Console.ReadLine());
+            loadedjson.gethelp(Console.ReadLine());
 
 
            
         }
-        public static void gethelp(string command)
+        
+        public static void savejson(jsonconstructor myjson) //speichern der config    //benutzerdefinierte speicherpfadangabe ? -> speichern im subfolder?
+        {
+            using (StreamWriter file = File.CreateText(@"..\..\..\..\config\Konfigurationen.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, myjson);
+            }
+        }
+
+
+        public void gethelp(string command)
         {
             switch (command)
             {
@@ -98,7 +111,7 @@ namespace AC_Configurator
                     setdata(6);
                     break;
                 case "--save":
-                    
+
                     break;
                 case "--show":
                     catchconfig();
@@ -115,77 +128,70 @@ namespace AC_Configurator
             }
         }
 
-        public  static void setdata(int index)
-        {
-              int NDEV = 0;
-              int vlan = 0;
-              int ulif = 0;
-              string NAme = "name";
-              string tag = "tagged";
-
+        public void setdata(int index)
+        { 
             switch (index)
             {
                 case 1:
-            Console.Write("Gib deine network-dev ein : ");
-                NDEV = Convert.ToInt16(Console.ReadLine());
-                    return;
+                    Console.Write("Gib deine network-dev ein : ");
+                    network_dev = Convert.ToInt16(Console.ReadLine());
+                                        return;
                 case 2:
-            Console.Write("Gib deine vlan-id ein : ");
-                vlan = Convert.ToInt16(Console.ReadLine());
+                    Console.Write("Gib deine vlan-id ein : ");
+                    vlan_id = Convert.ToInt16(Console.ReadLine());
+                    
                     return;
                 case 3:
-            Console.Write("Gib deine underlying_if ein : ");
-                ulif = Convert.ToInt16(Console.ReadLine());
+                    Console.Write("Gib deine underlying_if ein : ");
+                    underlying_if = Convert.ToInt16(Console.ReadLine());
                     return;
                 case 4:
                     Console.Write("Gib den name ein : ");
-                    string name = Console.ReadLine();
+                    name = Console.ReadLine();
                     return;
                 case 5:
                     Console.Write("Soll das Attribut tagged sein ? Y/N : ");
                     string qwe = Console.ReadLine();
                     if (qwe == "Y" || qwe == "y")
                     {
-                        tag = "tagged";
+                        tagging = "tagged";
+                        
+                    
                     }
                     else if (qwe == "N" || qwe == "n")
                     {
-                        tag = "untagged";
+                        tagging = "untagged";
                     }
                     else
                     {
                         Console.WriteLine("Flasche eingabe."); setdata(5);
                     }
-                        return;
+                    
+                    return;
                 case 6:
                     for (int i = 1; i < 6; i++)
                     {
                         setdata(i);
                     }
-                    constructjson(NDEV, vlan, ulif, NAme, tag);
+                    constructjson(network_dev, vlan_id, underlying_if, name, tagging);
                     return;
-            default:
+                default:
 
                     break;
             }
 
-           
-        } 
+
+
+        }
 
         public static void catchconfig() //aktuelle Konfiguration zusammsammeln und anzeigen
         {
 
         }
 
-        public static void savejson(jsonconstructor myjson) //speichern der config    //benutzerdefinierte speicherpfadangabe ? -> speichern im subfolder?
-        {
-            using (StreamWriter file = File.CreateText(@"..\..\..\..\config\Konfigurationen.json"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, myjson);
-            }
-        }
     }
+
+
 
 
     class jsonconverter
