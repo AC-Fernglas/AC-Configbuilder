@@ -48,10 +48,10 @@ namespace secondtry
         }
         public void editmethod(CommandOption add, CommandOption del, CommandOption path) //benutzerdefinierten path in hauptconfig schreiben und dort verwalten
         {
-            string _path = @"..\config\qwertz.json";
+            string mypath = @"..\config\qwertz.json";
             if (validpath(path) != " ")
             {
-                _path = validpath(path);
+                   mypath = validpath(path);
             }
             if (add.HasValue() && add.Value() != " " && add.Value() != null)
             {
@@ -63,7 +63,7 @@ namespace secondtry
                 StringBuilder newFile = new StringBuilder();
                
 
-                string[] file = File.ReadAllLines($@"{_path}");
+                string[] file = File.ReadAllLines($@"{mypath}");
                 List<string> list = new List<string>(file);
                 foreach (string line in list)
 
@@ -79,7 +79,7 @@ namespace secondtry
 
                 }
 
-                File.WriteAllText($@"{_path}", newFile.ToString());
+                File.WriteAllText($@"{mypath}", newFile.ToString());
            
             }
         
@@ -88,12 +88,12 @@ namespace secondtry
 
         public void useon(CommandOption path, CommandOption filenumber)
         {
-            string _path = @"..\samples";
+            string mypath = @"..\samples\";
             int amm = 1;
             string configpath = @"..\config\qwertz.json";
             if (validpath(path) != " ")
             {
-                _path = validpath(path);
+                mypath = validpath(path);
             }
             if (filenumber.HasValue() && filenumber.Value() != " " && filenumber.Value() != null)
             {
@@ -101,15 +101,20 @@ namespace secondtry
             }
             for (int i = 0; i < amm; i++)
             {
-                DateTime date = new DateTime();
-                File.Create(_path + "file" + date.DayOfYear.ToString() + date.Minute.ToString() +".txt");
-                TextWriter tw = new StreamWriter(_path);
-                string[] file = File.ReadAllLines($@"{configpath}");
-
-                for (int a = 0; i < file.Length; i++)
+               
+                string filename = String.Format("{0}__{1}" + ".txt", "file", DateTime.Now.ToString("hh.mm.dd.MM.yy"));
+                File.Create(mypath + filename);
+                
+                string [] file = File.ReadAllLines($@"{configpath}");
+                StringBuilder newFile = new StringBuilder();
+                foreach (string item in file)
                 {
-                    tw.WriteLine(file[a]);
-                } 
+                    newFile.Append(item);
+                    
+                }
+
+                File.WriteAllText($@"{mypath + filename}", newFile.ToString());
+
 
             }
             
@@ -119,14 +124,14 @@ namespace secondtry
         {
             if (path.HasValue() && path.Value() != " " && path.Value() != null)
             {
-                string _path = path.Value().ToString();
-                if (!File.Exists(_path))
+                string mypath = path.Value().ToString();
+                if (!File.Exists(mypath))
                 {
                     Console.WriteLine("Bitte überprüfe deinen Path.");
                     return " ";
                 }
 
-                return _path;
+                return mypath;
             }
             return " ";
         }

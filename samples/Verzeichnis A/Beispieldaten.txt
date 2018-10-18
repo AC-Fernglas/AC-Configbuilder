@@ -1,10 +1,18 @@
-configure network
+configure 
+network
 network-dev 12
-      vlan-id 1
-      underlying-if 9
-      name "vlan 1"
-      tagging tagged
-      activate
-   exit
+     
+ vlan-id 1
+     
+ underlying-if 9
+     
+ name "vlan 1"
+      
+tagging tagged
+     
+ activate
+   
 exit
+exit
+
 
