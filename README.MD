@@ -1,7 +1,7 @@
 # AC-Configbuilder
 _Beschreibung des Projekts_
 
-## Strucktur
+## Struktur
 _hier muss die spätere Strucktur erklärt werden_
 
 
