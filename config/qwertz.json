@@ -1,0 +1,38 @@
+{
+  "Kundenkuerzel": -1,
+  "configure network": {
+    "network-dev": -1,
+    "vlan-ip": -1,
+    "underlying-if": -1,
+    "name": -1,
+    "tagging": -1
+  },
+  "configure network": {
+    "interface network-if": -1,
+    "application-type": "control",
+    "ip-adress": -1,
+    "prefix-length": -1,
+    "gateway": -1,
+    "name": -1,
+    "underlying-dev": -1
+  },
+  "configure viop": {
+    "proxy-set": -1,
+    "proxy-enable-keep-alive": "using options",
+    "srd-name": -1,
+    "sbcipv4-sip-int-name": -1,
+    "keepalive-fail-resp": -1,
+    "success-detect-retries": -1,
+    "success-detect-int": -1,
+    "proxy-redundancy-mode": {
+      "proxy-redundancy-mode": "homing",
+      "is-proxy-hot-swap": -1,
+      "proxy-load-balancing-method": -1,
+      "min-active-serv-lb": -1
+    },
+    "proxy-ip": -1,
+    "proxy-adress": -1,
+    "transport-type": -1
+  }
+
+}
