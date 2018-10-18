@@ -1,77 +1,54 @@
 configure network
-   access-list
-      use-specific-interface enable
-      network-interface-name ITSP
-      allow-type allow
-      packet-size 1500
-   exit
- 
-   network-dev 12
-      vlan-id 1
-      underlying-if 9
-      name "vlan 1"
-      tagging tagged
-      activate
-   exit
-
-   interface network-if 12 
-    ip-address 192.168.0.2 
-    gateway 192.168.0.1 
-    name "Voice" 
-    primary-dns 192.168.0.1 
-    underlying-dev "vlan 1" 
-    activate 
-  exit
+ network-dev 16
+  vlan-id 1606
+  underlying-if "GROUP_3"
+  name "EthD_UNP-1"
+  tagging tagged
+  activate
+ exit
+ network-dev 17
+  vlan-id 1606
+  underlying-if "GROUP_6"
+  name "EthD_UNP-2"
+  tagging tagged
+  activate
+ exit 
 exit
 
 configure network
-   access-list
-      use-specific-interface enable
-      network-interface-name ITSP
-      allow-type allow
-      packet-size 1500
-   exit
- 
-   network-dev 19
-      vlan-id 5
-      underlying-if 2
-      name "vlan 5"
-      tagging tagged
-      activate
-   exit
-
-   interface network-if 19 
-    ip-address 192.168.0.2 
-    gateway 192.168.0.1 
-    name "Voice" 
-    primary-dns 192.168.0.1 
-    underlying-dev "vlan 5" 
-    activate 
-  exit
+ interface network-if 87
+  application-type control
+  ip-address 10.49.50.12
+  prefix-length 28
+  gateway 10.49.50.1
+  name "IpInf_UNP-FR"
+  underlying-dev "EthD_UNP-1"
+  activate
+ exit
 exit
 
-configure network
-   access-list
-      use-specific-interface enable
-      network-interface-name ITSP
-      allow-type allow
-      packet-size 1500
-   exit
- 
-   network-dev 32
-      vlan-id 19
-      underlying-if 78
-      name "vlan 19"
-      tagging tagged
-      activate
-   exit
-
-   interface network-if 32 
-    ip-address 192.168.0.2 
-    gateway 192.168.0.1 
-    name "Voice" 
-    primary-dns 192.168.0.1 
-    underlying-dev "vlan 19" 
-    activate 
-  exit
+configure voip
+ proxy-set 4
+  proxy-name "PS_UNP-FR"
+  proxy-enable-keep-alive using-options
+  srd-name "SRD_UNP"
+  sbcipv4-sip-int-name "SipInf_UNP-FR"
+  keepalive-fail-resp "500,503"
+  success-detect-retries 1
+  success-detect-int 5
+  proxy-redundancy-mode homing
+  is-proxy-hot-swap 1
+  proxy-load-balancing-method 1
+  min-active-serv-lb 1
+ exit
+ proxy-ip 4/0
+  proxy-address "1.1.1.10:5060"
+  transport-type udp
+  activate
+ exit
+ proxy-ip 4/1
+  proxy-address "1.1.1.11:5060"
+  transport-type udp
+  activate
+ exit
 exit

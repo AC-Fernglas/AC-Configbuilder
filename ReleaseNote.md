@@ -51,4 +51,8 @@ Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man eine
 * add jsonclass.cs
 
 **Version 01.04**
-* rework AC-Konfigurator to like command console function
+* reworked AC-Konfigurator to like command console function
+
+**Version 01.05**
+* reworked Code, Transfer code to .Net Core
+* added help, edit and use Command
