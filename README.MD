@@ -18,7 +18,7 @@ Hier findet man Beispielkonfigurationen für eine Audio Codes Anlage
  
 **3. Konfigurationen automatisch einspielen**
   * n-viele Konfiguratioenn einspielen [GUID](https://www.audiocodes.com/media/13528/rest-api-for-mediant-devices-ver-72.pdf)
-  * multible Devices zulassen
+  * multiple Devices zulassen
 
 ### [Release Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/ReleaseNote.md)
 
