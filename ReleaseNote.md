@@ -2,9 +2,6 @@
 Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man einen schnellen Überblick bekommt.
 
 ## Realease Note 
-<details close>
-<summary>Version 00</summary>
-<br>
 
 **Version 00**
 * OrdnerStrucktur 
