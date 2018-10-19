@@ -29,7 +29,7 @@ Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man eine
 
 </details>
 
-<details close>
+<details open>
 <summary>Version 01</summary>
 <br>
 
