@@ -1,5 +1,5 @@
 {
-  "userpath": "C:\Develop\AC-Configbuilder\samples\mysuperconfig.json" , 
+  "userpath": "C:\\Develop\\AC-Configbuilder\\samples\\mysuperconfig.json" , 
   "Kundenkuerzel": -1,
   "configure network": {
     "network-dev": -1,
@@ -8,7 +8,7 @@
     "name": -1,
     "tagging": -1
   },
-  "configure network": {
+  "configure-network": {
     "interface network-if": -1,
     "application-type": "control",
     "ip-adress": -1,
@@ -17,7 +17,7 @@
     "name": -1,
     "underlying-dev": -1
   },
-  "configure viop": {
+  "configure-viop": {
     "proxy-set": -1,
     "proxy-enable-keep-alive": "using options",
     "srd-name": -1,

@@ -37,9 +37,8 @@ namespace secondtry
             app.Command("use", u => {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var filenumber = u.Option("--fn <number>", "Anzahl, wie viele Datein entstehen sollen. ", CommandOptionType.SingleValue);
                 var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
-                u.OnExecute(() => { useon(path, filenumber); });
+                u.OnExecute(() => { useon(path); });
             });
 
 
@@ -48,76 +47,99 @@ namespace secondtry
         }
         public void editmethod(CommandOption add, CommandOption del, CommandOption path) //benutzerdefinierten path in hauptconfig schreiben und dort verwalten
         {
-            string mypath = @"..\config\qwertz.json";
+            string mypath = @".\config\qwertz.json";
             if (validpath(path) != " ")
             {
-                   mypath = validpath(path);
+               mypath = validpath(path);
+                setuserpath(mypath);
             }
             if (add.HasValue() && add.Value() != " " && add.Value() != null)
             {
                 //Hinzufügen einer Eigenschaft
             }
-
             if (del.HasValue() && del.Value() != " " && del.Value() != null) //Löschen einer Eigenschaft
             {
                 StringBuilder newFile = new StringBuilder();
-               
-
                 string[] file = File.ReadAllLines($@"{mypath}");
                 List<string> list = new List<string>(file);
                 foreach (string line in list)
-
                 {
-
                     if (line.Contains(del.Value().ToString()))
-
                     {
                         continue;
                     }
-
                     newFile.Append(line);
-
                 }
-
                 File.WriteAllText($@"{mypath}", newFile.ToString());
-           
-            }
-        
+            }        
         }
-    
-
-        public void useon(CommandOption path, CommandOption filenumber)
+        public void setuserpath(string mypath)
         {
-            string mypath = @"..\samples\";
-            int amm = 1;
-            string configpath = @"..\config\qwertz.json";
+            string[] userconfig = File.ReadAllLines(@".\config\qwertz.json");
+            StringBuilder newFile = new StringBuilder();
+                string[] file = File.ReadAllLines($@".\config\qwertz.json");
+                List<string> list = new List<string>(file);
+                list[2] =  "\"userpath\": " + "\""+ mypath +"\"";
+                foreach (string line in list)
+                {
+                    newFile.Append(line + "\n");
+                }
+                File.WriteAllText($@".\config\qwertz.json", newFile.ToString());
+            
+        }
+        public void useon(CommandOption path) // neue funktion -> suchen und ersetzten 
+        {
+            string mypath = $@".\samples";
             if (validpath(path) != " ")
             {
                 mypath = validpath(path);
             }
-            if (filenumber.HasValue() && filenumber.Value() != " " && filenumber.Value() != null)
+            openfiles(mypath);
+        }
+        public void openfiles(string mypath)
+        {
+            var newFile = new StringBuilder();
+            var config = File.ReadAllText(@".\config\qwertz.json"); //get json
+            var host = JsonConvert.DeserializeObject<dynamic>(config); //get path to json
+            var myconfig = File.ReadAllText(host.userpath.Value);//open json to use
+            string[] dirs = Directory.GetFiles(mypath, "*.txt",SearchOption.TopDirectoryOnly);
+            foreach (var item in dirs)
             {
-                amm = int.Parse(filenumber.Value());
-            }
-            for (int i = 0; i < amm; i++)
-            {
+                string[] file = File.ReadAllLines(item);
                
-                string filename = String.Format("{0}__{1}" + ".txt", "file", DateTime.Now.ToString("hh.mm.dd.MM.yy"));
-                File.Create(mypath + filename);
-                
-                string [] file = File.ReadAllLines($@"{configpath}");
-                StringBuilder newFile = new StringBuilder();
-                foreach (string item in file)
+                foreach (var lines in file)
                 {
-                    newFile.Append(item);
-                    
+                    Console.WriteLine(lines);
+                    Console.ReadLine();
+                    using (var reader = new JsonTextReader(new StringReader(myconfig)))
+                    {
+                        while (reader.Read())
+                        
+                            if (lines.Contains(reader.Value.ToString()))
+                            {
+                                Console.WriteLine(reader.Value.ToString());
+                                Console.ReadLine();
+                                newFile.Append(reader.Value.ToString());
+                                continue;
+                            }
+                        
+                    }
+                    newFile.Append(lines);
                 }
-
-                File.WriteAllText($@"{mypath + filename}", newFile.ToString());
-
-
+                File.WriteAllText(item, newFile.ToString());
             }
-            
+
+               
+        File.WriteAllText(mypath +".txt", newFile.ToString());    
+        }
+        public string splitstring(string item)
+        {
+            string[] s = item.Split("\n");
+            foreach (string i in s)
+            {
+                return i;
+            }
+            return "";
         }
 
         public string validpath(CommandOption path)
@@ -130,7 +152,6 @@ namespace secondtry
                     Console.WriteLine("Bitte überprüfe deinen Path.");
                     return " ";
                 }
-
                 return mypath;
             }
             return " ";

@@ -6,8 +6,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="config\qwertz.json" />
+    <None Remove="samples\mysuperconfig.json" />
+    <None Remove="samples\qwerest.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="config\qwertz.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="samples\mysuperconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="samples\qwerest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="samples\Verzeichnis A\" />
   </ItemGroup>
 
 </Project>
