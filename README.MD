@@ -2,7 +2,8 @@
 _Beschreibung des Projekts_
 
 ## Struktur
-_hier muss die spätere Strucktur erklärt werden_
+_/samples_
+Hier findet man Beispielkonfigurationen für eine Audio Codes Anlage
 
 
 ### Was soll es können
