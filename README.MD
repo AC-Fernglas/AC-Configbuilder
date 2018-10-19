@@ -1,5 +1,5 @@
 # AC-Configbuilder
-_Beschreibung des Projekts_
+Der AC-Configbuilder wird ein Tool sein mit dem man Audio Codes Massenverarbeitung machen kann. Dies bedeutet das man z.b. für Device Namen ein globales Präfix vergeben kann welches dann zuverlässig auf alle Konfigurationen angewandt wird.
 
 ## Struktur
 _/samples_
