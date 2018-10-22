@@ -100,8 +100,8 @@ namespace secondtry
         {
             var newFile = new StringBuilder();
             var config = File.ReadAllText(@".\config\qwertz.json"); //get json
-            var host = JsonConvert.DeserializeObject<dynamic>(config); //get path to json
-            var myconfig = File.ReadAllText(host.userpath.Value);//open json to use
+            var host = JsonConvert.DeserializeObject<JsonObjects>(config); //get path to json
+            var myconfig = JsonConvert.DeserializeObject<JsonObjects>(File.ReadAllText(host.userpath));//open json to use
             string[] dirs = Directory.GetFiles(mypath, "*.txt",SearchOption.TopDirectoryOnly);
             foreach (var item in dirs)
             {
@@ -111,19 +111,17 @@ namespace secondtry
                 {
                     Console.WriteLine(lines);
                     Console.ReadLine();
-                    using (var reader = new JsonTextReader(new StringReader(myconfig)))
-                    {
-                        while (reader.Read())
-                        
-                            if (lines.Contains(reader.Value.ToString()))
+                    
+
+                            if (lines.Contains(myconfig.configureNetwork.name))
                             {
-                                Console.WriteLine(reader.Value.ToString());
+                                Console.WriteLine();
                                 Console.ReadLine();
-                                newFile.Append(reader.Value.ToString());
+                                newFile.Append(" ");
                                 continue;
                             }
                         
-                    }
+                    
                     newFile.Append(lines);
                 }
                 File.WriteAllText(item, newFile.ToString());
@@ -132,16 +130,6 @@ namespace secondtry
                
         File.WriteAllText(mypath +".txt", newFile.ToString());    
         }
-        public string splitstring(string item)
-        {
-            string[] s = item.Split("\n");
-            foreach (string i in s)
-            {
-                return i;
-            }
-            return "";
-        }
-
         public string validpath(CommandOption path)
         {
             if (path.HasValue() && path.Value() != " " && path.Value() != null)
