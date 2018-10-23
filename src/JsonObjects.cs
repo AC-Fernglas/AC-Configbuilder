@@ -9,21 +9,21 @@ namespace secondtry
         public string userpath { get; set; }
         public string Kundenkuerzel { get; set; }
         public ConfigureNetwork configureNetwork { get; set; }
-        public ConfigureNetwork2 configure_network { get; set; }
         public Configureviop configureviop { get; set; }
     }
     public class ConfigureNetwork
     {
-        public int networkdev { get; set; }
+        public List<networkdev> networkdev { get; set; }
+        public List<interfacenetworkif> interfacenetworkif { get; set; }
+    }
+   public class networkdev { 
         public int vlanip { get; set; }
         public string underlyingif { get; set; }
         public string name { get; set; }
         public tag tagging { get; set; }
     }
 
-    public class ConfigureNetwork2
-    {
-        public int interfacenetworkif { get; set; }
+    public class  interfacenetworkif { 
         public applicationtype applicationtype { get; set; }
         public int ipadress { get; set; }
         public int prefixlength { get; set; }

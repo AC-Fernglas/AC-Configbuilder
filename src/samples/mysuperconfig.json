@@ -1,15 +1,12 @@
 {
-  {
-    "Kundenkuerzel": "string",
+  
+    "Kundenkuerzel": "dads",
     "configure network": {
       "network-dev": -1,
       "vlan-ip": -1,
       "underlying-if": "string",
       "name": "horst baum",
-      "tagging": [
-        "untagged",
-        "tagged"
-      ]
+      "tagging":"tagged"
     },
     "configure_network": {
       "interface network-if": -1,

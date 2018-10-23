@@ -23,7 +23,6 @@ namespace secondtry
         {
             var app = new CommandLineApplication();
             var helptemplate = "-h|--help";
-           
             app.HelpOption(helptemplate);
             app.Command("edit", e => {
             e.HelpOption(helptemplate);
@@ -40,9 +39,6 @@ namespace secondtry
                 var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { useon(path); });
             });
-
-
-
           return  app.Execute(commands);
         }
         public void editmethod(CommandOption add, CommandOption del, CommandOption path) //benutzerdefinierten path in hauptconfig schreiben und dort verwalten
@@ -85,7 +81,6 @@ namespace secondtry
                     newFile.Append(line + "\n");
                 }
                 File.WriteAllText($@".\config\qwertz.json", newFile.ToString());
-            
         }
         public void useon(CommandOption path) // neue funktion -> suchen und ersetzten 
         {
@@ -106,29 +101,20 @@ namespace secondtry
             foreach (var item in dirs)
             {
                 string[] file = File.ReadAllLines(item);
-               
                 foreach (var lines in file)
                 {
-                    Console.WriteLine(lines);
-                    Console.ReadLine();
-                    
-
-                            if (lines.Contains(myconfig.configureNetwork.name))
-                            {
-                                Console.WriteLine();
-                                Console.ReadLine();
-                                newFile.Append(" ");
-                                continue;
-                            }
-                        
-                    
-                    newFile.Append(lines);
+                    if (lines.Contains("Kundenkuerzel"))
+                    {
+                        Console.WriteLine("asdasdasdasdasd");
+                        Console.WriteLine(JsonConvert.SerializeObject(myconfig.configureNetwork.tagging));
+                        Console.ReadLine();
+                        newFile.Append(" ");
+                        continue;
+                    }
+                   newFile.Append(lines);
                 }
                 File.WriteAllText(item, newFile.ToString());
             }
-
-               
-        File.WriteAllText(mypath +".txt", newFile.ToString());    
         }
         public string validpath(CommandOption path)
         {
