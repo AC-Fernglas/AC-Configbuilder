@@ -95,26 +95,96 @@ namespace secondtry
         {
             var newFile = new StringBuilder();
             var config = File.ReadAllText(@".\config\qwertz.json"); //get json
-            var host = JsonConvert.DeserializeObject<JsonObjects>(config); //get path to json
-            var myconfig = JsonConvert.DeserializeObject<JsonObjects>(File.ReadAllText(host.userpath));//open json to use
+            var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
             string[] dirs = Directory.GetFiles(mypath, "*.txt",SearchOption.TopDirectoryOnly);
             foreach (var item in dirs)
             {
-                string[] file = File.ReadAllLines(item);
-                foreach (var lines in file)
-                {
-                    if (lines.Contains("Kundenkuerzel"))
-                    {
-                        Console.WriteLine("asdasdasdasdasd");
-                        Console.WriteLine(JsonConvert.SerializeObject(myconfig.configureNetwork.tagging));
-                        Console.ReadLine();
-                        newFile.Append(" ");
-                        continue;
-                    }
-                   newFile.Append(lines);
-                }
-                File.WriteAllText(item, newFile.ToString());
+                searchandreplace(item, myconfig);
             }
+        }
+
+        public void searchandreplace(string path, ACConfig myconfig)
+        {
+            string getprop= " ";
+            //var file = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(path)); //destination file to repace some items
+
+            foreach (var property in typeof(ACConfig).GetProperties())
+            {
+                if (property.Name == "configureNetwork")
+                {
+                    foreach (var prop in typeof(ConfigureNetwork).GetProperties())
+                    {
+                        if (prop.Name == "networkdev")
+                        {
+                            foreach (var subproperty in typeof(networkdev).GetProperties())
+                            {
+                                foreach (var subsubproperty in typeof(tag).GetProperties())
+                                {
+                                    getprop += " " + subsubproperty.Name + "\n";
+                                }
+                                getprop += " " + subproperty.Name + "\n";
+                            }
+                        }
+                        if (prop.Name == "interfacenetworkif")
+                        {
+                            foreach (var othersubproperty in typeof(interfacenetworkif).GetProperties())
+                            {
+                                if (othersubproperty.Name == "applicationtype")
+                                {
+                                    foreach (var subsubproperty in typeof(applicationtype).GetProperties())
+                                    {
+                                        getprop += " " + subsubproperty.Name + "\n";
+                                    }
+                                }
+                                getprop += " " + othersubproperty.Name + "\n";
+                            }
+                        }
+                        getprop += " " + prop.Name + "\n";
+                    }
+                }
+                else if (property.Name == "configureviop")
+                {
+                    foreach (var prop in typeof(Configureviop).GetProperties())
+                    {
+                        if (prop.Name == "Proxyredundancymode")
+                        {
+                            foreach (var subproperty in typeof(Proxyredundancymode).GetProperties())
+                            {
+                                if (prop.Name == "proxyredundancymode")
+                                {
+                                    foreach (var enumsubsubproperty in typeof(proxyredundancymode).GetProperties())
+                                    {
+                                        getprop += " " + enumsubsubproperty.Name + "\n";
+                                    }
+                                }
+                                getprop += " " + subproperty.Name + "\n";
+                            }
+                        }
+                        else if (prop.Name == "proxyenablekeepalive")
+                        {
+                            foreach (var enumsubproperty in typeof(proxyenablekeepalive).GetProperties())
+                            {
+                                getprop += " " + enumsubproperty.Name + "\n";
+                            }
+                        }
+                        else if (prop.Name == "transporttype")
+                        {
+                            foreach (var othersubproperty in typeof(transporttype).GetProperties())
+                            {
+                                getprop += " " + othersubproperty.Name + "\n";
+                            }
+                        }
+                        getprop += " " + prop.Name + "\n";
+                    }
+                }
+                else
+                {
+                    getprop += " " + property.Name + "\n";
+                }
+            }
+                Console.WriteLine(getprop);
+            Console.ReadLine();
         }
         public string validpath(CommandOption path)
         {

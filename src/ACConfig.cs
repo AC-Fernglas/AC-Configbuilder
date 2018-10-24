@@ -4,7 +4,7 @@ using System.Text;
 
 namespace secondtry
 {
-    public class JsonObjects
+    public class ACConfig
     {
         public string userpath { get; set; }
         public string Kundenkuerzel { get; set; }
