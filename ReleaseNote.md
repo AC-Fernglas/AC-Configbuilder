@@ -1,7 +1,4 @@
-# Release Note
-Hier werde ich auflisten was neu ist, oder was ich geändert habe damit man einen schnellen überblick bekommt.
-
-## Realease Note 
+# Realease Note 
 <details open>
 <summary>Version 01</summary>
 <br>
