@@ -19,9 +19,6 @@ _hier muss die spätere Strucktur erklärt werden_
   * n-viele Konfiguratioenn einspielen [GUID](https://www.audiocodes.com/media/13528/rest-api-for-mediant-devices-ver-72.pdf)
   * multible Devices zulassen
 
-### Funktionen
-Das Tool ist momentan über 2 Kommands in Powershell steuerbar und kann benutzerdefinierte einge wie den Path zu einer Datei bearbeiten und auswerten. 
-
 ### [Release Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/ReleaseNote.md)
 
 Danke das du dir die Zeit genommen hast mich zu lesen. 
