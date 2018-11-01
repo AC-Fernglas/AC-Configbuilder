@@ -1,12 +1,11 @@
 {
-
   "Kundenkuerzel": "dads",
-  "configure network": 
-  {
-    "network-dev": 
-    {
-      "listid": 16,
-      "vlan-id": 1607
-    }
+  "configurenetwork": {
+    "networkdev": [
+      {
+        "listid": 17,
+        "vlanid": 1607
+      }
+    ]
   }
 }

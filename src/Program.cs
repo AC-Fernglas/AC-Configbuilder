@@ -65,8 +65,6 @@ namespace secondtry
             var config = File.ReadAllText(@".\config\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
-            Console.WriteLine(JsonConvert.SerializeObject(myconfig));
-            Console.ReadLine();
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
             foreach (var item in dirs)
             {
@@ -84,10 +82,10 @@ namespace secondtry
             AC.configureNetwork = co;
             AC.configureviop = vo;
 
-            List<networkdev> netlist = new List<networkdev>();
-            List<interfacenetworkif> inif = new List<interfacenetworkif>();
-            List<proxyip> prip = new List<proxyip>();
-            List<proxyset> prese = new List<proxyset>();
+            List<Networkdev> netlist = new List<Networkdev>();
+            List<Interfacenetworkif> inif = new List<Interfacenetworkif>();
+            List<Proxyip> prip = new List<Proxyip>();
+            List<Proxyset> prese = new List<Proxyset>();
             
 
             string ident = " ";
@@ -309,10 +307,10 @@ namespace secondtry
             }
             replaceitem(AC,myconfig);
         }
-        public networkdev createlist(int listid, int vlan, string underlying, string name, string tagging)
+        public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging)
         {
             Enum.TryParse(tagging, out tag Tagging);
-            networkdev net = new networkdev
+            Networkdev net = new Networkdev
             {
                 listid = listid,
                 vlanip = vlan,
@@ -322,10 +320,10 @@ namespace secondtry
             };
             return net;
         }
-        public proxyip createlistprip(string prad,string taty, string subidentvalue)
+        public Proxyip createlistprip(string prad,string taty, string subidentvalue)
         {
             Enum.TryParse(taty, out transporttype Transporttype);
-            proxyip prip = new proxyip
+            Proxyip prip = new Proxyip
             {
                 ip = subidentvalue,
                 proxyadress = prad,
@@ -333,7 +331,7 @@ namespace secondtry
             };
             return prip;
         }
-        public proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue)
+        public Proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue)
         {
             if (peka == "using-option")
             {
@@ -341,7 +339,7 @@ namespace secondtry
             }
             Enum.TryParse(peka, out proxyenablekeepalive blub);
             Enum.TryParse(prm, out proxyredundancymode blab);
-            proxyset prse = new proxyset
+            Proxyset prse = new Proxyset
             {
                 listid = subidentvalue,
                 proxyname = prname,
@@ -358,10 +356,10 @@ namespace secondtry
             };
             return prse;
         }
-        public interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid)
+        public Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid)
         {
             Enum.TryParse(apptype, out applicationtype Apptype);
-            interfacenetworkif inif = new interfacenetworkif
+            Interfacenetworkif inif = new Interfacenetworkif
             {
                 Applicationtype = Apptype,
                 ipadress =ipadr,
@@ -389,142 +387,78 @@ namespace secondtry
         }
         public void replaceitem(ACConfig AC, ACConfig myconfig)
         {
-            if (myconfig.configureNetwork.networkdev != null)
+            if (myconfig.configureNetwork != null)
             {
-                foreach (var item in myconfig.configureNetwork.networkdev)
+                if (myconfig.configureNetwork.networkdev != null)
                 {
-                    foreach (var i in AC.configureNetwork.networkdev)
+                    foreach (var item in myconfig.configureNetwork.networkdev)
                     {
-                        if (item.listid == i.listid)
+                        foreach (var i in AC.configureNetwork.networkdev)
                         {
-                            if (item.name != null)
+                            if (item.listid == i.listid)
                             {
-                                i.name = item.name;
+                                foreach (var propertyInfo in item.GetType().GetProperties())
+                                {
+                                    var value = propertyInfo.GetValue(item);
+                                    if (value != null)
+                                    {
+                                        i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
+                                    }
+                                }
                             }
-                            if (item.vlanip.ToString() != null)
+                        }
+                    }
+                }
+                if (myconfig.configureNetwork.interfacenetworkif != null)
+                {
+                    foreach (var item in myconfig.configureNetwork.interfacenetworkif)
+                    {
+                        foreach (var i in AC.configureNetwork.interfacenetworkif)
+                        {
+                            foreach (var propertyInfo in item.GetType().GetProperties())
                             {
-                                i.vlanip = item.vlanip;
-                            }
-                            if (item.underlyingif != null)
-                            {
-                                i.underlyingif = item.underlyingif;
-                            }
-                            if (item.tagging.ToString() != null)
-                            {
-                                i.tagging = item.tagging;
+                                var value = propertyInfo.GetValue(item);
+                                if (value != null)
+                                {
+                                    i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
+                                }
                             }
                         }
                     }
                 }
             }
-            if (myconfig.configureNetwork.interfacenetworkif != null)
+            if (myconfig.configureviop != null)
             {
-                foreach (var item in myconfig.configureNetwork.interfacenetworkif)
+                if (myconfig.configureviop.proxyset != null)
                 {
-                    foreach (var i in AC.configureNetwork.interfacenetworkif)
+                    foreach (var item in myconfig.configureviop.proxyset)
                     {
-                        if (item.listid == i.listid)
+                        foreach (var i in AC.configureviop.proxyset)
                         {
-                            if (item.name != null)
+                            foreach (var propertyInfo in item.GetType().GetProperties())
                             {
-                                i.name = item.name;
-                            }
-                            if (item.Applicationtype.ToString() != null)
-                            {
-                                i.Applicationtype = item.Applicationtype;
-                            }
-                            if (item.gateway != null)
-                            {
-                                i.gateway = item.gateway;
-                            }
-                            if (item.ipadress != null)
-                            {
-                                i.ipadress = item.ipadress;
-                            }
-                            if (item.prefixlength.ToString() != null)
-                            {
-                                i.prefixlength = item.prefixlength;
-                            }
-                            if (item.underlyingdev != null)
-                            {
-                                i.underlyingdev = item.underlyingdev;
-                            }
-                            
-                        }
-                    }
-                }
-            }
-            if (myconfig.configureviop.proxyset != null)
-            {
-                foreach (var item in myconfig.configureviop.proxyset)
-                {
-                    foreach (var i in AC.configureviop.proxyset)
-                    {
-                        if (item.listid == i.listid)
-                        {
-                            if (item.isproxyhotswap.ToString() != null)
-                            {
-                                i.isproxyhotswap = item.isproxyhotswap;
-                            }
-                            if (item.keepalivefailresp != null)
-                            {
-                                i.keepalivefailresp = item.keepalivefailresp;
-                            }
-                            if (item.minactiveservlb.ToString() != null)
-                            {
-                                i.minactiveservlb = item.minactiveservlb;
-                            }
-                            if (item.Proxyenablekeepalive.ToString() != null)
-                            {
-                                i.Proxyenablekeepalive = item.Proxyenablekeepalive;
-                            }
-                            if (item.proxyloadbalancingmethod.ToString() != null)
-                            {
-                                i.proxyloadbalancingmethod = item.proxyloadbalancingmethod;
-                            }
-                            if (item.proxyname != null)
-                            {
-                                i.proxyname = item.proxyname;
-                            }
-                            if (item.Proxyredundancymode.ToString() != null)
-                            {
-                                i.Proxyredundancymode = item.Proxyredundancymode;
-                            }
-                            if (item.sbcipv4sipintname != null)
-                            {
-                                i.sbcipv4sipintname = item.sbcipv4sipintname;
-                            }
-                            if (item.srdname != null)
-                            {
-                                i.srdname = item.srdname;
-                            }
-                            if (item.successdetectint.ToString() != null)
-                            {
-                                i.successdetectint = item.successdetectint;
-                            }
-                            if (item.successdetectretries.ToString() != null)
-                            {
-                                i.successdetectretries = item.successdetectretries;
+                                var value = propertyInfo.GetValue(item);
+                                if (value != null)
+                                {
+                                    i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
+                                }
                             }
                         }
                     }
                 }
-            }
-            if (myconfig.configureviop.proxyset != null)
-            {
-                foreach (var item in myconfig.configureviop.proxyip)
+                if (myconfig.configureviop.proxyset != null)
                 {
-                    foreach (var i in AC.configureviop.proxyip)
+                    foreach (var item in myconfig.configureviop.proxyip)
                     {
-                        if (item.ip == i.ip)
+                        foreach (var i in AC.configureviop.proxyip)
                         {
-                            if (item.proxyadress != null)
+                            foreach (var propertyInfo in item.GetType().GetProperties())
                             {
-                                i.proxyadress = item.proxyadress;
-                            }
-                            if (item.Transporttype.ToString() != null)
-                            {
-                                i.Transporttype = item.Transporttype;
+                                var value = propertyInfo.GetValue(item);
+                                if (value != null)
+                                {
+                                    i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
+                                }
                             }
                         }
                     }
