@@ -30,6 +30,8 @@
 * add Konfiguration.json
 * add AC-Konfigurator
 
+</details>
+
 <details close>
 <summary>Version 00</summary>
 <br>
@@ -55,7 +57,7 @@
 * README.md
 * Beispieldaten
 
-</details>
+
 
 
 
