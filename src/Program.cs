@@ -65,14 +65,16 @@ namespace secondtry
             var config = File.ReadAllText(@".\config\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
+            Console.WriteLine(JsonConvert.SerializeObject(myconfig));
+            Console.ReadLine();
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
             foreach (var item in dirs)
             {
-                searchandreplace(item, myconfig);
+                parseinobject(item, myconfig);
             }
         }
 
-        public void searchandreplace(string path, ACConfig myconfig)
+        public void parseinobject(string path, ACConfig myconfig)
         {
 
 
@@ -129,13 +131,13 @@ namespace secondtry
                 {
                     if (configureexit)
                     {
-                        if (line == "" || ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip")
+                        if (line == "" || ParserGrammarIn.getidentifier.Parse(line) == "configure network" || ParserGrammarIn.getidentifier.Parse(line) == "configure voip")
                         {
                             if (line == "")
                             {
                                 continue;
                             }
-                            ident = ParserGrammar.getidentifier.Parse(line);
+                            ident = ParserGrammarIn.getidentifier.Parse(line);
                             configureexit = false;
                             continue;
                         }
@@ -144,10 +146,10 @@ namespace secondtry
                     {
                         if (subidentexit)
                         {
-                            if (ParserGrammar.getsubident.Parse(line) == "network-dev" || ParserGrammar.getsubident.Parse(line) == "interface network-if" ||
-                             ParserGrammar.getsubident.Parse(line) == "proxy-set" || ParserGrammar.getsubident.Parse(line) == "proxy-ip" || ParserGrammar.getsubident.Parse(line) == "exit")
+                            if (ParserGrammarIn.getsubident.Parse(line) == "network-dev" || ParserGrammarIn.getsubident.Parse(line) == "interface network-if" ||
+                             ParserGrammarIn.getsubident.Parse(line) == "proxy-set" || ParserGrammarIn.getsubident.Parse(line) == "proxy-ip" || ParserGrammarIn.getsubident.Parse(line) == "exit")
                             {
-                                if (ParserGrammar.getsubident.Parse(line) == "exit")
+                                if (ParserGrammarIn.getsubident.Parse(line) == "exit")
                                 {
                                     configureexit = true;
                                     switch (subident)
@@ -171,8 +173,8 @@ namespace secondtry
 
                                 }
                                 subidentexit = false;
-                                subident = ParserGrammar.getsubident.Parse(line);
-                                subidentvalue = ParserGrammar.subidentvalue.Parse(line);
+                                subident = ParserGrammarIn.getsubident.Parse(line);
+                                subidentvalue = ParserGrammarIn.subidentvalue.Parse(line);
                                 continue;
                             }
                         }
@@ -182,19 +184,19 @@ namespace secondtry
                             {
                                 if (subident == "network-dev")
                                 {
-                                    switch (ParserGrammar.dev.Parse(line))
+                                    switch (ParserGrammarIn.dev.Parse(line))
                                     {
                                         case "vlan-id":
-                                            vlan = int.Parse(ParserGrammar.devvalue.Parse(line));
+                                            vlan = int.Parse(ParserGrammarIn.devvalue.Parse(line));
                                             continue;
                                         case "underlying-if":
-                                            underlying = ParserGrammar.devvalue.Parse(line);
+                                            underlying = ParserGrammarIn.devvalue.Parse(line);
                                             continue;
                                         case "name":
-                                            name = ParserGrammar.devvalue.Parse(line);
+                                            name = ParserGrammarIn.devvalue.Parse(line);
                                             continue;
                                         case "tagging":
-                                            tagging = ParserGrammar.devvalue.Parse(line);
+                                            tagging = ParserGrammarIn.devvalue.Parse(line);
                                             continue;
                                         case "activate":
                                             continue;
@@ -205,25 +207,25 @@ namespace secondtry
                                 }
                                 else if (subident == "interface network-if")
                                 {
-                                    switch (ParserGrammar.inif.Parse(line))
+                                    switch (ParserGrammarIn.inif.Parse(line))
                                     {
                                         case "application-type":
-                                            apptype = ParserGrammar.inifvalue.Parse(line);
+                                            apptype = ParserGrammarIn.inifvalue.Parse(line);
                                             continue;
                                         case "ip-address":
-                                            ipadr = ParserGrammar.inifvalue.Parse(line);
+                                            ipadr = ParserGrammarIn.inifvalue.Parse(line);
                                             continue;
                                         case "prefix-length":
-                                            prel = int.Parse(ParserGrammar.inifvalue.Parse(line));
+                                            prel = int.Parse(ParserGrammarIn.inifvalue.Parse(line));
                                             continue;
                                         case "gateway":
-                                            gateway = ParserGrammar.inifvalue.Parse(line);
+                                            gateway = ParserGrammarIn.inifvalue.Parse(line);
                                             continue;
                                         case "name":
-                                            name2 = ParserGrammar.inifvalue.Parse(line);
+                                            name2 = ParserGrammarIn.inifvalue.Parse(line);
                                             continue;
                                         case "underlying-dev":
-                                            udev = ParserGrammar.inifvalue.Parse(line);
+                                            udev = ParserGrammarIn.inifvalue.Parse(line);
                                             continue;
                                         case "activate":
                                             continue;
@@ -237,40 +239,40 @@ namespace secondtry
                             {
                                 if (subident == "proxy-set")
                                 {
-                                    switch (ParserGrammar.prse.Parse(line))
+                                    switch (ParserGrammarIn.prse.Parse(line))
                                     {
                                         case "proxy-name":
-                                            prname = ParserGrammar.prsevalue.Parse(line);
+                                            prname = ParserGrammarIn.prsevalue.Parse(line);
                                             continue;
                                         case "proxy-enable-keep-alive":
-                                            peka = ParserGrammar.prsevalue.Parse(line);
+                                            peka = ParserGrammarIn.prsevalue.Parse(line);
                                             continue;
                                         case "srd-name":
-                                            srdname = ParserGrammar.prsevalue.Parse(line);
+                                            srdname = ParserGrammarIn.prsevalue.Parse(line);
                                             continue;
                                         case "sbcipv4-sip-int-name":
-                                            ssin = ParserGrammar.prsevalue.Parse(line);
+                                            ssin = ParserGrammarIn.prsevalue.Parse(line);
                                             continue;
                                         case "keepalive-fail-resp":
-                                            kfr = ParserGrammar.prsevalue.Parse(line);
+                                            kfr = ParserGrammarIn.prsevalue.Parse(line);
                                             continue;
                                         case "success-detect-retries":
-                                            sdr = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            sdr = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
                                             continue;
                                         case "success-detect-int":
-                                            sdi = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            sdi = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
                                             continue;
                                         case "proxy-redundancy-mode":
-                                            prm = ParserGrammar.prsevalue.Parse(line);
+                                            prm = ParserGrammarIn.prsevalue.Parse(line);
                                             continue;
                                         case "is-proxy-hot-swap":
-                                            iphs = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            iphs = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
                                             continue;
                                         case "proxy-load-balancing-method":
-                                            plbm = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            plbm = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
                                             continue;
                                         case "min-active-serv-lb":
-                                            masl = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            masl = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
                                             continue;
                                         case "activate":
                                             continue;
@@ -281,13 +283,13 @@ namespace secondtry
                                 }
                                 else if (subident == "proxy-ip")
                                 {
-                                    switch (ParserGrammar.prip.Parse(line))
+                                    switch (ParserGrammarIn.prip.Parse(line))
                                     {
                                         case "proxy-address":
-                                            prad = ParserGrammar.pripvalue.Parse(line);
+                                            prad = ParserGrammarIn.pripvalue.Parse(line);
                                             continue;
                                         case "transport-type":
-                                            taty = ParserGrammar.pripvalue.Parse(line);
+                                            taty = ParserGrammarIn.pripvalue.Parse(line);
                                             continue;
                                         case "activate":
                                             continue;
@@ -305,6 +307,7 @@ namespace secondtry
                 vo.proxyip = prip;
                 vo.proxyset = prese;
             }
+            replaceitem(AC,myconfig);
         }
         public networkdev createlist(int listid, int vlan, string underlying, string name, string tagging)
         {
@@ -383,6 +386,150 @@ namespace secondtry
                 return mypath;
             }
             return " ";
+        }
+        public void replaceitem(ACConfig AC, ACConfig myconfig)
+        {
+            if (myconfig.configureNetwork.networkdev != null)
+            {
+                foreach (var item in myconfig.configureNetwork.networkdev)
+                {
+                    foreach (var i in AC.configureNetwork.networkdev)
+                    {
+                        if (item.listid == i.listid)
+                        {
+                            if (item.name != null)
+                            {
+                                i.name = item.name;
+                            }
+                            if (item.vlanip.ToString() != null)
+                            {
+                                i.vlanip = item.vlanip;
+                            }
+                            if (item.underlyingif != null)
+                            {
+                                i.underlyingif = item.underlyingif;
+                            }
+                            if (item.tagging.ToString() != null)
+                            {
+                                i.tagging = item.tagging;
+                            }
+                        }
+                    }
+                }
+            }
+            if (myconfig.configureNetwork.interfacenetworkif != null)
+            {
+                foreach (var item in myconfig.configureNetwork.interfacenetworkif)
+                {
+                    foreach (var i in AC.configureNetwork.interfacenetworkif)
+                    {
+                        if (item.listid == i.listid)
+                        {
+                            if (item.name != null)
+                            {
+                                i.name = item.name;
+                            }
+                            if (item.Applicationtype.ToString() != null)
+                            {
+                                i.Applicationtype = item.Applicationtype;
+                            }
+                            if (item.gateway != null)
+                            {
+                                i.gateway = item.gateway;
+                            }
+                            if (item.ipadress != null)
+                            {
+                                i.ipadress = item.ipadress;
+                            }
+                            if (item.prefixlength.ToString() != null)
+                            {
+                                i.prefixlength = item.prefixlength;
+                            }
+                            if (item.underlyingdev != null)
+                            {
+                                i.underlyingdev = item.underlyingdev;
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            if (myconfig.configureviop.proxyset != null)
+            {
+                foreach (var item in myconfig.configureviop.proxyset)
+                {
+                    foreach (var i in AC.configureviop.proxyset)
+                    {
+                        if (item.listid == i.listid)
+                        {
+                            if (item.isproxyhotswap.ToString() != null)
+                            {
+                                i.isproxyhotswap = item.isproxyhotswap;
+                            }
+                            if (item.keepalivefailresp != null)
+                            {
+                                i.keepalivefailresp = item.keepalivefailresp;
+                            }
+                            if (item.minactiveservlb.ToString() != null)
+                            {
+                                i.minactiveservlb = item.minactiveservlb;
+                            }
+                            if (item.Proxyenablekeepalive.ToString() != null)
+                            {
+                                i.Proxyenablekeepalive = item.Proxyenablekeepalive;
+                            }
+                            if (item.proxyloadbalancingmethod.ToString() != null)
+                            {
+                                i.proxyloadbalancingmethod = item.proxyloadbalancingmethod;
+                            }
+                            if (item.proxyname != null)
+                            {
+                                i.proxyname = item.proxyname;
+                            }
+                            if (item.Proxyredundancymode.ToString() != null)
+                            {
+                                i.Proxyredundancymode = item.Proxyredundancymode;
+                            }
+                            if (item.sbcipv4sipintname != null)
+                            {
+                                i.sbcipv4sipintname = item.sbcipv4sipintname;
+                            }
+                            if (item.srdname != null)
+                            {
+                                i.srdname = item.srdname;
+                            }
+                            if (item.successdetectint.ToString() != null)
+                            {
+                                i.successdetectint = item.successdetectint;
+                            }
+                            if (item.successdetectretries.ToString() != null)
+                            {
+                                i.successdetectretries = item.successdetectretries;
+                            }
+                        }
+                    }
+                }
+            }
+            if (myconfig.configureviop.proxyset != null)
+            {
+                foreach (var item in myconfig.configureviop.proxyip)
+                {
+                    foreach (var i in AC.configureviop.proxyip)
+                    {
+                        if (item.ip == i.ip)
+                        {
+                            if (item.proxyadress != null)
+                            {
+                                i.proxyadress = item.proxyadress;
+                            }
+                            if (item.Transporttype.ToString() != null)
+                            {
+                                i.Transporttype = item.Transporttype;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

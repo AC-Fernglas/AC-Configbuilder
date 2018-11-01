@@ -5,7 +5,7 @@ using Sprache;
 
 namespace secondtry
 {
-  public class ParserGrammar
+  public class ParserGrammarIn
     {
         static string identifier = "configure";
 

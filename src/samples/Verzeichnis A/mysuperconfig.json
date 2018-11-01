@@ -1,0 +1,64 @@
+{
+  
+    "Kundenkuerzel": "dads",
+  "configure network": {
+    "network-dev": {
+
+      "listid": -1,
+      "vlan-ip": -1,
+      "underlying-if": "string",
+      "name": "horst baum",
+      "tagging": "tagged"
+    }
+    },
+    "configure_network": {
+      "interface network-if": {
+
+        "listid": -1,
+        "application-type": [
+          "control",
+          "other type"
+        ],
+        "ip-adress": -1,
+        "prefix-length": -1,
+        "gateway": -1,
+        "name": "string",
+        "underlying-dev": "string"
+      }
+    },
+    "configure viop": {
+      "proxy-set": {
+
+        "listid": -1,
+        "proxy-name": "string",
+        "proxy-enable-keep-alive": [
+          "using options",
+          "other type"
+        ],
+        "srd-name": "string",
+        "sbcipv4-sip-int-name": "string",
+        "keepalive-fail-resp": -1,
+        "success-detect-retries": -1,
+        "success-detect-int": -1,
+        "proxy-redundancy-mode": {
+          "proxy-redundancy-mode": [
+            "homing",
+            "other type"
+          ],
+          "is-proxy-hot-swap": -1,
+          "proxy-load-balancing-method": -1,
+          "min-active-serv-lb": -1
+        }
+      },
+      "proxy-ip": {
+        "listid" : -1,
+        "proxy-adress": -1,
+        "transport-type": [
+          "udp",
+          "tcp"
+        ]
+      }
+    }
+  }
+
+}

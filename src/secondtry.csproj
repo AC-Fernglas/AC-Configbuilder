@@ -24,6 +24,9 @@
     <Content Include="samples\mysuperconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="samples\Verzeichnis A\mysuperconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -32,8 +35,6 @@
     <PackageReference Include="Sprache" Version="2.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="samples\Verzeichnis A\" />
-  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties samples_4mysuperconfig_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" /></VisualStudio></ProjectExtensions>
 
 </Project>
