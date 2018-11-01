@@ -2,7 +2,10 @@
 <details open>
 <summary>Version 01</summary>
 <br>
-    
+
+**Version 01.06**
+   * add In Parser
+   
 **Version 01.05**
 * reworked Code, Transfer code to .Net Core
 * added help, edit and use Command
