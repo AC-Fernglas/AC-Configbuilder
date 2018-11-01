@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
+using Sprache;
+using System.Linq;
 
 namespace secondtry
 {
@@ -11,76 +13,41 @@ namespace secondtry
     {
         static void Main(string[] args)
         {
-           commands obj = new commands();
-           
-           obj.Idel(args);
+            commands obj = new commands();
+
+            obj.Idel(args);
         }
     }
 
     class commands
     {
-        public int Idel(string [] commands)
+        public int Idel(string[] commands)
         {
             var app = new CommandLineApplication();
             var helptemplate = "-h|--help";
             app.HelpOption(helptemplate);
-            app.Command("edit", e => {
-            e.HelpOption(helptemplate);
-            e.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-            var add = e.Option("--add <Property>", "Fügt eine Eigenschaft in die bestehende Konfiguration hinzu.", CommandOptionType.SingleValue);
-            var del = e.Option("--del <Property>", "Löscht eine bestehende Eigenschaft aus der Konfiguration.", CommandOptionType.SingleValue);
-            var path = e.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird die Standardconfig benutzt.", CommandOptionType.SingleValue);
-            e.OnExecute(() => { editmethod(add,del,path); }
-                    );
-            });
-            app.Command("use", u => {
+            app.Command("use", u =>
+            {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
                 var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { useon(path); });
             });
-          return  app.Execute(commands);
+            return app.Execute(commands);
         }
-        public void editmethod(CommandOption add, CommandOption del, CommandOption path) //benutzerdefinierten path in hauptconfig schreiben und dort verwalten
-        {
-            string mypath = @".\config\qwertz.json";
-            if (validpath(path) != " ")
-            {
-               mypath = validpath(path);
-                setuserpath(mypath);
-            }
-            if (add.HasValue() && add.Value() != " " && add.Value() != null)
-            {
-                //Hinzufügen einer Eigenschaft
-            }
-            if (del.HasValue() && del.Value() != " " && del.Value() != null) //Löschen einer Eigenschaft
-            {
-                StringBuilder newFile = new StringBuilder();
-                string[] file = File.ReadAllLines($@"{mypath}");
-                List<string> list = new List<string>(file);
-                foreach (string line in list)
-                {
-                    if (line.Contains(del.Value().ToString()))
-                    {
-                        continue;
-                    }
-                    newFile.Append(line);
-                }
-                File.WriteAllText($@"{mypath}", newFile.ToString());
-            }        
-        }
+
         public void setuserpath(string mypath)
         {
             string[] userconfig = File.ReadAllLines(@".\config\qwertz.json");
             StringBuilder newFile = new StringBuilder();
-                string[] file = File.ReadAllLines($@".\config\qwertz.json");
-                List<string> list = new List<string>(file);
-                list[2] =  "\"userpath\": " + "\""+ mypath +"\"";
-                foreach (string line in list)
-                {
-                    newFile.Append(line + "\n");
-                }
-                File.WriteAllText($@".\config\qwertz.json", newFile.ToString());
+            string[] file = File.ReadAllLines($@".\config\qwertz.json");
+            List<string> list = new List<string>(file);
+            list[2] = "\"userpath\": " + "\"" + mypath + "\"";
+            foreach (string line in list)
+            {
+                newFile.Append(line + "\n");
+            }
+            File.WriteAllText($@".\config\qwertz.json", newFile.ToString());
         }
         public void useon(CommandOption path) // neue funktion -> suchen und ersetzten 
         {
@@ -90,6 +57,7 @@ namespace secondtry
                 mypath = validpath(path);
             }
             openfiles(mypath);
+
         }
         public void openfiles(string mypath)
         {
@@ -97,7 +65,7 @@ namespace secondtry
             var config = File.ReadAllText(@".\config\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
-            string[] dirs = Directory.GetFiles(mypath, "*.txt",SearchOption.TopDirectoryOnly);
+            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
             foreach (var item in dirs)
             {
                 searchandreplace(item, myconfig);
@@ -106,85 +74,301 @@ namespace secondtry
 
         public void searchandreplace(string path, ACConfig myconfig)
         {
-            string getprop= " ";
-            //var file = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(path)); //destination file to repace some items
 
-            foreach (var property in typeof(ACConfig).GetProperties())
+
+            Configureviop vo = new Configureviop();
+            ConfigureNetwork co = new ConfigureNetwork();
+            ACConfig AC = new ACConfig();
+            AC.configureNetwork = co;
+            AC.configureviop = vo;
+
+            List<networkdev> netlist = new List<networkdev>();
+            List<interfacenetworkif> inif = new List<interfacenetworkif>();
+            List<proxyip> prip = new List<proxyip>();
+            List<proxyset> prese = new List<proxyset>();
+            
+
+            string ident = " ";
+            bool configureexit = true;
+            string subident = " ";
+            bool subidentexit = true;
+            string subidentvalue = "";
+
+            string underlying = "";
+            string name = "";
+            string tagging = "";
+
+            string apptype = "";
+            string ipadr = "";
+            int prel = 0;
+            string gateway = "";
+            string name2 = "";
+            string udev = "";
+            int vlan = 0;
+
+            string prname = "";
+            string peka = "";
+            string srdname = "";
+            string ssin = "";
+            string kfr = "";
+            int sdr = 0;
+            int sdi = 0;
+            string prm = "";
+            int iphs = 0;
+            int plbm = 0;
+            int masl = 0;
+
+            string prad = "";
+            string taty = "";
+
+
+            using (StreamReader Reader = new StreamReader(path))
             {
-                if (property.Name == "configureNetwork")
+                string line = " ";
+                while ((line = Reader.ReadLine()) != null)
                 {
-                    foreach (var prop in typeof(ConfigureNetwork).GetProperties())
+                    if (configureexit)
                     {
-                        if (prop.Name == "networkdev")
+                        if (line == "" || ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip")
                         {
-                            foreach (var subproperty in typeof(networkdev).GetProperties())
+                            if (line == "")
                             {
-                                foreach (var subsubproperty in typeof(tag).GetProperties())
+                                continue;
+                            }
+                            ident = ParserGrammar.getidentifier.Parse(line);
+                            configureexit = false;
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (subidentexit)
+                        {
+                            if (ParserGrammar.getsubident.Parse(line) == "network-dev" || ParserGrammar.getsubident.Parse(line) == "interface network-if" ||
+                             ParserGrammar.getsubident.Parse(line) == "proxy-set" || ParserGrammar.getsubident.Parse(line) == "proxy-ip" || ParserGrammar.getsubident.Parse(line) == "exit")
+                            {
+                                if (ParserGrammar.getsubident.Parse(line) == "exit")
                                 {
-                                    getprop += " " + subsubproperty.Name + "\n";
+                                    configureexit = true;
+                                    switch (subident)
+                                    {
+                                        case "network-dev":
+                                            netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging));
+                                            continue;
+                                        case "interface network-if":
+                                            inif.Add(createlistinif(apptype, ipadr, prel, gateway, name2, udev, int.Parse(subidentvalue)));
+                                            continue;
+                                        case "proxy-set":
+                                            prese.Add(createlistprese(prname,peka,srdname,ssin,kfr,sdr,sdi,prm,iphs,plbm,masl, int.Parse(subidentvalue)));
+                                            continue;
+                                        case "proxy-ip":
+                                           prip.Add(createlistprip(prad,taty, subidentvalue));
+                                            continue;
+                                        default:
+                                            continue;
+
+                                    };
+
                                 }
-                                getprop += " " + subproperty.Name + "\n";
+                                subidentexit = false;
+                                subident = ParserGrammar.getsubident.Parse(line);
+                                subidentvalue = ParserGrammar.subidentvalue.Parse(line);
+                                continue;
                             }
                         }
-                        if (prop.Name == "interfacenetworkif")
+                        else
                         {
-                            foreach (var othersubproperty in typeof(interfacenetworkif).GetProperties())
+                            if (ident == "configure network")
                             {
-                                if (othersubproperty.Name == "applicationtype")
+                                if (subident == "network-dev")
                                 {
-                                    foreach (var subsubproperty in typeof(applicationtype).GetProperties())
+                                    switch (ParserGrammar.dev.Parse(line))
                                     {
-                                        getprop += " " + subsubproperty.Name + "\n";
+                                        case "vlan-id":
+                                            vlan = int.Parse(ParserGrammar.devvalue.Parse(line));
+                                            continue;
+                                        case "underlying-if":
+                                            underlying = ParserGrammar.devvalue.Parse(line);
+                                            continue;
+                                        case "name":
+                                            name = ParserGrammar.devvalue.Parse(line);
+                                            continue;
+                                        case "tagging":
+                                            tagging = ParserGrammar.devvalue.Parse(line);
+                                            continue;
+                                        case "activate":
+                                            continue;
+                                        default:
+                                            subidentexit = true;
+                                            continue;
                                     }
                                 }
-                                getprop += " " + othersubproperty.Name + "\n";
-                            }
-                        }
-                        getprop += " " + prop.Name + "\n";
-                    }
-                }
-                else if (property.Name == "configureviop")
-                {
-                    foreach (var prop in typeof(Configureviop).GetProperties())
-                    {
-                        if (prop.Name == "Proxyredundancymode")
-                        {
-                            foreach (var subproperty in typeof(Proxyredundancymode).GetProperties())
-                            {
-                                if (prop.Name == "proxyredundancymode")
+                                else if (subident == "interface network-if")
                                 {
-                                    foreach (var enumsubsubproperty in typeof(proxyredundancymode).GetProperties())
+                                    switch (ParserGrammar.inif.Parse(line))
                                     {
-                                        getprop += " " + enumsubsubproperty.Name + "\n";
+                                        case "application-type":
+                                            apptype = ParserGrammar.inifvalue.Parse(line);
+                                            continue;
+                                        case "ip-address":
+                                            ipadr = ParserGrammar.inifvalue.Parse(line);
+                                            continue;
+                                        case "prefix-length":
+                                            prel = int.Parse(ParserGrammar.inifvalue.Parse(line));
+                                            continue;
+                                        case "gateway":
+                                            gateway = ParserGrammar.inifvalue.Parse(line);
+                                            continue;
+                                        case "name":
+                                            name2 = ParserGrammar.inifvalue.Parse(line);
+                                            continue;
+                                        case "underlying-dev":
+                                            udev = ParserGrammar.inifvalue.Parse(line);
+                                            continue;
+                                        case "activate":
+                                            continue;
+                                        default:
+                                            subidentexit = true;
+                                            continue;
                                     }
                                 }
-                                getprop += " " + subproperty.Name + "\n";
                             }
-                        }
-                        else if (prop.Name == "proxyenablekeepalive")
-                        {
-                            foreach (var enumsubproperty in typeof(proxyenablekeepalive).GetProperties())
+                            else if (ident == "configure voip")
                             {
-                                getprop += " " + enumsubproperty.Name + "\n";
+                                if (subident == "proxy-set")
+                                {
+                                    switch (ParserGrammar.prse.Parse(line))
+                                    {
+                                        case "proxy-name":
+                                            prname = ParserGrammar.prsevalue.Parse(line);
+                                            continue;
+                                        case "proxy-enable-keep-alive":
+                                            peka = ParserGrammar.prsevalue.Parse(line);
+                                            continue;
+                                        case "srd-name":
+                                            srdname = ParserGrammar.prsevalue.Parse(line);
+                                            continue;
+                                        case "sbcipv4-sip-int-name":
+                                            ssin = ParserGrammar.prsevalue.Parse(line);
+                                            continue;
+                                        case "keepalive-fail-resp":
+                                            kfr = ParserGrammar.prsevalue.Parse(line);
+                                            continue;
+                                        case "success-detect-retries":
+                                            sdr = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            continue;
+                                        case "success-detect-int":
+                                            sdi = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            continue;
+                                        case "proxy-redundancy-mode":
+                                            prm = ParserGrammar.prsevalue.Parse(line);
+                                            continue;
+                                        case "is-proxy-hot-swap":
+                                            iphs = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            continue;
+                                        case "proxy-load-balancing-method":
+                                            plbm = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            continue;
+                                        case "min-active-serv-lb":
+                                            masl = int.Parse(ParserGrammar.prsevalue.Parse(line));
+                                            continue;
+                                        case "activate":
+                                            continue;
+                                        default:
+                                            subidentexit = true;
+                                            continue;
+                                    }
+                                }
+                                else if (subident == "proxy-ip")
+                                {
+                                    switch (ParserGrammar.prip.Parse(line))
+                                    {
+                                        case "proxy-address":
+                                            prad = ParserGrammar.pripvalue.Parse(line);
+                                            continue;
+                                        case "transport-type":
+                                            taty = ParserGrammar.pripvalue.Parse(line);
+                                            continue;
+                                        case "activate":
+                                            continue;
+                                        default:
+                                            subidentexit = true;
+                                            continue;
+                                    }
+                                }
                             }
                         }
-                        else if (prop.Name == "transporttype")
-                        {
-                            foreach (var othersubproperty in typeof(transporttype).GetProperties())
-                            {
-                                getprop += " " + othersubproperty.Name + "\n";
-                            }
-                        }
-                        getprop += " " + prop.Name + "\n";
                     }
                 }
-                else
-                {
-                    getprop += " " + property.Name + "\n";
-                }
+                co.networkdev = netlist;
+                co.interfacenetworkif = inif;
+                vo.proxyip = prip;
+                vo.proxyset = prese;
             }
-                Console.WriteLine(getprop);
-            Console.ReadLine();
+        }
+        public networkdev createlist(int listid, int vlan, string underlying, string name, string tagging)
+        {
+            Enum.TryParse(tagging, out tag Tagging);
+            networkdev net = new networkdev
+            {
+                listid = listid,
+                vlanip = vlan,
+                underlyingif = underlying,
+                name = name,
+                tagging = Tagging
+            };
+            return net;
+        }
+        public proxyip createlistprip(string prad,string taty, string subidentvalue)
+        {
+            Enum.TryParse(taty, out transporttype Transporttype);
+            proxyip prip = new proxyip
+            {
+                ip = subidentvalue,
+                proxyadress = prad,
+                Transporttype = Transporttype
+            };
+            return prip;
+        }
+        public proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue)
+        {
+            if (peka == "using-option")
+            {
+                peka = "uoption";
+            }
+            Enum.TryParse(peka, out proxyenablekeepalive blub);
+            Enum.TryParse(prm, out proxyredundancymode blab);
+            proxyset prse = new proxyset
+            {
+                listid = subidentvalue,
+                proxyname = prname,
+                Proxyenablekeepalive = blub,
+                srdname = srdname,
+                sbcipv4sipintname = ssin,
+                keepalivefailresp = kfr,
+                successdetectretries = sdr,
+                successdetectint = sdi,
+                Proxyredundancymode = blab,
+                isproxyhotswap = iphs,
+                proxyloadbalancingmethod =plbm,
+                minactiveservlb= masl                
+            };
+            return prse;
+        }
+        public interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid)
+        {
+            Enum.TryParse(apptype, out applicationtype Apptype);
+            interfacenetworkif inif = new interfacenetworkif
+            {
+                Applicationtype = Apptype,
+                ipadress =ipadr,
+                prefixlength =prel,
+                gateway = gateway,
+                name = name2,
+                underlyingdev =udev,
+                listid = listid
+            };
+            return inif;
         }
         public string validpath(CommandOption path)
         {

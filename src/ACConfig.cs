@@ -17,44 +17,52 @@ namespace secondtry
         public List<interfacenetworkif> interfacenetworkif { get; set; }
     }
    public class networkdev { 
+        public int listid { get; set; }
         public int vlanip { get; set; }
         public string underlyingif { get; set; }
         public string name { get; set; }
         public tag tagging { get; set; }
     }
 
-    public class  interfacenetworkif { 
-        public applicationtype applicationtype { get; set; }
-        public int ipadress { get; set; }
+    public class  interfacenetworkif {
+        public int listid { get; set; }
+        public applicationtype Applicationtype { get; set; }
+        public string ipadress { get; set; }
         public int prefixlength { get; set; }
-        public int gateway { get; set; }
+        public string gateway { get; set; }
         public string name { get; set; }
         public string underlyingdev { get; set; }
     }
 
-    public class Proxyredundancymode
+    public class Configureviop
     {
-        public proxyredundancymode proxyredundancymode { get; set; }
+        public List<proxyset> proxyset { get; set; }
+        public List<proxyip> proxyip { get; set; }
+
+    }
+    public class proxyset
+    {
+        public int listid { get; set; }
+        public string proxyname { get; set; }
+        public proxyenablekeepalive Proxyenablekeepalive { get; set; }
+        public string srdname { get; set; }
+        public string sbcipv4sipintname { get; set; }
+        public string keepalivefailresp { get; set; }
+        public int successdetectretries { get; set; }
+        public int successdetectint { get; set; }
+        public proxyredundancymode Proxyredundancymode { get; set; }
         public int isproxyhotswap { get; set; }
         public int proxyloadbalancingmethod { get; set; }
         public int minactiveservlb { get; set; }
     }
 
-    public class Configureviop
-    {
-        public int proxyset { get; set; }
-        public string proxyname { get; set; }
-        public proxyenablekeepalive proxyenablekeepalive { get; set; }
-        public string srdname { get; set; }
-        public string sbcipv4sipintname { get; set; }
-        public int keepalivefailresp { get; set; }
-        public int successdetectretries { get; set; }
-        public int successdetectint { get; set; }
-        public Proxyredundancymode proxyredundancymode { get; set; }
-        public int proxyip { get; set; }
-        public int proxyadress { get; set; }
-        public transporttype transporttype { get; set; }
+    public class proxyip {
+        public string ip { get; set; }
+        public string proxyadress { get; set; }
+        public transporttype Transporttype { get; set; }
     }
+
+    
 
     public enum tag
     {
@@ -68,7 +76,7 @@ namespace secondtry
     };
     public enum proxyenablekeepalive
     {
-        usingoptions,
+        uoptions,
         otheroptions
     };
     public enum proxyredundancymode
