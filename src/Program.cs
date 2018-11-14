@@ -306,6 +306,7 @@ namespace secondtry
                 vo.proxyset = prese;
             }
             replaceitem(AC,myconfig);
+            
         }
         public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging)
         {
@@ -464,6 +465,8 @@ namespace secondtry
                     }
                 }
             }
+            ParserGrammarOut obj = new ParserGrammarOut();
+            obj.getobject(AC);
         }
     }
 }
