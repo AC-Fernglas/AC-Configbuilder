@@ -2,7 +2,10 @@
 <details open>
 <summary>Version 01</summary>
 <br>
-    
+
+**Version 01.06**
+   * add In Parser
+   
 **Version 01.05**
 * reworked Code, Transfer code to .Net Core
 * added help, edit and use Command
@@ -26,6 +29,8 @@
 * add config/
 * add Konfiguration.json
 * add AC-Konfigurator
+
+</details>
 
 <details close>
 <summary>Version 00</summary>
@@ -52,7 +57,7 @@
 * README.md
 * Beispieldaten
 
-</details>
+
 
 
 
