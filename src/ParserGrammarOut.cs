@@ -8,10 +8,14 @@ namespace secondtry
     {
         public void getobject(ACConfig AC)
         {
-            foreach (var propertyInfo in AC.GetType().GetProperties())
+            foreach (var propertyInfo in AC.configureNetwork)
             {
-                var value = propertyInfo.GetValue(AC);
-                Console.WriteLine(value);
+                foreach (var prop in propertyInfo.GetType().GetValue())
+                {
+                    var value = propertyInfo.GetValue(AC);
+                    Console.WriteLine(value);
+                }
+                
             }
         }
     }

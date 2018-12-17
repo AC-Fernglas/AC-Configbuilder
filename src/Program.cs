@@ -332,7 +332,7 @@ namespace secondtry
             };
             return net;
         }
-        public Proxyip createlistprip(string prad,string taty, string subidentvalue)
+        public Proxyip createlistprip(string prad,string taty, string subidentvalue, bool activate)
         {
             Enum.TryParse(taty, out transporttype Transporttype);
             Proxyip prip = new Proxyip
@@ -344,7 +344,7 @@ namespace secondtry
             };
             return prip;
         }
-        public Proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue)
+        public Proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue, bool activate)
         {
             if (peka == "using-option")
             {
@@ -370,7 +370,7 @@ namespace secondtry
             };
             return prse;
         }
-        public Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid)
+        public Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid, bool activate)
         {
             Enum.TryParse(apptype, out applicationtype Apptype);
             Interfacenetworkif inif = new Interfacenetworkif
