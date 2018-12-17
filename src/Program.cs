@@ -94,6 +94,8 @@ namespace secondtry
             bool subidentexit = true;
             string subidentvalue = "";
 
+            bool activate = false;
+
             string underlying = "";
             string name = "";
             string tagging = "";
@@ -153,16 +155,20 @@ namespace secondtry
                                     switch (subident)
                                     {
                                         case "network-dev":
-                                            netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging));
+                                            netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging, activate));
+                                            activate = false;
                                             continue;
                                         case "interface network-if":
-                                            inif.Add(createlistinif(apptype, ipadr, prel, gateway, name2, udev, int.Parse(subidentvalue)));
+                                            inif.Add(createlistinif(apptype, ipadr, prel, gateway, name2, udev, int.Parse(subidentvalue), activate));
+                                            activate = false;
                                             continue;
                                         case "proxy-set":
-                                            prese.Add(createlistprese(prname,peka,srdname,ssin,kfr,sdr,sdi,prm,iphs,plbm,masl, int.Parse(subidentvalue)));
+                                            prese.Add(createlistprese(prname,peka,srdname,ssin,kfr,sdr,sdi,prm,iphs,plbm,masl, int.Parse(subidentvalue), activate));
+                                            activate = false;
                                             continue;
                                         case "proxy-ip":
-                                           prip.Add(createlistprip(prad,taty, subidentvalue));
+                                           prip.Add(createlistprip(prad,taty, subidentvalue, activate));
+                                            activate = false;
                                             continue;
                                         default:
                                             continue;
@@ -197,6 +203,7 @@ namespace secondtry
                                             tagging = ParserGrammarIn.devvalue.Parse(line);
                                             continue;
                                         case "activate":
+                                            activate = true;
                                             continue;
                                         default:
                                             subidentexit = true;
@@ -226,6 +233,7 @@ namespace secondtry
                                             udev = ParserGrammarIn.inifvalue.Parse(line);
                                             continue;
                                         case "activate":
+                                            activate = true;
                                             continue;
                                         default:
                                             subidentexit = true;
@@ -273,6 +281,7 @@ namespace secondtry
                                             masl = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
                                             continue;
                                         case "activate":
+                                            activate = true;
                                             continue;
                                         default:
                                             subidentexit = true;
@@ -290,6 +299,7 @@ namespace secondtry
                                             taty = ParserGrammarIn.pripvalue.Parse(line);
                                             continue;
                                         case "activate":
+                                            activate = true;
                                             continue;
                                         default:
                                             subidentexit = true;
@@ -308,7 +318,7 @@ namespace secondtry
             replaceitem(AC,myconfig);
             
         }
-        public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging)
+        public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
         {
             Enum.TryParse(tagging, out tag Tagging);
             Networkdev net = new Networkdev
@@ -317,7 +327,8 @@ namespace secondtry
                 vlanip = vlan,
                 underlyingif = underlying,
                 name = name,
-                tagging = Tagging
+                tagging = Tagging,
+                activate = activate
             };
             return net;
         }
@@ -328,7 +339,8 @@ namespace secondtry
             {
                 ip = subidentvalue,
                 proxyadress = prad,
-                Transporttype = Transporttype
+                Transporttype = Transporttype,
+                activate = activate
             };
             return prip;
         }
@@ -353,7 +365,8 @@ namespace secondtry
                 Proxyredundancymode = blab,
                 isproxyhotswap = iphs,
                 proxyloadbalancingmethod =plbm,
-                minactiveservlb= masl                
+                minactiveservlb= masl,
+                activate = activate
             };
             return prse;
         }
@@ -368,7 +381,8 @@ namespace secondtry
                 gateway = gateway,
                 name = name2,
                 underlyingdev =udev,
-                listid = listid
+                listid = listid,
+                activate = activate
             };
             return inif;
         }

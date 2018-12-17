@@ -22,6 +22,8 @@ namespace secondtry
         public string underlyingif { get; set; }
         public string name { get; set; }
         public tag tagging { get; set; }
+        
+        public bool activate { get; set; }
     }
 
     public class  Interfacenetworkif {
@@ -32,6 +34,8 @@ namespace secondtry
         public string gateway { get; set; }
         public string name { get; set; }
         public string underlyingdev { get; set; }
+
+        public bool activate { get; set; }
     }
 
     public class Configureviop
@@ -54,12 +58,15 @@ namespace secondtry
         public int? isproxyhotswap { get; set; }
         public int? proxyloadbalancingmethod { get; set; }
         public int? minactiveservlb { get; set; }
+        public bool activate { get; set; }
     }
+
 
     public class Proxyip {
         public string ip { get; set; }
         public string proxyadress { get; set; }
         public transporttype? Transporttype { get; set; }
+        public bool activate { get; set; }
     }
 
     
