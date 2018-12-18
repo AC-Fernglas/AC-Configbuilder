@@ -301,6 +301,5 @@ namespace secondtry
             (from tap in Parse.Char(tap)
              from exit in Parse.String(exit).Text()
              select exit);
-
     }
 }

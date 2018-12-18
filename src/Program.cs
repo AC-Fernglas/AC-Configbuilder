@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using McMaster.Extensions.CommandLineUtils;
-using Newtonsoft.Json;
 using Sprache;
-using System.Linq;
+using Newtonsoft.Json;
+
 
 namespace secondtry
 {
@@ -152,29 +152,7 @@ namespace secondtry
                                 if (ParserGrammarIn.getsubident.Parse(line) == "exit")
                                 {
                                     configureexit = true;
-                                    switch (subident)
-                                    {
-                                        case "network-dev":
-                                            netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging, activate));
-                                            activate = false;
-                                            continue;
-                                        case "interface network-if":
-                                            inif.Add(createlistinif(apptype, ipadr, prel, gateway, name2, udev, int.Parse(subidentvalue), activate));
-                                            activate = false;
-                                            continue;
-                                        case "proxy-set":
-                                            prese.Add(createlistprese(prname,peka,srdname,ssin,kfr,sdr,sdi,prm,iphs,plbm,masl, int.Parse(subidentvalue), activate));
-                                            activate = false;
-                                            continue;
-                                        case "proxy-ip":
-                                           prip.Add(createlistprip(prad,taty, subidentvalue, activate));
-                                            activate = false;
-                                            continue;
-                                        default:
-                                            continue;
-
-                                    };
-
+                                    continue;
                                 }
                                 subidentexit = false;
                                 subident = ParserGrammarIn.getsubident.Parse(line);
@@ -206,6 +184,8 @@ namespace secondtry
                                             activate = true;
                                             continue;
                                         default:
+                                            netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging, activate));
+                                            activate = false;
                                             subidentexit = true;
                                             continue;
                                     }
@@ -236,6 +216,8 @@ namespace secondtry
                                             activate = true;
                                             continue;
                                         default:
+                                            inif.Add(createlistinif(apptype, ipadr, prel, gateway, name2, udev, int.Parse(subidentvalue), activate));
+                                            activate = false;
                                             subidentexit = true;
                                             continue;
                                     }
@@ -284,6 +266,8 @@ namespace secondtry
                                             activate = true;
                                             continue;
                                         default:
+                                            prese.Add(createlistprese(prname, peka, srdname, ssin, kfr, sdr, sdi, prm, iphs, plbm, masl, int.Parse(subidentvalue), activate));
+                                            activate = false;
                                             subidentexit = true;
                                             continue;
                                     }
@@ -302,6 +286,8 @@ namespace secondtry
                                             activate = true;
                                             continue;
                                         default:
+                                            prip.Add(createlistprip(prad, taty, subidentvalue, activate));
+                                            activate = false;
                                             subidentexit = true;
                                             continue;
                                     }
@@ -316,7 +302,6 @@ namespace secondtry
                 vo.proxyset = prese;
             }
             replaceitem(AC,myconfig);
-            
         }
         public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
         {
@@ -480,7 +465,7 @@ namespace secondtry
                 }
             }
             ParserGrammarOut obj = new ParserGrammarOut();
-            obj.getobject(AC);
+            obj.getobject(AC);  
         }
     }
 }

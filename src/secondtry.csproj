@@ -6,6 +6,8 @@
     <Authors>Zeroks77</Authors>
     <Company />
     <Product>AC-Configurator</Product>
+    <Version>1.1.0</Version>
+    <PackageId>ACConfigbuilder</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
