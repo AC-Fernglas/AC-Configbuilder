@@ -23,10 +23,10 @@ namespace secondtry
         static string lz = "\n";
 
        public static readonly Parser<string> getidentifier =
-            (from net in Parse.String(identifier+" "+netidentifier).Text() 
+            (from net in Parse.String(identifier+tap+netidentifier).Text() 
             select net )
             .Or
-            (from voip in Parse.String(identifier + " " + voipidentifier).Text()
+            (from voip in Parse.String(identifier + tap + voipidentifier).Text()
            select voip).Or
             (from lz in Parse.String(lz).Text()
              select lz);

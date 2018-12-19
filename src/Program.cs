@@ -38,20 +38,20 @@ namespace secondtry
 
         public void setuserpath(string mypath)
         {
-            string[] userconfig = File.ReadAllLines(@".\config\qwertz.json");
+            string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
             StringBuilder newFile = new StringBuilder();
-            string[] file = File.ReadAllLines($@".\config\qwertz.json");
+            string[] file = File.ReadAllLines($@"..\\..\\..\\..\\..\\config\\qwertz.json");
             List<string> list = new List<string>(file);
             list[2] = "\"userpath\": " + "\"" + mypath + "\"";
             foreach (string line in list)
             {
                 newFile.Append(line + "\n");
             }
-            File.WriteAllText($@".\config\qwertz.json", newFile.ToString());
+            File.WriteAllText($@"..\\..\\..\\..\\config\\qwertz.json", newFile.ToString());
         }
         public void useon(CommandOption path) // neue funktion -> suchen und ersetzten 
         {
-            string mypath = $@".\samples";
+            string mypath = $@"..\\..\\..\\..\\samples";
             if (validpath(path) != " ")
             {
                 mypath = validpath(path);
@@ -62,7 +62,7 @@ namespace secondtry
         public void openfiles(string mypath)
         {
             var newFile = new StringBuilder();
-            var config = File.ReadAllText(@".\config\qwertz.json"); //get json
+            var config = File.ReadAllText(@"..\\..\\..\\..\\config\\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
@@ -301,7 +301,7 @@ namespace secondtry
                 vo.proxyip = prip;
                 vo.proxyset = prese;
             }
-            replaceitem(AC,myconfig);
+            replaceitem(AC,myconfig,path);
         }
         public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
         {
@@ -385,7 +385,7 @@ namespace secondtry
             }
             return " ";
         }
-        public void replaceitem(ACConfig AC, ACConfig myconfig)
+        public void replaceitem(ACConfig AC, ACConfig myconfig,string path)
         {
             if (myconfig.configureNetwork != null)
             {
@@ -465,7 +465,7 @@ namespace secondtry
                 }
             }
             ParserGrammarOut obj = new ParserGrammarOut();
-            obj.getobject(AC);  
+            obj.getobject(AC,path);  
         }
     }
 }

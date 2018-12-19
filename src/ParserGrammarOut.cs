@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace secondtry
 {
     public class ParserGrammarOut
     {
-        public void getobject(ACConfig AC)
+        public void getobject(ACConfig AC,string path)
         {
             List<string> configback = new List<string>();
             if (AC.configureNetwork != null)
@@ -188,7 +189,7 @@ namespace secondtry
                                     switch (propertyInfo.Name)
                                     {
                                         case "ip":
-                                            configback.Add(" " + "proxy - ip" + " " + value);
+                                            configback.Add(" " + "proxy-ip" + " " + value);
                                             break;
                                         case "proxyadress":
                                             configback.Add("  " + "proxy-address" + " " + value);
@@ -212,17 +213,19 @@ namespace secondtry
                         configback.Add("exit");
                     }
                 }
-                giveitback(configback);
+                giveitback(configback, path);
             }
         }
 
-        private void giveitback(List<string> back)
+        private void giveitback(List<string> back, string path)
         {
-            foreach (var item in back)
+            using (StreamWriter writer = new StreamWriter(@path))
             {
-                Console.WriteLine(item);
+                foreach (var item in back)
+                {
+                    writer.WriteLine(item);
+                }
             }
-            Console.ReadLine();
         }
     }
 }
