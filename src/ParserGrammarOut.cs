@@ -13,6 +13,7 @@ namespace secondtry
             {
                 if (AC.configureNetwork.networkdev != null)
                 {
+                    configback.Add("configure network");
                     foreach (var item in AC.configureNetwork.networkdev)
                     {
                         foreach (var i in AC.configureNetwork.networkdev)
@@ -24,9 +25,35 @@ namespace secondtry
                                     var value = propertyInfo.GetValue(item);
                                     if (value != null)
                                     {
-                                        i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
+                                        switch (propertyInfo.Name)
+                                        {
+                                            case "listid":
+                                                configback.Add(" " + "network-dev" + " " + value);
+                                                break;
+                                            case "vlanip":
+                                                configback.Add("  " + "vlan-id" + " " + value);
+                                                break;
+                                            case "underlyingif":
+                                                configback.Add("  " + "underlying-if" + " " + value);
+                                                break;
+                                            case "name":
+                                                configback.Add("  " + "name" + " " + value);
+                                                break;
+                                            case "tagging":
+                                                configback.Add("  " + "tagging" + " " + value);
+                                                break;
+                                            case "activate":
+                                                if (value.ToString() == "True")
+                                                {
+                                                    configback.Add("  activate");
+                                                }
+                                                break;
+                                            default:
+                                                break;
+                                        }
                                     }
                                 }
+                                configback.Add(" exit");
                             }
                         }
                     }
@@ -42,64 +69,28 @@ namespace secondtry
                                 var value = propertyInfo.GetValue(item);
                                 if (value != null)
                                 {
-                                    i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (AC.configureviop != null)
-            {
-                configback.Add("configure voip");
-                if (AC.configureviop.proxyset != null)
-                {
-                    foreach (var item in AC.configureviop.proxyset)
-                    {
-                        foreach (var i in AC.configureviop.proxyset)
-                        {
-                            foreach (var propertyInfo in item.GetType().GetProperties())
-                            {
-                                var value = propertyInfo.GetValue(item);
-                                if (value != null)
-                                {
                                     switch (propertyInfo.Name)
                                     {
                                         case "listid":
-                                            configback.Add(" " + "proxy-set" + " " + value);
+                                            configback.Add(" " + "interface network-if" + " " + value);
                                             break;
-                                        case "proxyname":
-                                            configback.Add("  " + "proxy-name" + " " + value);
+                                        case "Applicationtype":
+                                            configback.Add("  " + "application-type" + " " + value);
                                             break;
-                                        case "Proxyenablekeepalive":
-                                            configback.Add("  " + "proxy-enable-keep-alive" + " " + value);
+                                        case "ipadress":
+                                            configback.Add("  " + "ip-address" + " " + value);
                                             break;
-                                        case "srdname":
-                                            configback.Add("  " + "srd-name" + " " + value);
+                                        case "prefixlength":
+                                            configback.Add("  " + "prefix-length" + " " + value);
                                             break;
-                                        case "sbcipv4sipintname":
-                                            configback.Add("  " + "sbcipv4-sip-int-name" + " " + value);
+                                        case "gateway":
+                                            configback.Add("  " + "gateway" + " " + value);
                                             break;
-                                        case "keepalivefailresp":
-                                            configback.Add("  " + "keepalive-fail-resp" + " " + value);
+                                        case "name":
+                                            configback.Add("  " + "name" + " " + value);
                                             break;
-                                        case "successdetectretries":
-                                            configback.Add("  " + "success-detect-retries" + " " + value);
-                                            break;
-                                        case "successdetectint":
-                                            configback.Add("  " + "success-detect-int" + " " + value);
-                                            break;
-                                        case "Proxyredundancymode":
-                                            configback.Add("  " + "proxy-redundancy-mode" + " " + value);
-                                            break;
-                                        case "isproxyhotswap":
-                                            configback.Add("  " + "is-proxy-hot-swap" + " " + value);
-                                            break;
-                                        case "proxyloadbalancingmethod":
-                                            configback.Add("  " + "proxy-load-balancing-method" + " " + value);
-                                            break;
-                                        case "minactiveservlb":
-                                            configback.Add("  " + "min-active-serv-lb" + " " + value);
+                                        case "underlyingdev":
+                                            configback.Add("  " + "underlying-dev" + " " + value);
                                             break;
                                         case "activate":
                                             if (value.ToString() == "True")
@@ -114,9 +105,81 @@ namespace secondtry
                             }
                             configback.Add(" exit");
                         }
+                        configback.Add("exit");
                     }
-                    foreach (var item in AC.configureviop.proxyip)
+                }
+            }
+            if (AC.configureNetwork != null)
+            {
+
+                if (AC.configureviop != null)
+                {
+                    configback.Add("configure voip");
+                    if (AC.configureviop.proxyset != null)
                     {
+                        foreach (var item in AC.configureviop.proxyset)
+                        {
+                            foreach (var i in AC.configureviop.proxyset)
+                            {
+                                foreach (var propertyInfo in item.GetType().GetProperties())
+                                {
+                                    var value = propertyInfo.GetValue(item);
+                                    if (value != null)
+                                    {
+                                        switch (propertyInfo.Name)
+                                        {
+                                            case "listid":
+                                                configback.Add(" " + "proxy-set" + " " + value);
+                                                break;
+                                            case "proxyname":
+                                                configback.Add("  " + "proxy-name" + " " + value);
+                                                break;
+                                            case "Proxyenablekeepalive":
+                                                configback.Add("  " + "proxy-enable-keep-alive" + " " + value);
+                                                break;
+                                            case "srdname":
+                                                configback.Add("  " + "srd-name" + " " + value);
+                                                break;
+                                            case "sbcipv4sipintname":
+                                                configback.Add("  " + "sbcipv4-sip-int-name" + " " + value);
+                                                break;
+                                            case "keepalivefailresp":
+                                                configback.Add("  " + "keepalive-fail-resp" + " " + value);
+                                                break;
+                                            case "successdetectretries":
+                                                configback.Add("  " + "success-detect-retries" + " " + value);
+                                                break;
+                                            case "successdetectint":
+                                                configback.Add("  " + "success-detect-int" + " " + value);
+                                                break;
+                                            case "Proxyredundancymode":
+                                                configback.Add("  " + "proxy-redundancy-mode" + " " + value);
+                                                break;
+                                            case "isproxyhotswap":
+                                                configback.Add("  " + "is-proxy-hot-swap" + " " + value);
+                                                break;
+                                            case "proxyloadbalancingmethod":
+                                                configback.Add("  " + "proxy-load-balancing-method" + " " + value);
+                                                break;
+                                            case "minactiveservlb":
+                                                configback.Add("  " + "min-active-serv-lb" + " " + value);
+                                                break;
+                                            case "activate":
+                                                if (value.ToString() == "True")
+                                                {
+                                                    configback.Add("  activate");
+                                                }
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                }
+                                configback.Add(" exit");
+                            }
+                        }
+                        foreach (var item in AC.configureviop.proxyip)
+                        {
                             foreach (var propertyInfo in item.GetType().GetProperties())
                             {
                                 var value = propertyInfo.GetValue(item); // erweitere das auf die Ausgabe und dann sollte es funktionieren
@@ -145,11 +208,12 @@ namespace secondtry
                                 }
                             }
                             configback.Add(" exit");
+                        }
+                        configback.Add("exit");
                     }
-                    configback.Add("exit");
                 }
+                giveitback(configback);
             }
-            giveitback(configback);
         }
 
         private void giveitback(List<string> back)
