@@ -7,7 +7,7 @@ namespace secondtry
     public class ACConfig
     {
         public string userpath { get; set; }
-        public string Costumer { get; set; }
+         public string Customer{ get; set; }
         public ConfigureNetwork configureNetwork { get; set; }
         public Configureviop configureviop { get; set; }
     }
