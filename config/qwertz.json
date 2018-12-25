@@ -1,6 +1,6 @@
 {
   "userpath": "C:\\Develop\\AC-Configbuilder\\samples\\mysuperconfig.json" , 
-  "Kundenkuerzel": "string",
+   "Customer": "string",
   "configure network": {
     "network-dev": -1,
     "vlan-ip": -1,
