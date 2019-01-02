@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using McMaster.Extensions.CommandLineUtils;
+using System.CommandLine;
+using System.CommandLine.Invocation;
 using Sprache;
 using Newtonsoft.Json;
 
@@ -13,28 +14,7 @@ namespace secondtry
     {
         static void Main(string[] args)
         {
-            Commands obj = new Commands();
-
-            obj.Idel(args);
-        }
-    }
-
-    class Commands
-    {
-        public int Idel(string[] commands)
-        {
-            var app = new CommandLineApplication();
-            Execute obj = new Execute();
-            var helptemplate = "-h|--help";
-            app.HelpOption(helptemplate);
-            app.Command("use", u =>
-            {
-                u.HelpOption(helptemplate);
-                u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
-                u.OnExecute(() => { obj.run(path); });
-            });
-            return app.Execute(commands);
+            
         }
     }
     class Execute { 
@@ -51,25 +31,26 @@ namespace secondtry
             }
             File.WriteAllText($@"..\\..\\..\\..\\config\\qwertz.json", newFile.ToString());
         }
-        public void run(CommandOption path)
+        public static void run(string path)
         {
+            Execute exe = new Execute(); 
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             string mypath = $@"..\\..\\..\\..\\samples";
-            if (validpath(path) != " ")
+            if (exe.validpath(path) != " ")
             {
-                mypath = validpath(path);
+                mypath = exe.validpath(path);
             }
             var newFile = new StringBuilder();
             var config = File.ReadAllText(@"..\\..\\..\\..\\config\\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
             List<string> dirs = new List<string>();
-            dirs.Add(findDirectorys(mypath));
+            dirs.Add(exe.findDirectorys(mypath));
             foreach (var item in dirs)
             {
-                AC = parseinobject(item);
-                replaceitem(AC, myconfig);
+                AC = exe.parseinobject(item);
+                exe.replaceitem(AC, myconfig);
                 obj.getobject(AC, item);
             }
         }
@@ -382,11 +363,11 @@ namespace secondtry
             };
             return inif;
         }
-        public string validpath(CommandOption path)
+        public string validpath(string path)
         {
-            if (path.HasValue() && path.Value() != " " && path.Value() != null)
+            if (path != " " && path != null)
             {
-                string mypath = path.Value().ToString();
+                string mypath =path;
                 if (!File.Exists(mypath))
                 {
                     Console.WriteLine("Bitte überprüfe deinen Path.");

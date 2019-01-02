@@ -32,9 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Sprache" Version="2.2.0" />
+    <PackageReference Include="System.CommandLine.Experimental" Version="0.1.0-alpha-63621-01" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties samples_4mysuperconfig_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" /></VisualStudio></ProjectExtensions>
