@@ -18,7 +18,7 @@ configure network
   prefix-length 28
   gateway 10.49.50.1
   name "IpInf_UNP-FR"
-  underlying-dev   "EthD_UNP-1"
+  underlying-dev         "EthD_UNP-1"
   activate
  exit
 exit
@@ -36,12 +36,12 @@ configure voip
   proxy-load-balancing-method 1
   min-active-serv-lb 1
  exit
- proxy-ip   4/0
+ proxy-ip         4/0
   proxy-address "1.1.1.10:5060"
   transport-type udp
   activate
  exit
- proxy-ip   4/1
+ proxy-ip         4/1
   proxy-address "1.1.1.11:5060"
   transport-type udp
   activate

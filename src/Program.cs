@@ -131,13 +131,13 @@ namespace secondtry
                 {
                     if (configureexit)
                     {
-                        if (line == "" || ParserGrammarIn.getidentifier.Parse(line) == "configure network" || ParserGrammarIn.getidentifier.Parse(line) == "configure voip")
+                        if (line == "" || ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip")
                         {
                             if (line == "")
                             {
                                 continue;
                             }
-                            ident = ParserGrammarIn.getidentifier.Parse(line);
+                            ident = ParserGrammar.getidentifier.Parse(line);
                             configureexit = false;
                             continue;
                         }
@@ -146,17 +146,17 @@ namespace secondtry
                     {
                         if (subidentexit)
                         {
-                            if (ParserGrammarIn.getsubident.Parse(line) == "network-dev" || ParserGrammarIn.getsubident.Parse(line) == "interface network-if" ||
-                             ParserGrammarIn.getsubident.Parse(line) == "proxy-set" || ParserGrammarIn.getsubident.Parse(line) == "proxy-ip" || ParserGrammarIn.getsubident.Parse(line) == "exit")
+                            if (ParserGrammar.getsubident.Parse(line) == "network-dev" || ParserGrammar.getsubident.Parse(line) == "interface network-if" ||
+                             ParserGrammar.getsubident.Parse(line) == "proxy-set" || ParserGrammar.getsubident.Parse(line) == "proxy-ip" || ParserGrammar.getsubident.Parse(line) == "exit")
                             {
-                                if (ParserGrammarIn.getsubident.Parse(line) == "exit")
+                                if (ParserGrammar.getsubident.Parse(line) == "exit")
                                 {
                                     configureexit = true;
                                     continue;
                                 }
                                 subidentexit = false;
-                                subident = ParserGrammarIn.getsubident.Parse(line);
-                                subidentvalue = ParserGrammarIn.subidentvalue.Parse(line);
+                                subident = ParserGrammar.getsubident.Parse(line);
+                                subidentvalue = ParserGrammar.subidentvalue.Parse(line);
                                 continue;
                             }
                         }
@@ -166,19 +166,19 @@ namespace secondtry
                             {
                                 if (subident == "network-dev")
                                 {
-                                    switch (ParserGrammarIn.dev.Parse(line))
+                                    switch (ParserGrammar.dev.Parse(line))
                                     {
                                         case "vlan-id":
-                                            vlan = int.Parse(ParserGrammarIn.devvalue.Parse(line));
+                                            vlan = int.Parse(ParserGrammar.devvalue.Parse(line));
                                             continue;
                                         case "underlying-if":
-                                            underlying = ParserGrammarIn.devvalue.Parse(line);
+                                            underlying = ParserGrammar.devvalue.Parse(line);
                                             continue;
                                         case "name":
-                                            name = ParserGrammarIn.devvalue.Parse(line);
+                                            name = ParserGrammar.devvalue.Parse(line);
                                             continue;
                                         case "tagging":
-                                            tagging = ParserGrammarIn.devvalue.Parse(line);
+                                            tagging = ParserGrammar.devvalue.Parse(line);
                                             continue;
                                         case "activate":
                                             activate = true;
@@ -192,25 +192,25 @@ namespace secondtry
                                 }
                                 else if (subident == "interface network-if")
                                 {
-                                    switch (ParserGrammarIn.inif.Parse(line))
+                                    switch (ParserGrammar.inif.Parse(line))
                                     {
                                         case "application-type":
-                                            apptype = ParserGrammarIn.inifvalue.Parse(line);
+                                            apptype = ParserGrammar.inifvalue.Parse(line);
                                             continue;
                                         case "ip-address":
-                                            ipadr = ParserGrammarIn.inifvalue.Parse(line);
+                                            ipadr = ParserGrammar.inifvalue.Parse(line);
                                             continue;
                                         case "prefix-length":
-                                            prel = int.Parse(ParserGrammarIn.inifvalue.Parse(line));
+                                            prel = int.Parse(ParserGrammar.inifvalue.Parse(line));
                                             continue;
                                         case "gateway":
-                                            gateway = ParserGrammarIn.inifvalue.Parse(line);
+                                            gateway = ParserGrammar.inifvalue.Parse(line);
                                             continue;
                                         case "name":
-                                            name2 = ParserGrammarIn.inifvalue.Parse(line);
+                                            name2 = ParserGrammar.inifvalue.Parse(line);
                                             continue;
                                         case "underlying-dev":
-                                            udev = ParserGrammarIn.inifvalue.Parse(line);
+                                            udev = ParserGrammar.inifvalue.Parse(line);
                                             continue;
                                         case "activate":
                                             activate = true;
@@ -227,40 +227,40 @@ namespace secondtry
                             {
                                 if (subident == "proxy-set")
                                 {
-                                    switch (ParserGrammarIn.prse.Parse(line))
+                                    switch (ParserGrammar.prse.Parse(line))
                                     {
                                         case "proxy-name":
-                                            prname = ParserGrammarIn.prsevalue.Parse(line);
+                                            prname = ParserGrammar.prsevalue.Parse(line);
                                             continue;
                                         case "proxy-enable-keep-alive":
-                                            peka = ParserGrammarIn.prsevalue.Parse(line);
+                                            peka = ParserGrammar.prsevalue.Parse(line);
                                             continue;
                                         case "srd-name":
-                                            srdname = ParserGrammarIn.prsevalue.Parse(line);
+                                            srdname = ParserGrammar.prsevalue.Parse(line);
                                             continue;
                                         case "sbcipv4-sip-int-name":
-                                            ssin = ParserGrammarIn.prsevalue.Parse(line);
+                                            ssin = ParserGrammar.prsevalue.Parse(line);
                                             continue;
                                         case "keepalive-fail-resp":
-                                            kfr = ParserGrammarIn.prsevalue.Parse(line);
+                                            kfr = ParserGrammar.prsevalue.Parse(line);
                                             continue;
                                         case "success-detect-retries":
-                                            sdr = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
+                                            sdr = int.Parse(ParserGrammar.prsevalue.Parse(line));
                                             continue;
                                         case "success-detect-int":
-                                            sdi = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
+                                            sdi = int.Parse(ParserGrammar.prsevalue.Parse(line));
                                             continue;
                                         case "proxy-redundancy-mode":
-                                            prm = ParserGrammarIn.prsevalue.Parse(line);
+                                            prm = ParserGrammar.prsevalue.Parse(line);
                                             continue;
                                         case "is-proxy-hot-swap":
-                                            iphs = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
+                                            iphs = int.Parse(ParserGrammar.prsevalue.Parse(line));
                                             continue;
                                         case "proxy-load-balancing-method":
-                                            plbm = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
+                                            plbm = int.Parse(ParserGrammar.prsevalue.Parse(line));
                                             continue;
                                         case "min-active-serv-lb":
-                                            masl = int.Parse(ParserGrammarIn.prsevalue.Parse(line));
+                                            masl = int.Parse(ParserGrammar.prsevalue.Parse(line));
                                             continue;
                                         case "activate":
                                             activate = true;
@@ -274,13 +274,13 @@ namespace secondtry
                                 }
                                 else if (subident == "proxy-ip")
                                 {
-                                    switch (ParserGrammarIn.prip.Parse(line))
+                                    switch (ParserGrammar.prip.Parse(line))
                                     {
                                         case "proxy-address":
-                                            prad = ParserGrammarIn.pripvalue.Parse(line);
+                                            prad = ParserGrammar.pripvalue.Parse(line);
                                             continue;
                                         case "transport-type":
-                                            taty = ParserGrammarIn.pripvalue.Parse(line);
+                                            taty = ParserGrammar.pripvalue.Parse(line);
                                             continue;
                                         case "activate":
                                             activate = true;
@@ -464,7 +464,7 @@ namespace secondtry
                     }
                 }
             }
-            ParserGrammarOut obj = new ParserGrammarOut();
+            Output obj = new Output();
             obj.getobject(AC,path);  
         }
     }

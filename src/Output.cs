@@ -5,7 +5,7 @@ using System.Text;
 
 namespace secondtry
 {
-    public class ParserGrammarOut
+    public class Output
     {
         public void getobject(ACConfig AC,string path)
         {
