@@ -6,19 +6,19 @@ namespace secondtry
 {
     class ParserVariables
     {
-        const string identifier = "configure";
+        public const string identifier = "configure";
 
-        const string netidentifier = "network";
-        const string devlistident = "network-dev";
-        const string interlistident = "interface network-if";
-
-        const string voipidentifier = "voip";
-        const string prosetlistident = "proxy-set";
-        const string proiplistident = "proxy-ip";
-       
-        const char tap = ' ';
-        const string exit = "exit";
-        const string activate = "activate";
-        const string lz = "\n";
+        public const string netidentifier = "network";
+        public const string devlistident = "network-dev";
+        public const string interlistident = "interface network-if";
+        
+        public const string voipidentifier = "voip";
+        public const string prosetlistident = "proxy-set";
+        public const string proiplistident = "proxy-ip";
+        
+        public const char tap = ' ';
+        public const string exit = "exit";
+        public const string activate = "activate";
+        public const string lz = "\n";
     }
 }

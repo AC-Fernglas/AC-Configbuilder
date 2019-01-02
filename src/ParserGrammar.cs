@@ -30,10 +30,10 @@ namespace secondtry
                  .Or(findValue(ParserVariables.interlistident))
                  .Or(findValue(ParserVariables.prosetlistident))
                  .Or(findValue(ParserVariables.proiplistident))
-                 .Or(exit);
+                 .Or(Parserarguments.exit);
         static Parser<string> findValue(string search)
         {
-            return from localTab in Parse.Char(ParserVariables.tab)
+            return from localTab in Parse.Char(ParserVariables.tap)
                    from searchResult in Parse.String(search).Text()
                    select searchResult;
         }
@@ -46,13 +46,12 @@ namespace secondtry
             (Parserarguments.active).Or
             (Parserarguments.exit);
 
-        static Parser<string> devvalue(string search)
-        {
+       public static readonly Parser<string> devvalue = 
             from tap in Parse.Char(ParserVariables.tap).Many()
-            from searchstring in Parse.String(dev).Text()
+            from searchstring in dev
             from value in Parse.AnyChar.Many().Text()
             select value;
-        }
+
 
         public static readonly Parser<string> inif =
             (Parserarguments.apptype).Or
@@ -66,7 +65,7 @@ namespace secondtry
 
         public static readonly Parser<string> inifvalue =
             from tap in Parse.Char(ParserVariables.tap).Many()
-            from searchstring in Parse.String(inif).Text()
+            from searchstring in inif
             from value in Parse.AnyChar.Many().Text()
             select value;
 
@@ -87,7 +86,7 @@ namespace secondtry
 
         public static readonly Parser<string> prsevalue =
            from tap in Parse.Char(ParserVariables.tap).Many()
-           from searchstring in Parse.String(prse).Text()
+           from searchstring in prse
            from value in Parse.AnyChar.Many().Text()
            select value;
 
@@ -100,7 +99,7 @@ namespace secondtry
 
         public static readonly Parser<string> pripvalue =
              from tap in Parse.Char(ParserVariables.tap).Many()
-             from searchstring in Parse.String(prip).Text()
+             from searchstring in prip
              from value in Parse.AnyChar.Many().Text()
              select value;
     }
