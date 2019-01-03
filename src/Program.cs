@@ -208,6 +208,7 @@ namespace secondtry
                                 netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging, activate));
                                 activate = false;
                                 subidentexit = true;
+                                // das ist ein test
                                 continue;
                         }
                     }
