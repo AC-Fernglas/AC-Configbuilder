@@ -39,7 +39,7 @@ namespace secondtry
         }
     }
     class Execute { 
-        public void setuserpath(string mypath)
+        private void setuserpath(string mypath)
         {
             string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
             StringBuilder newFile = new StringBuilder();
@@ -75,7 +75,7 @@ namespace secondtry
                 obj.getobject(AC, item);
             }
         }
-        public string findDirectorys(string mypath)
+        private string findDirectorys(string mypath)
         {
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
             foreach (var item in dirs)
@@ -114,7 +114,7 @@ namespace secondtry
                 configureexit = false;
             }
         }
-        public ACConfig parseinobject(string path)
+        private ACConfig parseinobject(string path)
         {
 
 
@@ -316,7 +316,7 @@ namespace secondtry
             return AC;
         }
 
-        public Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
+        private Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
         {
             Enum.TryParse(tagging, out tag Tagging);
             Networkdev net = new Networkdev
@@ -330,7 +330,7 @@ namespace secondtry
             };
             return net;
         }
-        public Proxyip createlistprip(string prad,string taty, string subidentvalue, bool activate)
+        private Proxyip createlistprip(string prad,string taty, string subidentvalue, bool activate)
         {
             Enum.TryParse(taty, out transporttype Transporttype);
             Proxyip prip = new Proxyip
@@ -342,7 +342,7 @@ namespace secondtry
             };
             return prip;
         }
-        public Proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue, bool activate)
+        private Proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue, bool activate)
         {
             if (peka == "using-option")
             {
@@ -368,7 +368,7 @@ namespace secondtry
             };
             return prse;
         }
-        public Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid, bool activate)
+        private Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid, bool activate)
         {
             Enum.TryParse(apptype, out applicationtype Apptype);
             Interfacenetworkif inif = new Interfacenetworkif
@@ -384,7 +384,7 @@ namespace secondtry
             };
             return inif;
         }
-        public string validpath(CommandOption path)
+        private string validpath(CommandOption path)
         {
             if (path.HasValue() && path.Value() != " " && path.Value() != null)
             {
