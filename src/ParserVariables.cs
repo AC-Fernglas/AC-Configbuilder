@@ -4,7 +4,7 @@ using System.Text;
 
 namespace secondtry
 {
-    class ParserVariables
+    public  class  ParserVariables
     {
         public const string identifier = "configure";
 
@@ -16,9 +16,9 @@ namespace secondtry
         public const string prosetlistident = "proxy-set";
         public const string proiplistident = "proxy-ip";
         
-        public const char tap = "\t";
+        public const string tap = "\t";
         public const string exit = "exit";
         public const string activate = "activate";
-        public const string lz = "\n";
+        public  string lz = Environment.NewLine;
     }
 }

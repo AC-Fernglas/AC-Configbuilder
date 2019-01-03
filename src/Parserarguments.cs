@@ -7,35 +7,35 @@ namespace secondtry
 {
     class Parserarguments
     {
-        public static readonly Parser<string> devlistident = from tap in Parse.Char(ParserVariables.tap)
+        public static readonly Parser<string> devlistident = from tap in Parse.String(ParserVariables.tap)
                                                              from subident in Parse.String(ParserVariables.devlistident).Text()
                                                              select subident;
 
-        public static readonly Parser<string> interlistident = from tap in Parse.Char(ParserVariables.tap)
+        public static readonly Parser<string> interlistident = from tap in Parse.String(ParserVariables.tap)
                                                                from subident in Parse.String(ParserVariables.interlistident).Text()
                                                                select subident;
 
-        public static readonly Parser<string> prosetlistident = from tap in Parse.Char(ParserVariables.tap)
+        public static readonly Parser<string> prosetlistident = from tap in Parse.String(ParserVariables.tap)
                                                                 from subident in Parse.String(ParserVariables.prosetlistident).Text()
                                                                 select subident;
 
-        public static readonly Parser<string> proiplistident = from tap in Parse.Char(ParserVariables.tap)
+        public static readonly Parser<string> proiplistident = from tap in Parse.String(ParserVariables.tap)
                                                                from subident in Parse.String(ParserVariables.proiplistident).Text()
                                                                select subident;
 
-        public static readonly Parser<string> vlan = from tap in Parse.Char(ParserVariables.tap).Many()
+        public static readonly Parser<string> vlan = from tap in Parse.String(ParserVariables.tap).Many()
                                                      from vlan in Parse.String("vlan-id").Text()
                                                      select vlan;
 
-        public static readonly Parser<string> under = from tap in Parse.Char(ParserVariables.tap).Many()
+        public static readonly Parser<string> under = from tap in Parse.String(ParserVariables.tap).Many()
                                                       from underlying in Parse.String("underlying-if").Text()
                                                       select underlying;
 
-        public static readonly Parser<string> name = from tap in Parse.Char(ParserVariables.tap).Many()
+        public static readonly Parser<string> name = from tap in Parse.String(ParserVariables.tap).Many()
                                                      from name in Parse.String("name").Text()
                                                      select name;
 
-        public static readonly Parser<string> tag = from tap in Parse.Char(ParserVariables.tap).Many()
+        public static readonly Parser<string> tag = from tap in Parse.String(ParserVariables.tap).Many()
                                                     from tagging in Parse.String("tagging").Text()
                                                     select tagging;
 

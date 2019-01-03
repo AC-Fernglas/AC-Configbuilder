@@ -7,7 +7,7 @@ namespace secondtry
 {
     public class ParserGrammar
     {
-
+        static ParserVariables NewLine = new ParserVariables();
 
         public static readonly Parser<string> getidentifier =
              (from net in Parse.String(ParserVariables.identifier + ParserVariables.tap + ParserVariables.netidentifier).Text()
@@ -15,7 +15,7 @@ namespace secondtry
              .Or
              (from voip in Parse.String(ParserVariables.identifier + ParserVariables.tap + ParserVariables.voipidentifier).Text()
               select voip).Or
-             (from lz in Parse.String(ParserVariables.lz).Text()
+             (from lz in Parse.String(NewLine.lz).Text()
               select lz);
 
         public static readonly Parser<string> getsubident =
@@ -33,7 +33,7 @@ namespace secondtry
                  .Or(Parserarguments.exit);
         static Parser<string> findValue(string search)
         {
-            return from localTab in Parse.Char(ParserVariables.tap)
+            return from localTab in Parse.String(ParserVariables.tap)
                    from searchResult in Parse.String(search).Text()
                    select searchResult;
         }
@@ -47,7 +47,7 @@ namespace secondtry
             (Parserarguments.exit);
 
        public static readonly Parser<string> devvalue = 
-            from tap in Parse.Char(ParserVariables.tap).Many()
+            from tap in Parse.String(ParserVariables.tap).Many()
             from searchstring in dev
             from value in Parse.AnyChar.Many().Text()
             select value;
@@ -64,7 +64,7 @@ namespace secondtry
             (Parserarguments.exit);
 
         public static readonly Parser<string> inifvalue =
-            from tap in Parse.Char(ParserVariables.tap).Many()
+            from tap in Parse.String(ParserVariables.tap).Many()
             from searchstring in inif
             from value in Parse.AnyChar.Many().Text()
             select value;
@@ -85,7 +85,7 @@ namespace secondtry
             (Parserarguments.exit);
 
         public static readonly Parser<string> prsevalue =
-           from tap in Parse.Char(ParserVariables.tap).Many()
+           from tap in Parse.String(ParserVariables.tap).Many()
            from searchstring in prse
            from value in Parse.AnyChar.Many().Text()
            select value;
@@ -98,7 +98,7 @@ namespace secondtry
             (Parserarguments.exit);
 
         public static readonly Parser<string> pripvalue =
-             from tap in Parse.Char(ParserVariables.tap).Many()
+             from tap in Parse.String(ParserVariables.tap).Many()
              from searchstring in prip
              from value in Parse.AnyChar.Many().Text()
              select value;
