@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.CommandLine;
-using System.CommandLine.Invocation;
+using McMaster.Extensions.CommandLineUtils;
 using Sprache;
 using Newtonsoft.Json;
 
@@ -14,7 +13,29 @@ namespace secondtry
     {
         static void Main(string[] args)
         {
-            
+            Commands obj = new Commands();
+
+            obj.Idel(args);
+        }
+    }
+
+    class Commands
+    {
+        public int Idel(string[] commands)
+        {
+            var app = new CommandLineApplication();
+            Execute obj = new Execute();
+            var helptemplate = "-h|--help";
+            app.HelpOption(helptemplate);
+            app.Command("use", u =>
+            {
+                u.HelpOption(helptemplate);
+                u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
+                var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                u.OnExecute(() => { obj.run(path); });
+            });
+            return app.Execute(commands);
+
         }
     }
     class Execute { 
@@ -31,7 +52,7 @@ namespace secondtry
             }
             File.WriteAllText($@"..\\..\\..\\..\\config\\qwertz.json", newFile.ToString());
         }
-        public static void run(string path)
+        public void run(CommandOption path)
         {
             Execute exe = new Execute(); 
             ACConfig AC = new ACConfig();
@@ -363,11 +384,11 @@ namespace secondtry
             };
             return inif;
         }
-        public string validpath(string path)
+        public string validpath(CommandOption path)
         {
-            if (path != " " && path != null)
+            if (path.HasValue() && path.Value() != " " && path.Value() != null)
             {
-                string mypath =path;
+                string mypath = path.Value().ToString();
                 if (!File.Exists(mypath))
                 {
                     Console.WriteLine("Bitte überprüfe deinen Path.");
