@@ -35,25 +35,27 @@ namespace secondtry
         {
             return from localTab in Parse.String(ParserVariables.tap)
                    from searchResult in Parse.String(search).Text()
-                   select searchResult;
+                   from Tab in Parse.String(ParserVariables.tap)
+                   from value in Parse.AnyChar.Many().Text()
+                   select value;
         }
 
-        public static readonly Parser<string> dev =
+        public static readonly Parser<string> networkDiviceNameParser =
             (Parserarguments.vlan).Or
-            (Parserarguments.under).Or
+            (Parserarguments.underlyingif).Or
             (Parserarguments.name).Or
             (Parserarguments.tag).Or
             (Parserarguments.active).Or
             (Parserarguments.exit);
 
-       public static readonly Parser<string> devvalue = 
+       public static readonly Parser<string> networkDiviceValueParser = 
             from tap in Parse.String(ParserVariables.tap).Many()
-            from searchstring in dev
+            from searchstring in networkDiviceNameParser
             from value in Parse.AnyChar.Many().Text()
             select value;
 
 
-        public static readonly Parser<string> inif =
+        public static readonly Parser<string> interfaceNetworkIfNameParser =
             (Parserarguments.apptype).Or
             (Parserarguments.ipaddress).Or
             (Parserarguments.prefixlength).Or
@@ -63,13 +65,13 @@ namespace secondtry
             (Parserarguments.active).Or
             (Parserarguments.exit);
 
-        public static readonly Parser<string> inifvalue =
+        public static readonly Parser<string> interfaceNetworkIfValueParser =
             from tap in Parse.String(ParserVariables.tap).Many()
-            from searchstring in inif
+            from searchstring in interfaceNetworkIfNameParser
             from value in Parse.AnyChar.Many().Text()
             select value;
 
-        public static readonly Parser<string> prse =
+        public static readonly Parser<string> proxySetNameParser =
             (Parserarguments.proxyname).Or
             (Parserarguments.proxyenablekeepalive).Or
             (Parserarguments.srdname).Or
@@ -84,22 +86,22 @@ namespace secondtry
             (Parserarguments.active).Or
             (Parserarguments.exit);
 
-        public static readonly Parser<string> prsevalue =
+        public static readonly Parser<string> proxySetValueParser =
            from tap in Parse.String(ParserVariables.tap).Many()
-           from searchstring in prse
+           from searchstring in proxySetNameParser
            from value in Parse.AnyChar.Many().Text()
            select value;
 
        
-        public static readonly Parser<string> prip =
+        public static readonly Parser<string> proxyIpNameParser =
             (Parserarguments.proxyaddress).Or
             (Parserarguments.transporttype).Or
             (Parserarguments.active).Or
             (Parserarguments.exit);
 
-        public static readonly Parser<string> pripvalue =
+        public static readonly Parser<string> proxyIpValueParser =
              from tap in Parse.String(ParserVariables.tap).Many()
-             from searchstring in prip
+             from searchstring in proxyIpNameParser
              from value in Parse.AnyChar.Many().Text()
              select value;
     }

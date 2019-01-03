@@ -27,7 +27,7 @@ namespace secondtry
                                                      from vlan in Parse.String("vlan-id").Text()
                                                      select vlan;
 
-        public static readonly Parser<string> under = from tap in Parse.String(ParserVariables.tap).Many()
+        public static readonly Parser<string> underlyingif = from tap in Parse.String(ParserVariables.tap).Many()
                                                       from underlying in Parse.String("underlying-if").Text()
                                                       select underlying;
 
@@ -114,6 +114,8 @@ namespace secondtry
         public static readonly Parser<string> transporttype = from tap in Parse.Chars(ParserVariables.tap).Many()
                                                        from taty in Parse.String("transport-type").Text()
                                                        select taty;
+
+
 
         public static readonly Parser<string> active =
               from tap in Parse.Chars(ParserVariables.tap).Many()

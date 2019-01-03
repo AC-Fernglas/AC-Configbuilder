@@ -22,13 +22,10 @@ configure network
   activate
  exit
 exit
-
-
-
 configure voip
  proxy-set 4
   proxy-name "PS_UNP-FR"
-  proxy-enable-keep-alive uoptions
+  proxy-enable-keep-alive options
   srd-name "SRD_UNP"
   sbcipv4-sip-int-name "SipInf_UNP-FR"
   keepalive-fail-resp "500,503"

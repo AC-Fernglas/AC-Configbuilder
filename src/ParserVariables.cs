@@ -16,7 +16,7 @@ namespace secondtry
         public const string prosetlistident = "proxy-set";
         public const string proiplistident = "proxy-ip";
         
-        public const string tap = "\t";
+        public const string tap = " ";
         public const string exit = "exit";
         public const string activate = "activate";
         public  string lz = Environment.NewLine;
