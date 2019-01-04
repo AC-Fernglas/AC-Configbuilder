@@ -7,15 +7,13 @@ namespace secondtry
 {
     public class ParserGrammar
     {
-        static ParserVariables NewLine = new ParserVariables();
-
         public static readonly Parser<string> getidentifier =
              (from net in Parse.String(ParserVariables.identifier + ParserVariables.tap + ParserVariables.netidentifier).Text()
               select net)
              .Or
              (from voip in Parse.String(ParserVariables.identifier + ParserVariables.tap + ParserVariables.voipidentifier).Text()
               select voip).Or
-             (from lz in Parse.String(NewLine.lz).Text()
+             (from lz in Parse.String(ParserVariables.lz).Text()
               select lz);
 
         public static readonly Parser<string> getsubident =

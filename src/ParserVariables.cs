@@ -4,7 +4,7 @@ using System.Text;
 
 namespace secondtry
 {
-    public  class  ParserVariables
+    public static class  ParserVariables
     {
         public const string identifier = "configure";
 
@@ -19,6 +19,6 @@ namespace secondtry
         public const string tap = " ";
         public const string exit = "exit";
         public const string activate = "activate";
-        public  string lz = Environment.NewLine;
+        public static string lz = Environment.NewLine;
     }
 }
