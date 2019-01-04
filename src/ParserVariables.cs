@@ -4,7 +4,7 @@ using System.Text;
 
 namespace secondtry
 {
-    public  class  ParserVariables
+    public static class  ParserVariables
     {
         public const string identifier = "configure";
 
@@ -19,6 +19,56 @@ namespace secondtry
         public const string tap = " ";
         public const string exit = "exit";
         public const string activate = "activate";
-        public  string lz = Environment.NewLine;
+        public  static string lz = Environment.NewLine;
+
+
+
+
+        public const string vlan = ("vlan-id");
+
+        public const string underlyingif = ("underlying-if");
+
+        public const string NameNetwokIf = ("name");
+
+        public const string tag = ("tagging");
+
+        public const string  apptype =("application-type");
+
+        public const string  ipaddress = "ip-address";
+
+        public const string  prefixlength =("prefix-length");
+
+        public const string  gateway =("gateway");
+
+        public const string  NameNetwokDev ="name";
+
+        public const string  underlyingdev ="underlying-dev";
+
+        public const string  proxyname ="proxy-name";
+
+        public const string  proxyenablekeepalive ="proxy-enable-keep-alive";
+
+        public const string  srdname ="srd-name";
+
+        public const string  sbcipv4sipintname ="sbcipv4-sip-int-name";
+
+        public const string  keepalivefailresp ="keepalive-fail-resp";
+
+        public const string successdetectretries ="success-detect-retries";
+
+        public const string successdetectint ="success-detect-int";
+
+        public const string proxyredundancymode ="proxy-redundancy-mode";
+
+        public const string isproxyhotswap ="is-proxy-hot-swap";
+
+        public const string proxyloadbalancingmethod ="proxy-load-balancing-method";
+
+        public const string minactiveservlb ="min-active-serv-lb";
+
+        public const string proxyaddress ="proxy-address";
+
+        public const string transporttype ="transport-type";
+
     }
 }
