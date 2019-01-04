@@ -18,21 +18,21 @@ namespace secondtry
     }
    public class Networkdev { 
         public int? listid { get; set; }
-        public int? vlanip { get; set; }
+        public int? vlan { get; set; }
         public string underlyingif { get; set; }
-        public string name { get; set; }
-        public tag tagging { get; set; }
+        public string Name { get; set; }
+        public tag tag { get; set; }
         
         public bool activate { get; set; }
     }
 
     public class  Interfacenetworkif {
         public int? listid { get; set; }
-        public applicationtype Applicationtype { get; set; }
-        public string ipadress { get; set; }
+        public applicationtype apptype { get; set; }
+        public string ipaddress { get; set; }
         public int? prefixlength { get; set; }
         public string gateway { get; set; }
-        public string name { get; set; }
+        public string Name{ get; set; }
         public string underlyingdev { get; set; }
 
         public bool activate { get; set; }
@@ -48,13 +48,13 @@ namespace secondtry
     {
         public int? listid { get; set; }
         public string proxyname { get; set; }
-        public proxyenablekeepalive? Proxyenablekeepalive { get; set; }
+        public proxyenablekeepalive? proxyenablekeepalive { get; set; }
         public string srdname { get; set; }
         public string sbcipv4sipintname { get; set; }
         public string keepalivefailresp { get; set; }
         public int? successdetectretries { get; set; }
         public int? successdetectint { get; set; }
-        public proxyredundancymode? Proxyredundancymode { get; set; }
+        public proxyredundancymode? proxyredundancymode { get; set; }
         public int? isproxyhotswap { get; set; }
         public int? proxyloadbalancingmethod { get; set; }
         public int? minactiveservlb { get; set; }
@@ -65,7 +65,7 @@ namespace secondtry
     public class Proxyip {
         public string ip { get; set; }
         public string proxyadress { get; set; }
-        public transporttype? Transporttype { get; set; }
+        public transporttype? transporttype { get; set; }
         public bool activate { get; set; }
     }
 

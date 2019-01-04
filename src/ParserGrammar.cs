@@ -43,7 +43,7 @@ namespace secondtry
         {
             return from localTab in Parse.String(ParserVariables.tap).Many()
                    from searchResult in Parse.String(search).Text()
-                   select searchResult;
+                   select search;
         }
 
         public static Parser<string> NameParser =
@@ -53,8 +53,7 @@ namespace secondtry
             (findName(ParserVariables.isproxyhotswap)).Or
             (findName(ParserVariables.keepalivefailresp)).Or
             (findName(ParserVariables.minactiveservlb)).Or
-            (findName(ParserVariables.NameNetwokDev)).Or
-            (findName(ParserVariables.NameNetwokIf)).Or
+            (findName(ParserVariables.Name)).Or
             (findName(ParserVariables.prefixlength)).Or
             (findName(ParserVariables.proxyaddress)).Or
             (findName(ParserVariables.proxyenablekeepalive)).Or
@@ -80,8 +79,7 @@ namespace secondtry
            (findValue(ParserVariables.isproxyhotswap)).Or
            (findValue(ParserVariables.keepalivefailresp)).Or
            (findValue(ParserVariables.minactiveservlb)).Or
-           (findValue(ParserVariables.NameNetwokDev)).Or
-           (findValue(ParserVariables.NameNetwokIf)).Or
+           (findValue(ParserVariables.Name)).Or
            (findValue(ParserVariables.prefixlength)).Or
            (findValue(ParserVariables.proxyaddress)).Or
            (findValue(ParserVariables.proxyenablekeepalive)).Or

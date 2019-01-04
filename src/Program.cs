@@ -130,6 +130,9 @@ namespace secondtry
             List<Proxyset> proxyset = new List<Proxyset>();
             ACConfig AC = new ACConfig();
 
+            Networkdev newlist = new Networkdev();
+            networkdev.Add(newlist);
+
             AC.configureNetwork = co;
             AC.configureviop = vo;
 
@@ -158,46 +161,132 @@ namespace secondtry
                     if (subidentexit)
                     {
                         getIdentNameAndValue(line, out configureexit, out subidentexit, out subident, out subidentvalue);
+                        var Name = zurück(subident);
+                        if (Name != null)
+                        {
+                            AC = ObjectNetworkdev(AC, Name, subidentvalue);
+                        }
                         continue;
+                       
                     }
 
                     if (configureexit == false && subidentexit == false && ident == "configure network" && subident == "network-dev")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         var Value = ParserGrammar.ValueParser.Parse(line);
-                        AC = ObjectNetworkdev(AC, Name, Value);
+                        Name = zurück(Name);
+                        if (Name != null )
+                        {
+                            AC = ObjectNetworkdev(AC, Name, Value);
+                        }
+                        continue;
                     }
                     else if (configureexit == false && subidentexit == false && ident == "configure network" && subident == "interface network-if")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         var Value = ParserGrammar.ValueParser.Parse(line);
+                        Name = zurück(Name);
+                        if (Name != null)
+                        {
+                            AC = ObjectNetworkdev(AC, Name, Value);
+                        }
+                        continue;
                     }
                     if (ident == "configure voip" && subident == "proxy-set")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         var Value = ParserGrammar.ValueParser.Parse(line);
+                        Name = zurück(Name);
+                        if (Name != null)
+                        {
+                            AC = ObjectNetworkdev(AC, Name, Value);
+                        }
+                        continue;
                     }
                     else if (ident == "configure voip" && subident == "proxy-ip")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         var Value = ParserGrammar.ValueParser.Parse(line);
+                        Name = zurück(Name);
+                        if (Name != null)
+                        {
+                            AC = ObjectNetworkdev(AC, Name, Value);
+                        }
+                        continue;
                     }
                 }
             }
             return AC;
         }
-        public ACConfig ObjectNetworkdev(ACConfig Config, dynamic Name, dynamic Value)
+        private dynamic zurück(string Name)
+        {
+            switch (Name)
+            {
+                case ParserVariables.prosetlistident:
+                case ParserVariables.devlistident:
+                case ParserVariables.interlistident:
+                    return "listid";
+                case ParserVariables.proiplistident :
+                    return "ip";
+                case ParserVariables.activate:
+                    return "activate";
+                case ParserVariables.vlan:
+                    return "vlan";
+                case ParserVariables.underlyingdev :
+                    return "underlyingdev";
+                case ParserVariables.Name:
+                    return "Name";
+                case ParserVariables.tag :
+                    return "tag";
+                case ParserVariables.apptype :
+                    return "apptape";
+                case ParserVariables.ipaddress :
+                    return "ipaddress";
+                case ParserVariables.prefixlength :
+                    return "prefixlength";
+                case ParserVariables.gateway:
+                    return "gateway";
+                case ParserVariables.underlyingif :
+                    return "underlyingif";
+                case ParserVariables.proxyname :
+                    return "proxyname";
+                case ParserVariables.proxyenablekeepalive:
+                    return "proxyenablekeepalive";
+                case ParserVariables.srdname:
+                    return "srdname";
+                case ParserVariables.sbcipv4sipintname :
+                    return "sbcipv4sipintname";
+                case ParserVariables.keepalivefailresp:
+                    return "keepalivefailresp";
+                case ParserVariables.successdetectretries:
+                    return "successdetectretries";
+                case ParserVariables.successdetectint:
+                    return "successdetectint";
+                case ParserVariables.proxyredundancymode:
+                    return "proxyredundancymode";
+                case ParserVariables.isproxyhotswap:
+                    return "isproxyhotswap";
+                case ParserVariables.proxyloadbalancingmethod:
+                    return "proxyloadbalancingmethod";
+                case ParserVariables.minactiveservlb:
+                    return "minactiveservlb";
+                case ParserVariables.proxyaddress:
+                    return "proxyaddress";
+                case ParserVariables.transporttype:
+                    return "transporttype";
+                default:
+                    return null;
+            }
+        } 
+        private ACConfig ObjectNetworkdev(ACConfig Config, dynamic Name, dynamic Value)
         {
            var ListNetworkdev = Config.configureNetwork.networkdev;
             var i = 0;
-            Networkdev newlist = new Networkdev();
-            ListNetworkdev.Add(newlist); 
-                foreach (var item in Config.configureNetwork.networkdev[i].GetType().GetProperties())
+                foreach (var item in ListNetworkdev[i].GetType().GetProperties())
                 {
-                    var value = item.GetValue(item);
-                    if (value  == null && (Value != null && item.Name == Name))
+                    if (item.GetValue(ListNetworkdev[i]) == null && (Value != null && item.Name == Name))
                     {
-                        item.SetValue(item.Name, Value);
+                    ListNetworkdev[i].GetType().GetProperty(item.Name).SetValue(item.GetValue(ListNetworkdev[i]), Value);
                     }
                 }   
             return Config;
@@ -208,10 +297,10 @@ namespace secondtry
             Networkdev net = new Networkdev
             {
                 listid = listid,
-                vlanip = vlan,
+                vlan = vlan,
                 underlyingif = underlying,
-                name = name,
-                tagging = Tagging,
+                Name = name,
+                tag = Tagging,
                 activate = activate
             };
             return net;
@@ -223,7 +312,7 @@ namespace secondtry
             {
                 ip = subidentvalue,
                 proxyadress = prad,
-                Transporttype = Transporttype,
+                transporttype = Transporttype,
                 activate = activate
             };
             return prip;
@@ -240,13 +329,13 @@ namespace secondtry
             {
                 listid = subidentvalue,
                 proxyname = prname,
-                Proxyenablekeepalive = blub,
+                proxyenablekeepalive = blub,
                 srdname = srdname,
                 sbcipv4sipintname = ssin,
                 keepalivefailresp = kfr,
                 successdetectretries = sdr,
                 successdetectint = sdi,
-                Proxyredundancymode = blab,
+                proxyredundancymode = blab,
                 isproxyhotswap = iphs,
                 proxyloadbalancingmethod = plbm,
                 minactiveservlb = masl,
@@ -259,11 +348,11 @@ namespace secondtry
             Enum.TryParse(apptype, out applicationtype Apptype);
             Interfacenetworkif inif = new Interfacenetworkif
             {
-                Applicationtype = Apptype,
-                ipadress = ipadr,
+                apptype = Apptype,
+                ipaddress = ipadr,
                 prefixlength = prel,
                 gateway = gateway,
-                name = name2,
+                Name = name2,
                 underlyingdev = udev,
                 listid = listid,
                 activate = activate
