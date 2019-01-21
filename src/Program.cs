@@ -34,6 +34,17 @@ namespace secondtry
                 var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.run(path); });
             });
+            app.Command("create", c =>
+            {
+                c.HelpOption(helptemplate);
+                c.Description = "Erstellt eine neue Configvorlage.";
+                var path = c.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                var Net =  c.Option(@"--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Int = c.Option(@"--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Set = c.Option(@"--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Ip = c.Option(@"--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                c.OnExecute(() => { obj.RunCreate(path, Net,Int,Set,Ip); });
+            });
             return app.Execute(commands);
 
         }
@@ -480,6 +491,77 @@ namespace secondtry
                 }
             }
            
+        }
+
+        public void RunCreate (CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip)
+        {
+            Execute exe = new Execute();
+            ACConfig AC = new ACConfig();
+            string mypath = $@"..\\..\\..\\..\\samples";
+            if (exe.validpath(path) != " ")
+            {
+                mypath = exe.validpath(path);
+            }
+            DateTime time = new DateTime();
+            time = DateTime.Now;
+            var filepath = mypath + @"\\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt";
+            
+            Write(Net, Dev, Set, Ip, filepath);
+        }
+        private void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath)
+        {
+            var netcounter = 1;
+            var devcounter = 1;
+            var setcounter = 1;
+            var ipcounter = 1;
+            if (Net.HasValue() == true && Net.Value() != null )
+            {
+                int.TryParse(Net.Value(), out  netcounter);
+            }
+            if (Ip.HasValue() == true && Ip.Value() != null)
+            {
+                int.TryParse(Ip.Value(), out ipcounter);
+            }
+            if (Set.HasValue() == true && Set.Value() != null)
+            {
+                int.TryParse(Set.Value(), out setcounter);
+            }
+            if (Dev.HasValue() == true && Dev.Value() != null)
+            {
+                int.TryParse(Dev.Value(), out devcounter);
+            }
+            var Networkdevvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Networkdevvorlage.txt");
+            var Interfacenetworkifvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Interfacenetworkifvorlage.txt");
+            var Proxysetvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Proxysetvorlage.txt");
+            var Proxyipvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Proxyipvorlage.txt");
+            using (StreamWriter writer = new StreamWriter(mypath))
+            {
+                writer.WriteLine("configure network");
+                for (int i = 0; i < netcounter; i++)
+                {
+                    writer.WriteLine(Networkdevvorlage);
+                }
+                writer.WriteLine(@" exit");
+                for (int i = 0; i < devcounter; i++)
+                {
+                    writer.WriteLine(Interfacenetworkifvorlage);
+                }
+                writer.WriteLine(@" exit");
+                writer.WriteLine("exit");
+                writer.WriteLine("configure voip");
+                for (int i = 0; i < setcounter; i++)
+                {
+                    writer.WriteLine(Proxysetvorlage);
+                }
+                writer.WriteLine(@" exit");
+                for (int i = 0; i < ipcounter; i++)
+                {
+                    writer.WriteLine(Proxyipvorlage);
+                }
+                writer.WriteLine(@" exit");
+                writer.WriteLine("exit");
+            }
+            
         }
     }
 }
