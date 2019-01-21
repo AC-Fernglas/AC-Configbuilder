@@ -218,7 +218,7 @@ namespace secondtry
             }
             return AC;
         }
-        private dynamic zurück(string Name)
+        private string zurück(string Name)
         {
             switch (Name)
             {
@@ -278,7 +278,7 @@ namespace secondtry
                     return null;
             }
         } 
-        private ACConfig ObjectNetworkdev(ACConfig Config, dynamic Name, dynamic Value)
+        private ACConfig ObjectNetworkdev(ACConfig Config, string Name, dynamic Value)
         {
            var ListNetworkdev = Config.configureNetwork.networkdev;
             var i = 0;
@@ -286,78 +286,15 @@ namespace secondtry
                 {
                     if (item.GetValue(ListNetworkdev[i]) == null && (Value != null && item.Name == Name))
                     {
-                    ListNetworkdev[i].GetType().GetProperty(item.Name).SetValue(item.GetValue(ListNetworkdev[i]), Value);
+                    item.GetType().GetProperty(item.Name).SetValue(item.GetValue(item), Value);
+                     }
+                    else
+                    {
+                    i++;
+                    ObjectNetworkdev(Config, Name, Value);
                     }
                 }   
             return Config;
-        }
-        private Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
-        {
-            Enum.TryParse(tagging, out tag Tagging);
-            Networkdev net = new Networkdev
-            {
-                listid = listid,
-                vlan = vlan,
-                underlyingif = underlying,
-                Name = name,
-                tag = Tagging,
-                activate = activate
-            };
-            return net;
-        }
-        private Proxyip createlistprip(string prad, string taty, string subidentvalue, bool activate)
-        {
-            Enum.TryParse(taty, out transporttype Transporttype);
-            Proxyip prip = new Proxyip
-            {
-                ip = subidentvalue,
-                proxyadress = prad,
-                transporttype = Transporttype,
-                activate = activate
-            };
-            return prip;
-        }
-        private Proxyset createlistprese(string prname, string peka, string srdname, string ssin, string kfr, int sdr, int sdi, string prm, int iphs, int plbm, int masl, int subidentvalue, bool activate)
-        {
-            if (peka == "using-option")
-            {
-                peka = "uoption";
-            }
-            Enum.TryParse(peka, out proxyenablekeepalive blub);
-            Enum.TryParse(prm, out proxyredundancymode blab);
-            Proxyset prse = new Proxyset
-            {
-                listid = subidentvalue,
-                proxyname = prname,
-                proxyenablekeepalive = blub,
-                srdname = srdname,
-                sbcipv4sipintname = ssin,
-                keepalivefailresp = kfr,
-                successdetectretries = sdr,
-                successdetectint = sdi,
-                proxyredundancymode = blab,
-                isproxyhotswap = iphs,
-                proxyloadbalancingmethod = plbm,
-                minactiveservlb = masl,
-                activate = activate
-            };
-            return prse;
-        }
-        private Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid, bool activate)
-        {
-            Enum.TryParse(apptype, out applicationtype Apptype);
-            Interfacenetworkif inif = new Interfacenetworkif
-            {
-                apptype = Apptype,
-                ipaddress = ipadr,
-                prefixlength = prel,
-                gateway = gateway,
-                Name = name2,
-                underlyingdev = udev,
-                listid = listid,
-                activate = activate
-            };
-            return inif;
         }
         private string validpath(CommandOption path)
         {

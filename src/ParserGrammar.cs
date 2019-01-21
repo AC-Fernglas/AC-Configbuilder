@@ -7,7 +7,7 @@ namespace secondtry
 {
     public class ParserGrammar
     {
-       
+
         public static readonly Parser<string> getidentifier =
              (from net in Parse.String(ParserVariables.identifier + ParserVariables.tap + ParserVariables.netidentifier).Text()
               select net)
@@ -31,7 +31,7 @@ namespace secondtry
                  .Or(findValue(ParserVariables.proiplistident))
                  .Or(findName(ParserVariables.exit));
 
-        static Parser<string> findValue(string search)
+        public static Parser<string> findValue(string search)
         {
             return from localTab in Parse.String(ParserVariables.tap).Many()
                    from searchResult in Parse.String(search).Text()
@@ -39,38 +39,37 @@ namespace secondtry
                    from value in Parse.AnyChar.Many().Text()
                    select value;
         }
-        static Parser<string> findName(string search)
+        public static Parser<string> findName(string search)
         {
             return from localTab in Parse.String(ParserVariables.tap).Many()
                    from searchResult in Parse.String(search).Text()
                    select search;
         }
-
         public static Parser<string> NameParser =
-            findName(ParserVariables.apptype).Or
-            (findName(ParserVariables.gateway)).Or
-            (findName(ParserVariables.ipaddress)).Or
-            (findName(ParserVariables.isproxyhotswap)).Or
-            (findName(ParserVariables.keepalivefailresp)).Or
-            (findName(ParserVariables.minactiveservlb)).Or
-            (findName(ParserVariables.Name)).Or
-            (findName(ParserVariables.prefixlength)).Or
-            (findName(ParserVariables.proxyaddress)).Or
-            (findName(ParserVariables.proxyenablekeepalive)).Or
-            (findName(ParserVariables.proxyloadbalancingmethod)).Or
-            (findName(ParserVariables.proxyname)).Or
-            (findName(ParserVariables.proxyredundancymode)).Or
-            (findName(ParserVariables.sbcipv4sipintname)).Or
-            (findName(ParserVariables.srdname)).Or
-            (findName(ParserVariables.successdetectint)).Or
-            (findName(ParserVariables.successdetectretries)).Or
-            (findName(ParserVariables.tag)).Or
-            (findName(ParserVariables.transporttype)).Or
-            (findName(ParserVariables.underlyingdev)).Or
-            (findName(ParserVariables.underlyingif)).Or
-            (findName(ParserVariables.vlan)).Or
-            (findName(ParserVariables.activate)).Or
-            (findName(ParserVariables.exit));
+    findName(ParserVariables.apptype).Or
+    (findName(ParserVariables.gateway)).Or
+    (findName(ParserVariables.ipaddress)).Or
+    (findName(ParserVariables.isproxyhotswap)).Or
+    (findName(ParserVariables.keepalivefailresp)).Or
+    (findName(ParserVariables.minactiveservlb)).Or
+    (findName(ParserVariables.Name)).Or
+    (findName(ParserVariables.prefixlength)).Or
+    (findName(ParserVariables.proxyaddress)).Or
+    (findName(ParserVariables.proxyenablekeepalive)).Or
+    (findName(ParserVariables.proxyloadbalancingmethod)).Or
+    (findName(ParserVariables.proxyname)).Or
+    (findName(ParserVariables.proxyredundancymode)).Or
+    (findName(ParserVariables.sbcipv4sipintname)).Or
+    (findName(ParserVariables.srdname)).Or
+    (findName(ParserVariables.successdetectint)).Or
+    (findName(ParserVariables.successdetectretries)).Or
+    (findName(ParserVariables.tag)).Or
+    (findName(ParserVariables.transporttype)).Or
+    (findName(ParserVariables.underlyingdev)).Or
+    (findName(ParserVariables.underlyingif)).Or
+    (findName(ParserVariables.vlan)).Or
+    (findName(ParserVariables.activate)).Or
+    (findName(ParserVariables.exit));
 
         public static Parser<string> ValueParser =
            findValue(ParserVariables.apptype).Or
@@ -95,8 +94,5 @@ namespace secondtry
            (findValue(ParserVariables.underlyingdev)).Or
            (findValue(ParserVariables.underlyingif)).Or
            (findValue(ParserVariables.vlan));
-
-
-       
     }
 }

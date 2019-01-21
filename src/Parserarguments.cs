@@ -22,6 +22,5 @@ namespace secondtry
         public static readonly Parser<string> proiplistident = from tap in Parse.String(ParserVariables.tap)
                                                                from subident in Parse.String(ParserVariables.proiplistident).Text()
                                                                select subident;
-
     }
 }
