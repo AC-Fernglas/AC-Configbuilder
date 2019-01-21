@@ -1,8 +1,12 @@
 # AC-Configbuilder
-_Beschreibung des Projekts_
+
+Der AC-Configbuilder soll eine automatisierung für das Erstellen von Konfigurationsdatein für AudioCode werden. <br>
+Dazu liest es durch einen Parser der mit [Sprache](https://github.com/sprache/Sprache) erstellt wurde eine zu veränderende Konfiguration ein und <br> 
+ersetzt gewünschte Datein.
 
 ## Struktur
-_hier muss die spätere Strucktur erklärt werden_
+
+Der AC-Configbuilder ist eine Consolenanwendung, welche über Commands gesteuert werden soll.
 
 
 ### Was soll es können
