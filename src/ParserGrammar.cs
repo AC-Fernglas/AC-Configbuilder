@@ -45,6 +45,7 @@ namespace secondtry
                    from searchResult in Parse.String(search).Text()
                    select search;
         }
+
         public static Parser<string> NameParser =
     findName(ParserVariables.apptype).Or
     (findName(ParserVariables.gateway)).Or

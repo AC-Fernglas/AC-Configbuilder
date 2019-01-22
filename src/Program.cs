@@ -162,7 +162,7 @@ namespace secondtry
                     {
                         getIdentNameAndValue(line, out configureexit, out subidentexit, out subident, out subidentvalue);
                         var Name = zurück(subident);
-                        if (Name != null)
+                        if (Name != null && subident == "network-dev")
                         {
                             AC = ObjectNetworkdev(AC, Name, subidentvalue);
                         }
@@ -188,7 +188,7 @@ namespace secondtry
                         Name = zurück(Name);
                         if (Name != null)
                         {
-                            AC = ObjectNetworkdev(AC, Name, Value);
+                            
                         }
                         continue;
                     }
@@ -199,7 +199,6 @@ namespace secondtry
                         Name = zurück(Name);
                         if (Name != null)
                         {
-                            AC = ObjectNetworkdev(AC, Name, Value);
                         }
                         continue;
                     }
@@ -210,7 +209,6 @@ namespace secondtry
                         Name = zurück(Name);
                         if (Name != null)
                         {
-                            AC = ObjectNetworkdev(AC, Name, Value);
                         }
                         continue;
                     }
