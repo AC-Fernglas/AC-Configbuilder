@@ -5,6 +5,7 @@
 
 **Version 01.08**
     * simplify the main program code
+    * added new command to create an empty configuration 
 
 **Version 01.07**
     * add Output

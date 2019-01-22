@@ -27,7 +27,7 @@ namespace secondtry
             Execute obj = new Execute();
             var helptemplate = "-h|--help";
             app.HelpOption(helptemplate);
-            app.Command("use", u =>
+            app.Command("replace", u =>
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
@@ -49,7 +49,7 @@ namespace secondtry
 
         }
     }
-    class Execute { 
+    class Execute {
         private void setuserpath(string mypath)
         {
             string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
@@ -69,10 +69,9 @@ namespace secondtry
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             string mypath = $@"..\\..\\..\\..\\samples";
-            if (exe.validpath(path) != " ")
+            if (exe.validpath(path) != null & path.Value() != " ")
             {
-                mypath = exe.validpath(path);
-            }
+            mypath = exe.validpath(path);
             var newFile = new StringBuilder();
             var config = File.ReadAllText(@"..\\..\\..\\..\\config\\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
@@ -84,6 +83,7 @@ namespace secondtry
                 AC = exe.parseinobject(item);
                 exe.replaceitem(AC, myconfig);
                 obj.getobject(AC, item);
+            }
             }
         }
         private string findDirectorys(string mypath)
@@ -122,7 +122,7 @@ namespace secondtry
             ident = String.Empty;
             configureexit = true;
 
-            if (ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip" || ParserGrammar.getidentifier.Parse(line) == Environment.NewLine|| ParserGrammar.getidentifier.Parse(line) == "\n")
+            if (ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip" || ParserGrammar.getidentifier.Parse(line) == Environment.NewLine|| ParserGrammar.getidentifier.Parse(line) == "\n" )
             {
                 ident = ParserGrammar.getidentifier.Parse(line);
                 configureexit = false;
@@ -185,6 +185,10 @@ namespace secondtry
                 string line = " ";
                 while ((line = Reader.ReadLine()) != null)
                 {
+                    if (line == string.Empty || line == "")
+                    {
+                        continue;
+                    }
                     if (configureexit)
                     {
                         getConfigureIdent(line, out configureexit, out ident);
@@ -398,19 +402,19 @@ namespace secondtry
             };
             return inif;
         }
-        private string validpath(CommandOption path)
+        private string validpath(CommandOption filepath)
         {
-            if (path.HasValue() && path.Value() != " " && path.Value() != null)
+
+            if (filepath.HasValue() && filepath.Value() != " " && filepath.Value() != null)
             {
-                string mypath = path.Value().ToString();
-                if (!File.Exists(mypath))
-                {
-                    Console.WriteLine("Bitte überprüfe deinen Path.");
-                    return " ";
-                }
-                return mypath;
+                var path = filepath.Value().ToString();
+                path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
+                string temp = Path.GetPathRoot(path); //For cases like: \text.txt
+                if (temp.StartsWith(@"\")) return null;
+                string pt = Path.GetFullPath(path);
+                return pt;
             }
-            return " ";
+            return null;
         }
         private void change(dynamic i, dynamic item)
         {
