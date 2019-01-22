@@ -258,7 +258,7 @@ namespace secondtry
                                 continue;
                         }
                     }
-                    if (ident == "configure voip" && subident == "proxy-set")
+                    if (configureexit == false && subidentexit == false && ident == "configure voip" && subident == "proxy-set")
                     {
                         switch (ParserGrammar.proxySetNameParser.Parse(line))
                         {
@@ -305,7 +305,7 @@ namespace secondtry
                                 continue;
                         }
                     }
-                    else if (ident == "configure voip" && subident == "proxy-ip")
+                    else if (configureexit == false && subidentexit == false && ident == "configure voip" && subident == "proxy-ip")
                     {
                         switch (ParserGrammar.proxyIpNameParser.Parse(line))
                         {
@@ -364,7 +364,7 @@ namespace secondtry
         {
             if (peka == "using-option")
             {
-                peka = "uoption";
+                peka = "using_option";
             }
             Enum.TryParse(peka, out proxyenablekeepalive blub);
             Enum.TryParse(prm, out proxyredundancymode blab);

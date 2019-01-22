@@ -136,6 +136,10 @@ namespace secondtry
                                                 configback.Add("  " + "proxy-name" + " " + value);
                                                 break;
                                             case "Proxyenablekeepalive":
+                                                if (value == "using_option")
+                                                {
+                                                    value = "using-option";
+                                                }
                                                 configback.Add("  " + "proxy-enable-keep-alive" + " " + value);
                                                 break;
                                             case "srdname":

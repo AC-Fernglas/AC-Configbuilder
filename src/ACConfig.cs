@@ -82,7 +82,7 @@ namespace secondtry
     };
     public enum proxyenablekeepalive
     {
-        uoptions,
+        using_option,
         otheroptions
     };
     public enum proxyredundancymode
