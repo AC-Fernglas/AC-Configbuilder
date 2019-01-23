@@ -3,7 +3,7 @@ configure network
   vlan-id 322
   underlying-if string
   name "EthD_UNP-1"
-  tagging tagged
+  tagging untagged
  exit
  network-dev 17
   vlan-id 1606

@@ -5,7 +5,7 @@ using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using Sprache;
 using Newtonsoft.Json;
-
+using System.Linq;
 
 namespace secondtry
 {
@@ -39,17 +39,18 @@ namespace secondtry
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
                 var path = c.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
-                var Net =  c.Option(@"--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Net = c.Option(@"--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Int = c.Option(@"--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Set = c.Option(@"--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Ip = c.Option(@"--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
-                c.OnExecute(() => { obj.RunCreate(path, Net,Int,Set,Ip); });
+                //c.OnExecute(() => { obj.RunCreate(path, Net,Int,Set,Ip); });
             });
             return app.Execute(commands);
 
         }
     }
-    class Execute {
+    class Execute
+    {
         private void setuserpath(string mypath) //dunno
         {
             string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
@@ -71,19 +72,19 @@ namespace secondtry
             string mypath = $@"..\\..\\..\\..\\samples";
             if (exe.validpath(path) != null & path.Value() != " ") //valify path if is on given
             {
-            mypath = exe.validpath(path); //sets user path for usage
-            var newFile = new StringBuilder();
-            var config = File.ReadAllText(@"..\\..\\..\\..\\config\\qwertz.json"); //get json
-            var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
-            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
-            List<string> dirs = new List<string>();
-            dirs.Add(exe.findDirectorys(mypath)); //search all files in Directory 
-            foreach (var item in dirs)
-            {
-                AC = exe.parseinobject(item); //parses current configuration into the AC object
-                exe.replaceitem(AC, myconfig); //replaces the wanted details
-                obj.getobject(AC, item); //output
-            }
+               // mypath = exe.validpath(path); //sets user path for usage
+                var newFile = new StringBuilder();
+                var config = File.ReadAllText(@"..\..\..\..\config\qwertz.json"); //get json
+                var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+                var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
+                List<string> dirs = new List<string>();
+                dirs.Add(exe.findDirectorys(mypath)); //search all files in Directory 
+                foreach (var item in dirs)
+                {
+                    AC = exe.parseinobject(item); //parses current configuration into the AC object
+                    exe.replaceitem(AC, myconfig); //replaces the wanted details
+                    obj.getobject(AC, item); //output
+                }
             }
         }
         private string findDirectorys(string mypath) // opens the .txt files in the directorypath
@@ -95,122 +96,198 @@ namespace secondtry
             }
             return null;
         }
-        private void getIdentNameAndValue(string line,out bool configureExit,out bool subidentexit, out string subident, out string subidentvalue) // parses the Indentifyer for the current block of the configuration
+        private void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue) // parses the Indentifyer for the current block of the configuration
         {
-            subident = ParserGrammar.getsubident.Parse(line);
+            subIdent = ParserGrammar.getsubident.Parse(line);
             configureExit = false;
-            subidentexit = false;
-            subidentvalue = String.Empty;
-            if (subident == "network-dev" ||
-                subident == "interface network-if" ||
-                subident == "proxy-set" ||
-                subident == "proxy-ip" ||
-                subident == "exit")
+            subIdentExit = false;
+            subIdentValue = String.Empty;
+            if (subIdent == "network-dev" ||
+                subIdent == "interface network-if" ||
+                subIdent == "proxy-set" ||
+                subIdent == "proxy-ip" ||
+                subIdent == "exit")
             {
-                if (subident == "exit")
+                if (subIdent == "exit")
                 {
                     configureExit = true;
-                    subidentexit = true;
+                    subIdentExit = true;
                     return;
                 }
-                subidentexit = false;
-                subidentvalue = ParserGrammar.subidentvalue.Parse(line);
+                subIdentExit = false;
+                subIdentValue = ParserGrammar.subidentvalue.Parse(line);
             }
         }
-        private void getConfigureIdent(string line,out bool configureexit, out string ident) //parses the head of the currend configurationblock
+        private void getConfigureIdent(string line, out bool configureExit, out string ident) //parses the head of the currend configurationblock
         {
             ident = String.Empty;
-            configureexit = true;
+            configureExit = true;
 
             if (ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip" || ParserGrammar.getidentifier.Parse(line) == Environment.NewLine || ParserGrammar.getidentifier.Parse(line) == "\n")
             {
                 ident = ParserGrammar.getidentifier.Parse(line);
-                configureexit = false;
+                configureExit = false;
             }
         }
-        private ACConfig parseinobject(string path) 
+        private ACConfig parseinobject(string path)
         {
+            Configureviop vo = new Configureviop();
+            ConfigureNetwork co = new ConfigureNetwork();
+            List<Networkdev> networkDevs = new List<Networkdev>();
+            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();
+            List<Proxyip> proxyIps = new List<Proxyip>();
+            List<Proxyset> proxySets = new List<Proxyset>();
+            ACConfig AC = new ACConfig();
 
+            Networkdev newList = new Networkdev();
+            networkDevs.Add(newList);
 
-            Configureviop vo = new Configureviop();                                                //
-            ConfigureNetwork co = new ConfigureNetwork();                                          //
-            ACConfig AC = new ACConfig();                                                          //
-            AC.configureNetwork = co;                                                              //
-            AC.configureviop = vo;                                                                 // here I create the whole instance of my object in which i wanna parse
-                                                                                                   //
-            List<Networkdev> netlist = new List<Networkdev>();                                     //
-            List<Interfacenetworkif> inif = new List<Interfacenetworkif>();                        //
-            List<Proxyip> prip = new List<Proxyip>();                                              //
-            List<Proxyset> prese = new List<Proxyset>();                                           //
-            
+            AC.configureNetwork = co;
+            AC.configureviop = vo;
 
+            AC.configureNetwork.networkdev = networkDevs;
+            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;
+
+            AC.configureviop.proxyip = proxyIps;
+            AC.configureviop.proxyset = proxySets;
+            // here I create the whole instance of my object in which i wanna parse
+            //
+            //
             string ident = " ";
-            bool configureexit = true;
-            string subident = " ";
-            bool subidentexit = true;
-            string subidentvalue = "";
+            bool configureExit = true;
+            string subIdent = " ";
+            bool subIdentExit = true;
+            string subIdentValue = "";
+            int networkDevListTndex = 0;
+            int interfaceNetwokIfListTndex = 0;
+            int proxySetListTndex = 0;
+            int proxyIpListTndex = 0;
 
             using (StreamReader Reader = new StreamReader(path))
             {
                 string line = " ";
                 while ((line = Reader.ReadLine()) != null)
                 {
-                    if (configureexit)
+                    if (configureExit)
                     {
-                        getConfigureIdent(line, out configureexit, out ident);
+                        getConfigureIdent(line, out configureExit, out ident);
                         continue;
                     }
-                    if (subidentexit)
+                    if (subIdentExit)
                     {
-                        getIdentNameAndValue(line, out configureexit, out subidentexit, out subident, out subidentvalue);
-                        var Name = zurück(subident);
-                        if (Name != null && subident == "network-dev")
+                        getIdentNameAndValue(line, out configureExit, out subIdentExit, out subIdent, out subIdentValue);
+                        var Name = zurück(subIdent);
+                        if (Name != null && subIdent == "network-dev")
                         {
-                            AC = ObjectNetworkdev(AC, Name, subidentvalue);
+                            networkDevs.Add(newList);
+                            AC = ObjectNetworkdev(AC, Name, subIdentValue, networkDevListTndex);
                         }
                         continue;
-                       
+
                     }
 
-                    if (configureexit == false && subidentexit == false && ident == "configure network" && subident == "network-dev")
+                    if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "network-dev")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
-                        var Value = ParserGrammar.ValueParser.Parse(line);
-                        Name = zurück(Name);
-                        if (Name != null )
+                        if (Name == ParserVariables.exit)
                         {
-                            AC = ObjectNetworkdev(AC, Name, Value);
+                            subIdentExit = true;
+                            networkDevListTndex++;
+                            continue;
+                        }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                         }
+                        if (Name == "activate")
+                        {
+                           var Value = true;
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                        }
+                        else
+                        {
+                           var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                        }
+
+
+                        continue;
+                    }
+                    else if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "interface network-if")
+                    {
+                        var Name = ParserGrammar.NameParser.Parse(line);
+                        if (Name == ParserVariables.exit)
+                        {
+                            subIdentExit = true;
+                            networkDevListTndex++;
+                            continue;
+                        }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                        }
+                        if (Name == "activate")
+                        {
+                            var Value = true;
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                        }
+                        else
+                        {
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
                         }
                         continue;
                     }
-                    else if (configureexit == false && subidentexit == false && ident == "configure network" && subident == "interface network-if")
+                    if (ident == "configure voip" && subIdent == "proxy-set")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
-                        var Value = ParserGrammar.ValueParser.Parse(line);
-                        Name = zurück(Name);
-                        if (Name != null)
+                        if (Name == ParserVariables.exit)
                         {
-                            
+                            subIdentExit = true;
+                            networkDevListTndex++;
+                            continue;
+                        }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                        }
+                        if (Name == "activate")
+                        {
+                            var Value = true;
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                        }
+                        else
+                        {
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
                         }
                         continue;
                     }
-                    if (ident == "configure voip" && subident == "proxy-set")
-                    {
-                        var Name = ParserGrammar.NameParser.Parse(line);
-                        var Value = ParserGrammar.ValueParser.Parse(line);
-                        Name = zurück(Name);
-                        if (Name != null)
+                    else if (ident == "configure voip" && subIdent == "proxy-ip")
+                    { var Name = ParserGrammar.NameParser.Parse(line);
+                        if (Name == ParserVariables.exit)
                         {
+                            subIdentExit = true;
+                            networkDevListTndex++;
+                            continue;
                         }
-                        continue;
-                    }
-                    else if (ident == "configure voip" && subident == "proxy-ip")
-                    {
-                        var Name = ParserGrammar.NameParser.Parse(line);
-                        var Value = ParserGrammar.ValueParser.Parse(line);
                         Name = zurück(Name);
-                        if (Name != null)
+                        if (Name == null)
                         {
+                            continue;
+                         }
+                        if (Name == "activate")
+                        {
+                           var Value = true;
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                        }
+                        else
+                        {
+                           var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
                         }
                         continue;
                     }
@@ -226,35 +303,35 @@ namespace secondtry
                 case ParserVariables.devlistident:
                 case ParserVariables.interlistident:
                     return "listid";
-                case ParserVariables.proiplistident :
+                case ParserVariables.proiplistident:
                     return "ip";
                 case ParserVariables.activate:
                     return "activate";
                 case ParserVariables.vlan:
                     return "vlan";
-                case ParserVariables.underlyingdev :
+                case ParserVariables.underlyingdev:
                     return "underlyingdev";
                 case ParserVariables.Name:
                     return "Name";
-                case ParserVariables.tag :
+                case ParserVariables.tag:
                     return "tag";
-                case ParserVariables.apptype :
+                case ParserVariables.apptype:
                     return "apptape";
-                case ParserVariables.ipaddress :
+                case ParserVariables.ipaddress:
                     return "ipaddress";
-                case ParserVariables.prefixlength :
+                case ParserVariables.prefixlength:
                     return "prefixlength";
                 case ParserVariables.gateway:
                     return "gateway";
-                case ParserVariables.underlyingif :
+                case ParserVariables.underlyingif:
                     return "underlyingif";
-                case ParserVariables.proxyname :
+                case ParserVariables.proxyname:
                     return "proxyname";
                 case ParserVariables.proxyenablekeepalive:
                     return "proxyenablekeepalive";
                 case ParserVariables.srdname:
                     return "srdname";
-                case ParserVariables.sbcipv4sipintname :
+                case ParserVariables.sbcipv4sipintname:
                     return "sbcipv4sipintname";
                 case ParserVariables.keepalivefailresp:
                     return "keepalivefailresp";
@@ -277,23 +354,50 @@ namespace secondtry
                 default:
                     return null;
             }
-        } 
-        private ACConfig ObjectNetworkdev(ACConfig Config, string Name, dynamic Value)
+        }
+        private ACConfig ObjectNetworkdev(ACConfig Config, string Name, dynamic Value, int Index)
         {
-           var ListNetworkdev = Config.configureNetwork.networkdev;
-            var i = 0;
-                foreach (var item in ListNetworkdev[i].GetType().GetProperties())
+            if (Value == null)
+            {
+                return Config;
+            }
+            var ListNetworkdev = Config.configureNetwork.networkdev;
+            var property = ListNetworkdev[Index].GetType().GetProperties().FirstOrDefault(d => d.Name == Name);
+            var propertyType = property.PropertyType;
+
+            if(propertyType == typeof(Int32)  || propertyType == typeof(Nullable<Int32>))
+            {
+                property.SetValue(ListNetworkdev[Index], Convert.ToInt32(Value));
+            }
+            else if (propertyType.IsEnum)
+            {
+                var enumMember = propertyType
+                    .GetFields() // List all fields of an enum
+                    .FirstOrDefault(m => 
+                        m.Name == Convert.ToString(Value) ||
+                        m.GetCustomAttributes(typeof(NameAttribute), false) // Search for the NameAttribute
+                            .Any(a => (a as NameAttribute).Name == Convert.ToString(Value) // check if the name Attribut has the same value as the Value.
+                        )
+                    );
+                if(enumMember == null)
                 {
-                    if (item.GetValue(ListNetworkdev[i]) == null && (Value != null && item.Name == Name))
-                    {
-                    item.GetType().GetProperty(item.Name).SetValue(item.GetValue(item), Value);
-                     }
-                    else
-                    {
-                    i++;
-                    ObjectNetworkdev(Config, Name, Value);
-                    }
-                }   
+                    Console.WriteLine($"Warn: skip property {property.Name} because the value {Value} is not valid for this field.");
+                    return Config;
+                }
+                var enumValue = Enum.Parse(propertyType, enumMember.Name);
+                property.SetValue(ListNetworkdev[Index], enumValue);
+
+                //Console.WriteLine($"Warn: skip property {property.Name} because enums currently not supported.");
+            }
+            else if (propertyType == typeof(Boolean))
+            {
+                property.SetValue(ListNetworkdev[Index], Convert.ToBoolean(Value));
+            }
+            else
+            {
+                property.SetValue(ListNetworkdev[Index], Value);
+            }
+
             return Config;
         }
         private string validpath(CommandOption path)

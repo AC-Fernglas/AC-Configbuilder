@@ -72,8 +72,8 @@ namespace secondtry
     
 
     public enum tag
-    {
-        tagged,
+    {        
+        tagged,        
         untagged
     };
     public enum transporttype
@@ -81,9 +81,12 @@ namespace secondtry
         udp,
         tcp
     };
+    
     public enum proxyenablekeepalive
-    {
-        uoptions,
+    {        
+        [Name("using-options")]
+        usingOptions,
+        [Name("other-options")]
         otheroptions
     };
     public enum proxyredundancymode
