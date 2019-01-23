@@ -21,26 +21,36 @@ namespace secondtry
 
     class Commands
     {
-        public int Idel(string[] commands)
+        public int Idel(string[] commands)  // start 
         {
             var app = new CommandLineApplication();
             Execute obj = new Execute();
-            var helptemplate = "-h|--help";
+            var helptemplate = "-h|--help"; //definition of the helptemplate
             app.HelpOption(helptemplate);
-            app.Command("use", u =>
+            app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
                 var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.run(path); });
             });
+            app.Command("create", c => //creats a new config 
+            {
+                c.HelpOption(helptemplate);
+                c.Description = "Erstellt eine neue Configvorlage.";
+                var path = c.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                var Net =  c.Option(@"--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Int = c.Option(@"--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Set = c.Option(@"--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Ip = c.Option(@"--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                c.OnExecute(() => { obj.RunCreate(path, Net,Int,Set,Ip); });
+            });
             return app.Execute(commands);
 
         }
     }
-    class Execute
-    {
-        private void setuserpath(string mypath)
+    class Execute {
+        private void setuserpath(string mypath) //dunno
         {
             string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
             StringBuilder newFile = new StringBuilder();
@@ -53,39 +63,39 @@ namespace secondtry
             }
             File.WriteAllText($@"..\\..\\..\\..\\config\\qwertz.json", newFile.ToString());
         }
-        public void run(CommandOption path)
+        public void run(CommandOption path) //run for replace
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             string mypath = $@"..\\..\\..\\..\\samples";
-            if (exe.validpath(path) != " ")
+            if (exe.validpath(path) != null & path.Value() != " ") //valify path if is on given
             {
-                mypath = exe.validpath(path);
-            }
+            mypath = exe.validpath(path); //sets user path for usage
             var newFile = new StringBuilder();
             var config = File.ReadAllText(@"..\\..\\..\\..\\config\\qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
             List<string> dirs = new List<string>();
-            dirs.Add(exe.findDirectorys(mypath));
+            dirs.Add(exe.findDirectorys(mypath)); //search all files in Directory 
             foreach (var item in dirs)
             {
-                AC = exe.parseinobject(item);
-                exe.replaceitem(AC, myconfig);
-                obj.getobject(AC, item);
+                AC = exe.parseinobject(item); //parses current configuration into the AC object
+                exe.replaceitem(AC, myconfig); //replaces the wanted details
+                obj.getobject(AC, item); //output
+            }
             }
         }
-        private string findDirectorys(string mypath)
+        private string findDirectorys(string mypath) // opens the .txt files in the directorypath
         {
-            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
+            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
             foreach (var item in dirs)
             {
                 return item;
             }
             return null;
         }
-        private void getIdentNameAndValue(string line, out bool configureExit, out bool subidentexit, out string subident, out string subidentvalue)
+        private void getIdentNameAndValue(string line,out bool configureExit,out bool subidentexit, out string subident, out string subidentvalue) // parses the Indentifyer for the current block of the configuration
         {
             subident = ParserGrammar.getsubident.Parse(line);
             configureExit = false;
@@ -107,7 +117,7 @@ namespace secondtry
                 subidentvalue = ParserGrammar.subidentvalue.Parse(line);
             }
         }
-        private void getConfigureIdent(string line, out bool configureexit, out string ident)
+        private void getConfigureIdent(string line,out bool configureexit, out string ident) //parses the head of the currend configurationblock
         {
             ident = String.Empty;
             configureexit = true;
@@ -118,30 +128,22 @@ namespace secondtry
                 configureexit = false;
             }
         }
-        private ACConfig parseinobject(string path)
+        private ACConfig parseinobject(string path) 
         {
 
 
-            Configureviop vo = new Configureviop();
-            ConfigureNetwork co = new ConfigureNetwork();
-            List<Networkdev> networkdev = new List<Networkdev>();
-            List < Interfacenetworkif> interfacenetworkif = new List<Interfacenetworkif>();
-            List<Proxyip> proxyip = new List<Proxyip>();
-            List<Proxyset> proxyset = new List<Proxyset>();
-            ACConfig AC = new ACConfig();
-
-            Networkdev newlist = new Networkdev();
-            networkdev.Add(newlist);
-
-            AC.configureNetwork = co;
-            AC.configureviop = vo;
-
-            AC.configureNetwork.networkdev = networkdev;
-            AC.configureNetwork.interfacenetworkif = interfacenetworkif;
-
-            AC.configureviop.proxyip = proxyip;
-            AC.configureviop.proxyset = proxyset;
+            Configureviop vo = new Configureviop();                                                //
+            ConfigureNetwork co = new ConfigureNetwork();                                          //
+            ACConfig AC = new ACConfig();                                                          //
+            AC.configureNetwork = co;                                                              //
+            AC.configureviop = vo;                                                                 // here I create the whole instance of my object in which i wanna parse
+                                                                                                   //
+            List<Networkdev> netlist = new List<Networkdev>();                                     //
+            List<Interfacenetworkif> inif = new List<Interfacenetworkif>();                        //
+            List<Proxyip> prip = new List<Proxyip>();                                              //
+            List<Proxyset> prese = new List<Proxyset>();                                           //
             
+
             string ident = " ";
             bool configureexit = true;
             string subident = " ";
