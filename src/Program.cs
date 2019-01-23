@@ -72,7 +72,7 @@ namespace secondtry
             string mypath = $@"..\\..\\..\\..\\samples";
             if (exe.validpath(path) != null & path.Value() != " ") //valify path if is on given
             {
-               // mypath = exe.validpath(path); //sets user path for usage
+                // mypath = exe.validpath(path); //sets user path for usage
                 var newFile = new StringBuilder();
                 var config = File.ReadAllText(@"..\..\..\..\config\qwertz.json"); //get json
                 var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
@@ -82,7 +82,16 @@ namespace secondtry
                 foreach (var item in dirs)
                 {
                     AC = exe.parseinobject(item); //parses current configuration into the AC object
-                    exe.replaceitem(AC, myconfig); //replaces the wanted details
+                    if (myconfig.configureNetwork != null)
+                    {
+                        AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
+                        AC = exe.replaceitem(AC, myconfig.configureNetwork.interfacenetworkif, "interfacenetworkif");
+                    }
+                    if (myconfig.configureviop != null)
+                    {
+                        AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
+                        AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
+                    }
                     obj.getobject(AC, item); //output
                 }
             }
@@ -139,8 +148,11 @@ namespace secondtry
             List<Proxyset> proxySets = new List<Proxyset>();
             ACConfig AC = new ACConfig();
 
-            Networkdev newList = new Networkdev();
-            networkDevs.Add(newList);
+            Networkdev newListNetworkDev = new Networkdev();
+            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
+            Proxyip newListProxyIp = new Proxyip();
+            Proxyset newListProxySet = new Proxyset();
+
 
             AC.configureNetwork = co;
             AC.configureviop = vo;
@@ -179,8 +191,23 @@ namespace secondtry
                         var Name = zurück(subIdent);
                         if (Name != null && subIdent == "network-dev")
                         {
-                            networkDevs.Add(newList);
-                            AC = ObjectNetworkdev(AC, Name, subIdentValue, networkDevListTndex);
+                            networkDevs.Add(newListNetworkDev);
+                            AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
+                        }
+                        else if (Name != null && subIdent == "interface network-if")
+                        {
+                            interfaceNetworkIfs.Add(newListInterfaceNetworkIf);
+                            AC = ListParsing(AC, Name, subIdentValue, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
+                        }
+                        else if (Name != null && subIdent == "proxy-set")
+                        {
+                            proxySets.Add(newListProxySet);
+                            AC = ListParsing(AC, Name, subIdentValue, proxySetListTndex, AC.configureviop.proxyset, subIdent);
+                        }
+                        else if (Name != null && subIdent == "proxy-ip")
+                        {
+                            proxyIps.Add(newListProxyIp);
+                            AC = ListParsing(AC, Name, subIdentValue, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
                         }
                         continue;
 
@@ -199,16 +226,16 @@ namespace secondtry
                         if (Name == null)
                         {
                             continue;
-                         }
+                        }
                         if (Name == "activate")
                         {
-                           var Value = true;
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            var Value = true;
+                            AC = ListParsing(AC, Name, Value, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
                         }
                         else
                         {
-                           var Value = ParserGrammar.ValueParser.Parse(line);
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ListParsing(AC, Name, Value, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
                         }
 
 
@@ -220,7 +247,7 @@ namespace secondtry
                         if (Name == ParserVariables.exit)
                         {
                             subIdentExit = true;
-                            networkDevListTndex++;
+                            interfaceNetwokIfListTndex++;
                             continue;
                         }
                         Name = zurück(Name);
@@ -231,12 +258,12 @@ namespace secondtry
                         if (Name == "activate")
                         {
                             var Value = true;
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            AC = ListParsing(AC, Name, Value, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
                         }
                         else
                         {
                             var Value = ParserGrammar.ValueParser.Parse(line);
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            AC = ListParsing(AC, Name, Value, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
                         }
                         continue;
                     }
@@ -246,7 +273,7 @@ namespace secondtry
                         if (Name == ParserVariables.exit)
                         {
                             subIdentExit = true;
-                            networkDevListTndex++;
+                            proxySetListTndex++;
                             continue;
                         }
                         Name = zurück(Name);
@@ -257,37 +284,38 @@ namespace secondtry
                         if (Name == "activate")
                         {
                             var Value = true;
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            AC = ListParsing(AC, Name, Value, proxySetListTndex, AC.configureviop.proxyset, subIdent);
                         }
                         else
                         {
                             var Value = ParserGrammar.ValueParser.Parse(line);
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            AC = ListParsing(AC, Name, Value, proxySetListTndex, AC.configureviop.proxyset, subIdent);
                         }
                         continue;
                     }
                     else if (ident == "configure voip" && subIdent == "proxy-ip")
-                    { var Name = ParserGrammar.NameParser.Parse(line);
+                    {
+                        var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
                         {
                             subIdentExit = true;
-                            networkDevListTndex++;
+                            proxyIpListTndex++;
                             continue;
                         }
                         Name = zurück(Name);
                         if (Name == null)
                         {
                             continue;
-                         }
+                        }
                         if (Name == "activate")
                         {
-                           var Value = true;
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            var Value = true;
+                            AC = ListParsing(AC, Name, Value, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
                         }
                         else
                         {
-                           var Value = ParserGrammar.ValueParser.Parse(line);
-                            AC = ObjectNetworkdev(AC, Name, Value, networkDevListTndex);
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ListParsing(AC, Name, Value, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
                         }
                         continue;
                     }
@@ -316,7 +344,7 @@ namespace secondtry
                 case ParserVariables.tag:
                     return "tag";
                 case ParserVariables.apptype:
-                    return "apptape";
+                    return "apptype";
                 case ParserVariables.ipaddress:
                     return "ipaddress";
                 case ParserVariables.prefixlength:
@@ -355,49 +383,73 @@ namespace secondtry
                     return null;
             }
         }
-        private ACConfig ObjectNetworkdev(ACConfig Config, string Name, dynamic Value, int Index)
+        private ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent)
         {
+            ;
             if (Value == null)
             {
                 return Config;
             }
-            var ListNetworkdev = Config.configureNetwork.networkdev;
-            var property = ListNetworkdev[Index].GetType().GetProperties().FirstOrDefault(d => d.Name == Name);
-            var propertyType = property.PropertyType;
-
-            if(propertyType == typeof(Int32)  || propertyType == typeof(Nullable<Int32>))
+            foreach (var item in myList[Index].GetType().GetProperties())
             {
-                property.SetValue(ListNetworkdev[Index], Convert.ToInt32(Value));
-            }
-            else if (propertyType.IsEnum)
-            {
-                var enumMember = propertyType
-                    .GetFields() // List all fields of an enum
-                    .FirstOrDefault(m => 
-                        m.Name == Convert.ToString(Value) ||
-                        m.GetCustomAttributes(typeof(NameAttribute), false) // Search for the NameAttribute
-                            .Any(a => (a as NameAttribute).Name == Convert.ToString(Value) // check if the name Attribut has the same value as the Value.
-                        )
-                    );
-                if(enumMember == null)
+                var property = item;
+                if (property.Name != Name)
                 {
-                    Console.WriteLine($"Warn: skip property {property.Name} because the value {Value} is not valid for this field.");
-                    return Config;
+                    continue;
                 }
-                var enumValue = Enum.Parse(propertyType, enumMember.Name);
-                property.SetValue(ListNetworkdev[Index], enumValue);
+                var propertyType = property.PropertyType;
 
-                //Console.WriteLine($"Warn: skip property {property.Name} because enums currently not supported.");
-            }
-            else if (propertyType == typeof(Boolean))
-            {
-                property.SetValue(ListNetworkdev[Index], Convert.ToBoolean(Value));
-            }
-            else
-            {
-                property.SetValue(ListNetworkdev[Index], Value);
-            }
+                if (propertyType == typeof(Int32) || propertyType == typeof(Nullable<Int32>))
+                {
+                    property.SetValue(myList[Index], Convert.ToInt32(Value));
+                }
+                else if (propertyType.IsEnum)
+                {
+                    var enumMember = propertyType
+                        .GetFields(); // List all fields of an enum
+                    foreach (var member in enumMember)
+                    {
+                        if (member.Name == Convert.ToString(Value) ||
+                             Convert.ToString(Value) == Convert.ToString(member.GetCustomAttributes(typeof(NameAttribute), false)))
+                        {
+                            if (member == null)
+                            {
+                                Console.WriteLine($"Warn: skip property {property.Name} because the value {Value} is not valid for this field.");
+                                return Config;
+                            }
+                            var enumValue = Enum.Parse(propertyType, member.Name);
+                            property.SetValue(myList[Index], enumValue);
 
+                        }  //Console.WriteLine($"Warn: skip property {property.Name} because enums currently not supported.");
+                    }
+                }
+                else if (propertyType == typeof(Boolean))
+                {
+                    property.SetValue(myList[Index], Convert.ToBoolean(Value));
+                }
+                else
+                {
+                    property.SetValue(myList[Index], Value);
+                }
+                switch (subIdent)
+                {
+                    case "network-dev":
+                        Config.configureNetwork.networkdev = myList;
+                        return Config;
+                    case "interfacenetworkif":
+                        Config.configureNetwork.interfacenetworkif.Add(myList);
+                        return Config;
+                    case "proxyset":
+                        Config.configureviop.proxyset.Add(myList);
+                        return Config;
+                    case "proxyip":
+                        Config.configureviop.proxyip.Add(myList);
+                        return Config;
+                    default:
+                        break;
+                }
+                return Config;
+            }
             return Config;
         }
         private string validpath(CommandOption path)
@@ -425,74 +477,57 @@ namespace secondtry
                 }
             }
         }
-        public void replaceitem(ACConfig AC, ACConfig myconfig)
+        public ACConfig replaceitem(ACConfig AC, dynamic list, string whatlist)
         {
-            if (myconfig.configureNetwork != null)
+            if (list == null)
             {
-                if (myconfig.configureNetwork.networkdev != null)
+                return AC;
+            }
+            foreach (var item in list)
+            {
+                switch (whatlist)
                 {
-                    foreach (var item in myconfig.configureNetwork.networkdev)
-                    {
+                    case "networkdev":
                         foreach (var i in AC.configureNetwork.networkdev)
                         {
                             if (item.listid == i.listid)
                             {
-
                                 change(i, item);
                             }
                         }
-                    }
-                }
-                if (myconfig.configureNetwork.interfacenetworkif != null)
-                {
-                    foreach (var item in myconfig.configureNetwork.interfacenetworkif)
-                    {
+                        break;
+                    case "networkinterfaceif":
                         foreach (var i in AC.configureNetwork.interfacenetworkif)
                         {
                             if (item.listid == i.listid)
                             {
-
                                 change(i, item);
                             }
                         }
-                    }
-                }
-            }
-            if (myconfig.configureviop != null)
-            {
-                if (myconfig.configureviop.proxyset != null)
-                {
-                    foreach (var item in myconfig.configureviop.proxyset)
-                    {
+                        break;
+                    case "proxyset":
                         foreach (var i in AC.configureviop.proxyset)
                         {
                             if (item.listid == i.listid)
                             {
-
                                 change(i, item);
                             }
                         }
-                    }
-                }
-                if (myconfig.configureviop.proxyset != null)
-                {
-                    foreach (var item in myconfig.configureviop.proxyip)
-                    {
+                        break;
+                    case "proxyip":
                         foreach (var i in AC.configureviop.proxyip)
                         {
-                            foreach (var propertyInfo in item.GetType().GetProperties())
+                            if (item.ip == i.ip)
                             {
-                                if (item.ip == i.ip)
-                                {
-
-                                    change(i, item);
-                                }
+                                change(i, item);
                             }
                         }
-                    }
+                        break;
+                    default:
+                        break;
                 }
             }
-
+            return AC;
         }
     }
 }
