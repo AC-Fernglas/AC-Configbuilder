@@ -3,8 +3,16 @@
 <summary>Version 01</summary>
 <br>
 
+**Version 01.08**
+    * simplify the main program code
+    * added new command to create an empty configuration 
+
+**Version 01.07**
+    * add Output
+    * simplify the parser code
+
 **Version 01.06**
-   * add In Parser
+   * add Parser
    
 **Version 01.05**
 * reworked Code, Transfer code to .Net Core

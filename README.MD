@@ -1,9 +1,18 @@
 # AC-Configbuilder
-_Beschreibung des Projekts_
+
+Der AC-Configbuilder soll eine automatisierung für das Erstellen von Konfigurationsdatein für AudioCode werden. <br>
+Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme Teile einer bereits bestehenden.
 
 ## Struktur
-_hier muss die spätere Strucktur erklärt werden_
 
+Der AC-Configbuilder ist eine Consolenanwendung, welche über Commands gesteuert werden soll. <br>
+
+Mit dem Befehl ```--replace``` ist es möglich bestehende Konfigurationen zu bearbeiten. <br>
+Durch die Option ```--path <pathtothedirectory>```kann der Benutzer das Verzeichniss in welchem Konfigurationsdatein geändert werden soll ändern. <br>
+
+Der Befehl ```--create```erstellt eine neue konfigurationsdatei. <br>
+Durch die Option ```--path <pathtothedirectory>```kann der Benutzer das Verzeichniss in welchem Konfigurationsdatein erstellt werden soll ändern. <br>
+Die Anzahl der einzelnen, von der Datei zu konfigurienden Abschnitte, können mit ```--networkdev <Anzahl>``` , ```--interfacenetworkif <Anzahl>``` , ```--proxyset <Anzahl>``` und ```--proxyip <Anzahl>``` variiertwerden.
 
 ### Was soll es können
 **1.  .config Datei erstellen, die AC-Datein n-fach erstellen kann.**

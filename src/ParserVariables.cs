@@ -45,6 +45,5 @@ namespace secondtry
         public const string minactiveservlb ="min-active-serv-lb";
         public const string proxyaddress ="proxy-address";
         public const string transporttype = "transport-type";
-
     }
 }

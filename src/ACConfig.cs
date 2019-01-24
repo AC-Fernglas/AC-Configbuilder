@@ -22,7 +22,6 @@ namespace secondtry
         public string underlyingif { get; set; }
         public string Name { get; set; }
         public tag tag { get; set; }
-        
         public bool activate { get; set; }
     }
 

@@ -7,7 +7,6 @@ namespace secondtry
 {
     public class ParserGrammar
     {
-
         public static readonly Parser<string> getidentifier =
              (from net in Parse.String(ParserVariables.identifier + ParserVariables.tap + ParserVariables.netidentifier).Text()
               select net)
