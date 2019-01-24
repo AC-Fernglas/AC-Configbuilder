@@ -51,7 +51,8 @@ namespace secondtry
         }
     }
 
-    class Execute {
+    class Execute
+    {
         private void setuserpath(string mypath)
         {
             string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
@@ -96,7 +97,7 @@ namespace secondtry
                     obj.getobject(AC, item); //output
                 }
             }
-            }
+            
         }
         private string findDirectorys(string mypath) // opens the .txt files in the directorypath
         {
@@ -141,62 +142,60 @@ namespace secondtry
         }
         private ACConfig parseinobject(string path)
         {
-            Configureviop vo = new Configureviop();
-            ConfigureNetwork co = new ConfigureNetwork();
-            List<Networkdev> networkDevs = new List<Networkdev>();
-            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();
-            List<Proxyip> proxyIps = new List<Proxyip>();
-            List<Proxyset> proxySets = new List<Proxyset>();
-            ACConfig AC = new ACConfig();
-
-            Networkdev newListNetworkDev = new Networkdev();
-            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
-            Proxyip newListProxyIp = new Proxyip();
-            Proxyset newListProxySet = new Proxyset();
-
-
-            AC.configureNetwork = co;
-            AC.configureviop = vo;
-
-            AC.configureNetwork.networkdev = networkDevs;
-            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;
-
-            AC.configureviop.proxyip = proxyIps;
-            AC.configureviop.proxyset = proxySets;
-            // here I create the whole instance of my object in which i wanna parse
-            //
-            //
-            string ident = " ";
-            bool configureExit = true;
-            string subIdent = " ";
-            bool subIdentExit = true;
-            string subIdentValue = "";
-            int networkDevListTndex = 0;
-            int interfaceNetwokIfListTndex = 0;
-            int proxySetListTndex = 0;
-            int proxyIpListTndex = 0;
+            Configureviop vo = new Configureviop();                                                         //
+            ConfigureNetwork co = new ConfigureNetwork();                                                   //
+            List<Networkdev> networkDevs = new List<Networkdev>();                                          //
+            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();                  //
+            List<Proxyip> proxyIps = new List<Proxyip>();                                                   //
+            List<Proxyset> proxySets = new List<Proxyset>();                                                //
+            ACConfig AC = new ACConfig();                                                                   //
+                                                                                                            //
+            Networkdev newListNetworkDev = new Networkdev();                                                //
+            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();                        //
+            Proxyip newListProxyIp = new Proxyip();                                                         //
+            Proxyset newListProxySet = new Proxyset();                                                      //
+                                                                                                            //   Objekt zusammenbauen
+                                                                                                            //
+            AC.configureNetwork = co;                                                                       //
+            AC.configureviop = vo;                                                                          //
+                                                                                                            //
+            AC.configureNetwork.networkdev = networkDevs;                                                   //
+            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;                                   //
+                                                                                                            //
+            AC.configureviop.proxyip = proxyIps;                                                            //
+            AC.configureviop.proxyset = proxySets;                                                          //
+                                                                                                            
+            string ident = " ";                                                                             //
+            bool configureExit = true;                                                                      //
+            string subIdent = " ";                                                                          //
+            bool subIdentExit = true;                                                                       //
+            string subIdentValue = "";                                                                      // Variablen 
+            int networkDevListTndex = 0;                                                                    //
+            int interfaceNetwokIfListTndex = 0;                                                             //
+            int proxySetListTndex = 0;                                                                      //
+            int proxyIpListTndex = 0;                                                                       //
 
             using (StreamReader Reader = new StreamReader(path))
             {
                 string line = " ";
-                while ((line = Reader.ReadLine()) != null)
+                while ((line = Reader.ReadLine()) != null)                                                  // zu editierende File einlesen (Zeile für Zeile)
                 {
-                    if (line == string.Empty || line == "")
+                    if (line == string.Empty || line == "")                                                 // wenn leere Zeile überspringe
                     {
                         continue;
                     }
-                    if (configureexit)
+                    if (configureExit)                                                                      // wenn True -> kein Überbereich(configure voip // configure network) in dem die Konfig definiert wird
                     {
                         getConfigureIdent(line, out configureExit, out ident);
                         continue;
                     }
                     if (subIdentExit)
                     {
-                        getIdentNameAndValue(line, out configureExit, out subIdentExit, out subIdent, out subIdentValue);
-                        var Name = zurück(subIdent);
+                        getIdentNameAndValue(line, out configureExit, out subIdentExit, out subIdent, out subIdentValue);  // wenn true -> keien Bereich(networkDev / interfaceNetworkIf) in dem Konfig konfiguriert wird
+                        var Name = returnRealName(subIdent);
                         if (Name != null && subIdent == "network-dev")
                         {
-                            networkDevs.Add(newListNetworkDev);
+                            networkDevs.Add(newListNetworkDev);                                            //neue Liste wird erstellt für jede Bereich von networkDev
                             AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
                         }
                         else if (Name != null && subIdent == "interface network-if")
@@ -221,18 +220,18 @@ namespace secondtry
                     if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "network-dev")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
-                        if (Name == ParserVariables.exit)
+                        if (Name == ParserVariables.exit) // Bereich wird durch exit beendet -> Listenindex wird erhöht und es gibt keinen Bereich in dem definiert die Konfig defoiniert wird
                         {
                             subIdentExit = true;
                             networkDevListTndex++;
                             continue;
                         }
-                        Name = zurück(Name);
-                        if (Name == null)
+                        Name = returnRealName(Name);
+                        if (Name == null) 
                         {
                             continue;
                         }
-                        if (Name == "activate")
+                        if (Name == "activate") //boolscher wert der in der KOnfiguration keinen weiteren Wert zugewieden bekommt -> entweder da oder nicht
                         {
                             var Value = true;
                             AC = ListParsing(AC, Name, Value, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
@@ -255,7 +254,7 @@ namespace secondtry
                             interfaceNetwokIfListTndex++;
                             continue;
                         }
-                        Name = zurück(Name);
+                        Name = returnRealName(Name);
                         if (Name == null)
                         {
                             continue;
@@ -272,7 +271,7 @@ namespace secondtry
                         }
                         continue;
                     }
-                    if (configureexit == false && subidentexit == false && ident == "configure voip" && subident == "proxy-set")
+                    if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == "proxy-set")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
@@ -281,7 +280,7 @@ namespace secondtry
                             proxySetListTndex++;
                             continue;
                         }
-                        Name = zurück(Name);
+                        Name = returnRealName(Name);
                         if (Name == null)
                         {
                             continue;
@@ -298,7 +297,7 @@ namespace secondtry
                         }
                         continue;
                     }
-                    else if (configureexit == false && subidentexit == false && ident == "configure voip" && subident == "proxy-ip")
+                    else if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == "proxy-ip")
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
@@ -307,7 +306,7 @@ namespace secondtry
                             proxyIpListTndex++;
                             continue;
                         }
-                        Name = zurück(Name);
+                        Name = returnRealName(Name);
                         if (Name == null)
                         {
                             continue;
@@ -328,7 +327,7 @@ namespace secondtry
             }
             return AC;
         }
-        private string zurück(string Name)
+        private string returnRealName(string Name) // wandelt die in der Konfiguration enthaltenen bezeichner in die Variablen Namen der Listen um da diese nicht zu 100% übereinstimmen 
         {
             switch (Name)
             {
@@ -388,55 +387,55 @@ namespace secondtry
                     return null;
             }
         }
-        private ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent)
+        private ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) //setzt die Value in aus dfem Bereich in die Passende liste an der Richtigen stelle
         {
             ;
-            if (Value == null)
+            if (Value == null) // falls es keine Value gibt brauch es nix machen
             {
                 return Config;
             }
-            foreach (var item in myList[Index].GetType().GetProperties())
+            foreach (var item in myList[Index].GetType().GetProperties()) //property aus index X   bekommeb
             {
                 var property = item;
-                if (property.Name != Name)
+                if (property.Name != Name) // wenn die property nicht den selben bezeichner hat wie der gegebene Name
                 {
                     continue;
                 }
-                var propertyType = property.PropertyType;
+                var propertyType = property.PropertyType; // Gets the type of the property
 
-                if (propertyType == typeof(Int32) || propertyType == typeof(Nullable<Int32>))
+                if (propertyType == typeof(Int32) || propertyType == typeof(Nullable<Int32>)) //if type = int then parse Value into an integer
                 {
                     property.SetValue(myList[Index], Convert.ToInt32(Value));
                 }
-                else if (propertyType.IsEnum)
+                else if (propertyType.IsEnum) // if type = enum then parse Value into a enum
                 {
                     var enumMember = propertyType
                         .GetFields(); // List all fields of an enum
                     foreach (var member in enumMember)
                     {
-                        if (member.Name == Convert.ToString(Value) ||
-                             Convert.ToString(Value) == Convert.ToString(member.GetCustomAttributes(typeof(NameAttribute), false)))
+                        if (member.Name == Convert.ToString(Value) || 
+                             Convert.ToString(Value) == Convert.ToString(member.GetCustomAttributes(typeof(NameAttribute), false))) // if the name of the field = Name or the Attribute = Name 
                         {
                             if (member == null)
                             {
                                 Console.WriteLine($"Warn: skip property {property.Name} because the value {Value} is not valid for this field.");
                                 return Config;
                             }
-                            var enumValue = Enum.Parse(propertyType, member.Name);
+                            var enumValue = Enum.Parse(propertyType, member.Name);  // parses Value into an enumValue
                             property.SetValue(myList[Index], enumValue);
 
                         }  //Console.WriteLine($"Warn: skip property {property.Name} because enums currently not supported.");
                     }
                 }
-                else if (propertyType == typeof(Boolean))
+                else if (propertyType == typeof(Boolean)) // if type = boolean then parse Value into a boolean
                 {
                     property.SetValue(myList[Index], Convert.ToBoolean(Value));
                 }
-                else
+                else                            //if type is something else (hopefully a string) then replace the old value with the new
                 {
                     property.SetValue(myList[Index], Value);
                 }
-                switch (subIdent)
+                switch (subIdent) // returns the right Config 
                 {
                     case "network-dev":
                         Config.configureNetwork.networkdev = myList;
@@ -457,7 +456,7 @@ namespace secondtry
             }
             return Config;
         }
-        private string validpath(CommandOption filepath)
+        private string validpath(CommandOption filepath) //valify the userpath
         {
 
             if (filepath.HasValue() && filepath.Value() != " " && filepath.Value() != null)
@@ -471,7 +470,7 @@ namespace secondtry
             }
             return null;
         }
-        private void change(dynamic i, dynamic item)
+        private void change(dynamic i, dynamic item) //replaces the Item
         {
             foreach (var propertyInfo in item.GetType().GetProperties())
             {
@@ -488,9 +487,9 @@ namespace secondtry
             {
                 return AC;
             }
-            foreach (var item in list)
+            foreach (var item in list) 
             {
-                switch (whatlist)
+                switch (whatlist)   // switches on which list is now given 
                 {
                     case "networkdev":
                         foreach (var i in AC.configureNetwork.networkdev)
@@ -535,7 +534,7 @@ namespace secondtry
             return AC;
         }
 
-        public void RunCreate (CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip)
+        public void RunCreate (CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
@@ -546,7 +545,7 @@ namespace secondtry
             }
             DateTime time = new DateTime();
             time = DateTime.Now;
-            var filepath = mypath + @"\\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt";
+            var filepath = mypath + @"\\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
             
             Write(Net, Dev, Set, Ip, filepath);
         }
