@@ -5,7 +5,7 @@ using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using Sprache;
 using Newtonsoft.Json;
-
+using System.Linq;
 
 namespace secondtry
 {
@@ -21,24 +21,25 @@ namespace secondtry
 
     class Commands
     {
-        public int Idel(string[] commands)
+        public int Idel(string[] commands)  // start 
         {
             var app = new CommandLineApplication();
             Execute obj = new Execute();
-            var helptemplate = "-h|--help";
+            var helptemplate = "-h|--help"; //definition of the helptemplate
             app.HelpOption(helptemplate);
-            app.Command("replace", u =>
+            app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
                 var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.run(path); });
             });
-            app.Command("create", c =>
+            app.Command("create", c => //creats a new config 
             {
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
                 var path = c.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+
                 var Net =  c.Option(@"--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Int = c.Option(@"--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Set = c.Option(@"--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
@@ -49,6 +50,7 @@ namespace secondtry
 
         }
     }
+
     class Execute {
         private void setuserpath(string mypath)
         {
@@ -63,122 +65,116 @@ namespace secondtry
             }
             File.WriteAllText($@"..\\..\\..\\..\\config\\qwertz.json", newFile.ToString());
         }
-        public void run(CommandOption path)
+        public void run(CommandOption path) //run for replace
         {
-            Execute exe = new Execute(); 
+            Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             string mypath = $@"..\\..\\..\\..\\samples";
-            if (exe.validpath(path) != null & path.Value() != " ")
+            if (exe.validpath(path) != null & path.Value() != " ") //valify path if is on given
             {
-            mypath = exe.validpath(path);
-            var newFile = new StringBuilder();
-            var config = File.ReadAllText(@"..\\..\\..\\..\\config\\qwertz.json"); //get json
-            var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
-            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
-            List<string> dirs = new List<string>();
-            dirs.Add(exe.findDirectorys(mypath));
-            foreach (var item in dirs)
-            {
-                AC = exe.parseinobject(item);
-                exe.replaceitem(AC, myconfig);
-                obj.getobject(AC, item);
+                // mypath = exe.validpath(path); //sets user path for usage
+                var newFile = new StringBuilder();
+                var config = File.ReadAllText(@"..\..\..\..\config\qwertz.json"); //get json
+                var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+                var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
+                List<string> dirs = new List<string>();
+                dirs.Add(exe.findDirectorys(mypath)); //search all files in Directory 
+                foreach (var item in dirs)
+                {
+                    AC = exe.parseinobject(item); //parses current configuration into the AC object
+                    if (myconfig.configureNetwork != null)
+                    {
+                        AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
+                        AC = exe.replaceitem(AC, myconfig.configureNetwork.interfacenetworkif, "interfacenetworkif");
+                    }
+                    if (myconfig.configureviop != null)
+                    {
+                        AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
+                        AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
+                    }
+                    obj.getobject(AC, item); //output
+                }
             }
             }
         }
-        private string findDirectorys(string mypath)
+        private string findDirectorys(string mypath) // opens the .txt files in the directorypath
         {
-            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
+            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
             foreach (var item in dirs)
             {
                 return item;
             }
             return null;
         }
-        private void getIdentNameAndValue(string line,out bool configureExit,out bool subidentexit, out string subident, out string subidentvalue)
+        private void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue) // parses the Indentifyer for the current block of the configuration
         {
-            subident = ParserGrammar.getsubident.Parse(line);
+            subIdent = ParserGrammar.getsubident.Parse(line);
             configureExit = false;
-            subidentexit = false;
-            subidentvalue = String.Empty;
-            if (subident == "network-dev" ||
-                subident == "interface network-if" ||
-                subident == "proxy-set" ||
-                subident == "proxy-ip" ||
-                subident == "exit")
+            subIdentExit = false;
+            subIdentValue = String.Empty;
+            if (subIdent == "network-dev" ||
+                subIdent == "interface network-if" ||
+                subIdent == "proxy-set" ||
+                subIdent == "proxy-ip" ||
+                subIdent == "exit")
             {
-                if (subident == "exit")
+                if (subIdent == "exit")
                 {
                     configureExit = true;
-                    subidentexit = true;
+                    subIdentExit = true;
                     return;
                 }
-                subidentexit = false;
-                subidentvalue = ParserGrammar.subidentvalue.Parse(line);
+                subIdentExit = false;
+                subIdentValue = ParserGrammar.subidentvalue.Parse(line);
             }
         }
-        private void getConfigureIdent(string line,out bool configureexit, out string ident)
+        private void getConfigureIdent(string line, out bool configureExit, out string ident) //parses the head of the currend configurationblock
         {
             ident = String.Empty;
-            configureexit = true;
-
-            if (ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip" || ParserGrammar.getidentifier.Parse(line) == Environment.NewLine|| ParserGrammar.getidentifier.Parse(line) == "\n" )
+            configureExit = true;
+            if (ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip" || ParserGrammar.getidentifier.Parse(line) == Environment.NewLine || ParserGrammar.getidentifier.Parse(line) == "\n")
             {
                 ident = ParserGrammar.getidentifier.Parse(line);
-                configureexit = false;
+                configureExit = false;
             }
         }
         private ACConfig parseinobject(string path)
         {
-
-
             Configureviop vo = new Configureviop();
             ConfigureNetwork co = new ConfigureNetwork();
+            List<Networkdev> networkDevs = new List<Networkdev>();
+            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();
+            List<Proxyip> proxyIps = new List<Proxyip>();
+            List<Proxyset> proxySets = new List<Proxyset>();
             ACConfig AC = new ACConfig();
+
+            Networkdev newListNetworkDev = new Networkdev();
+            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
+            Proxyip newListProxyIp = new Proxyip();
+            Proxyset newListProxySet = new Proxyset();
+
+
             AC.configureNetwork = co;
             AC.configureviop = vo;
 
-            List<Networkdev> netlist = new List<Networkdev>();
-            List<Interfacenetworkif> inif = new List<Interfacenetworkif>();
-            List<Proxyip> prip = new List<Proxyip>();
-            List<Proxyset> prese = new List<Proxyset>();
-            
+            AC.configureNetwork.networkdev = networkDevs;
+            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;
 
+            AC.configureviop.proxyip = proxyIps;
+            AC.configureviop.proxyset = proxySets;
+            // here I create the whole instance of my object in which i wanna parse
+            //
+            //
             string ident = " ";
-            bool configureexit = true;
-            string subident = " ";
-            bool subidentexit = true;
-            string subidentvalue = "";
-
-            bool activate = false;
-
-            string underlying = "";
-            string name = "";
-            string tagging = "";
-
-            string apptype = "";
-            string ipaddr = "";
-            int prel = 0;
-            string gateway = "";
-            string name2 = "";
-            string udev = "";
-            int vlan = 0;
-
-            string prname = "";
-            string peka = "";
-            string srdname = "";
-            string ssin = "";
-            string kfr = "";
-            int sdr = 0;
-            int sdi = 0;
-            string prm = "";
-            int iphs = 0;
-            int plbm = 0;
-            int masl = 0;
-
-            string prad = "";
-            string taty = "";
-
+            bool configureExit = true;
+            string subIdent = " ";
+            bool subIdentExit = true;
+            string subIdentValue = "";
+            int networkDevListTndex = 0;
+            int interfaceNetwokIfListTndex = 0;
+            int proxySetListTndex = 0;
+            int proxyIpListTndex = 0;
 
             using (StreamReader Reader = new StreamReader(path))
             {
@@ -191,216 +187,275 @@ namespace secondtry
                     }
                     if (configureexit)
                     {
-                        getConfigureIdent(line, out configureexit, out ident);
+                        getConfigureIdent(line, out configureExit, out ident);
                         continue;
                     }
-                    if (subidentexit)
+                    if (subIdentExit)
                     {
-                        getIdentNameAndValue(line,out configureexit,out subidentexit, out subident, out subidentvalue);
+                        getIdentNameAndValue(line, out configureExit, out subIdentExit, out subIdent, out subIdentValue);
+                        var Name = zurück(subIdent);
+                        if (Name != null && subIdent == "network-dev")
+                        {
+                            networkDevs.Add(newListNetworkDev);
+                            AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
+                        }
+                        else if (Name != null && subIdent == "interface network-if")
+                        {
+                            interfaceNetworkIfs.Add(newListInterfaceNetworkIf);
+                            AC = ListParsing(AC, Name, subIdentValue, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
+                        }
+                        else if (Name != null && subIdent == "proxy-set")
+                        {
+                            proxySets.Add(newListProxySet);
+                            AC = ListParsing(AC, Name, subIdentValue, proxySetListTndex, AC.configureviop.proxyset, subIdent);
+                        }
+                        else if (Name != null && subIdent == "proxy-ip")
+                        {
+                            proxyIps.Add(newListProxyIp);
+                            AC = ListParsing(AC, Name, subIdentValue, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
+                        }
                         continue;
+
                     }
 
-                    if (configureexit == false && subidentexit == false && ident == "configure network" && subident == "network-dev")
+                    if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "network-dev")
                     {
-                        switch (ParserGrammar.networkDiviceNameParser.Parse(line))
+                        var Name = ParserGrammar.NameParser.Parse(line);
+                        if (Name == ParserVariables.exit)
                         {
-                            case "vlan-id":
-                                vlan = int.Parse(ParserGrammar.networkDiviceValueParser.Parse(line));
-                                continue;
-                            case "underlying-if":
-                                underlying = ParserGrammar.networkDiviceValueParser.Parse(line);
-                                continue;
-                            case "name":
-                                name = ParserGrammar.networkDiviceValueParser.Parse(line);
-                                continue;
-                            case "tagging":
-                                tagging = ParserGrammar.networkDiviceValueParser.Parse(line);
-                                continue;
-                            case "activate":
-                                activate = true;
-                                continue;
-                            default:
-                                netlist.Add(createlist(int.Parse(subidentvalue), vlan, underlying, name, tagging, activate));
-                                activate = false;
-                                subidentexit = true;
-                                continue;
+                            subIdentExit = true;
+                            networkDevListTndex++;
+                            continue;
                         }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                        }
+                        if (Name == "activate")
+                        {
+                            var Value = true;
+                            AC = ListParsing(AC, Name, Value, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
+                        }
+                        else
+                        {
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ListParsing(AC, Name, Value, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
+                        }
+
+
+                        continue;
                     }
-                    else if (configureexit == false && subidentexit == false && ident == "configure network" && subident == "interface network-if")
+                    else if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "interface network-if")
                     {
-                        switch (ParserGrammar.interfaceNetworkIfNameParser.Parse(line))
+                        var Name = ParserGrammar.NameParser.Parse(line);
+                        if (Name == ParserVariables.exit)
                         {
-                            case "application-type":
-                                apptype = ParserGrammar.interfaceNetworkIfValueParser.Parse(line);
-                                continue;
-                            case "ip-address":
-                                ipaddr = ParserGrammar.interfaceNetworkIfValueParser.Parse(line);
-                                continue;
-                            case "prefix-length":
-                                prel = int.Parse(ParserGrammar.interfaceNetworkIfValueParser.Parse(line));
-                                continue;
-                            case "gateway":
-                                gateway = ParserGrammar.interfaceNetworkIfValueParser.Parse(line);
-                                continue;
-                            case "name":
-                                name2 = ParserGrammar.interfaceNetworkIfValueParser.Parse(line);
-                                continue;
-                            case "underlying-dev":
-                                udev = ParserGrammar.interfaceNetworkIfValueParser.Parse(line);
-                                continue;
-                            case "activate":
-                                activate = true;
-                                continue;
-                            default:
-                                inif.Add(createlistinif(apptype, ipaddr, prel, gateway, name2, udev, int.Parse(subidentvalue), activate));
-                                activate = false;
-                                subidentexit = true;
-                                continue;
+                            subIdentExit = true;
+                            interfaceNetwokIfListTndex++;
+                            continue;
                         }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                        }
+                        if (Name == "activate")
+                        {
+                            var Value = true;
+                            AC = ListParsing(AC, Name, Value, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
+                        }
+                        else
+                        {
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ListParsing(AC, Name, Value, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
+                        }
+                        continue;
                     }
                     if (configureexit == false && subidentexit == false && ident == "configure voip" && subident == "proxy-set")
                     {
-                        switch (ParserGrammar.proxySetNameParser.Parse(line))
+                        var Name = ParserGrammar.NameParser.Parse(line);
+                        if (Name == ParserVariables.exit)
                         {
-                            case "proxy-name":
-                                prname = ParserGrammar.proxySetValueParser.Parse(line);
-                                continue;
-                            case "proxy-enable-keep-alive":
-                                peka = ParserGrammar.proxySetValueParser.Parse(line);
-                                continue;
-                            case "srd-name":
-                                srdname = ParserGrammar.proxySetValueParser.Parse(line);
-                                continue;
-                            case "sbcipv4-sip-int-name":
-                                ssin = ParserGrammar.proxySetValueParser.Parse(line);
-                                continue;
-                            case "keepalive-fail-resp":
-                                kfr = ParserGrammar.proxySetValueParser.Parse(line);
-                                continue;
-                            case "success-detect-retries":
-                                sdr = int.Parse(ParserGrammar.proxySetValueParser.Parse(line));
-                                continue;
-                            case "success-detect-int":
-                                sdi = int.Parse(ParserGrammar.proxySetValueParser.Parse(line));
-                                continue;
-                            case "proxy-redundancy-mode":
-                                prm = ParserGrammar.proxySetValueParser.Parse(line);
-                                continue;
-                            case "is-proxy-hot-swap":
-                                iphs = int.Parse(ParserGrammar.proxySetValueParser.Parse(line));
-                                continue;
-                            case "proxy-load-balancing-method":
-                                plbm = int.Parse(ParserGrammar.proxySetValueParser.Parse(line));
-                                continue;
-                            case "min-active-serv-lb":
-                                masl = int.Parse(ParserGrammar.proxySetValueParser.Parse(line));
-                                continue;
-                            case "activate":
-                                activate = true;
-                                continue;
-                            default:
-                                prese.Add(createlistprese(prname, peka, srdname, ssin, kfr, sdr, sdi, prm, iphs, plbm, masl, int.Parse(subidentvalue), activate));
-                                activate = false;
-                                subidentexit = true;
-                                continue;
+                            subIdentExit = true;
+                            proxySetListTndex++;
+                            continue;
                         }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                        }
+                        if (Name == "activate")
+                        {
+                            var Value = true;
+                            AC = ListParsing(AC, Name, Value, proxySetListTndex, AC.configureviop.proxyset, subIdent);
+                        }
+                        else
+                        {
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ListParsing(AC, Name, Value, proxySetListTndex, AC.configureviop.proxyset, subIdent);
+                        }
+                        continue;
                     }
                     else if (configureexit == false && subidentexit == false && ident == "configure voip" && subident == "proxy-ip")
                     {
-                        switch (ParserGrammar.proxyIpNameParser.Parse(line))
+                        var Name = ParserGrammar.NameParser.Parse(line);
+                        if (Name == ParserVariables.exit)
                         {
-                            case "proxy-address":
-                                prad = ParserGrammar.proxyIpValueParser.Parse(line);
-                                continue;
-                            case "transport-type":
-                                taty = ParserGrammar.proxyIpValueParser.Parse(line);
-                                continue;
-                            case "activate":
-                                activate = true;
-                                continue;
-                            default:
-                                prip.Add(createlistprip(prad, taty, subidentvalue, activate));
-                                activate = false;
-                                subidentexit = true;
-                                continue;
+                            subIdentExit = true;
+                            proxyIpListTndex++;
+                            continue;
                         }
+                        Name = zurück(Name);
+                        if (Name == null)
+                        {
+                            continue;
+                        }
+                        if (Name == "activate")
+                        {
+                            var Value = true;
+                            AC = ListParsing(AC, Name, Value, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
+                        }
+                        else
+                        {
+                            var Value = ParserGrammar.ValueParser.Parse(line);
+                            AC = ListParsing(AC, Name, Value, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
+                        }
+                        continue;
                     }
                 }
             }
-                co.networkdev = netlist;
-                co.interfacenetworkif = inif;
-                vo.proxyip = prip;
-                vo.proxyset = prese;
             return AC;
         }
-
-        private Networkdev createlist(int listid, int vlan, string underlying, string name, string tagging, bool activate)
+        private string zurück(string Name)
         {
-            Enum.TryParse(tagging, out tag Tagging);
-            Networkdev net = new Networkdev
+            switch (Name)
             {
-                listid = listid,
-                vlanip = vlan,
-                underlyingif = underlying,
-                name = name,
-                tagging = Tagging,
-                activate = activate
-            };
-            return net;
-        }
-        private Proxyip createlistprip(string prad,string taty, string subidentvalue, bool activate)
-        {
-            Enum.TryParse(taty, out transporttype Transporttype);
-            Proxyip prip = new Proxyip
-            {
-                ip = subidentvalue,
-                proxyadress = prad,
-                Transporttype = Transporttype,
-                activate = activate
-            };
-            return prip;
-        }
-        private Proxyset createlistprese(string prname,string peka,string srdname,string ssin,string kfr,int sdr,int sdi,string prm,int iphs,int plbm,int masl, int subidentvalue, bool activate)
-        {
-            if (peka == "using-option")
-            {
-                peka = "using_option";
+                case ParserVariables.prosetlistident:
+                case ParserVariables.devlistident:
+                case ParserVariables.interlistident:
+                    return "listid";
+                case ParserVariables.proiplistident:
+                    return "ip";
+                case ParserVariables.activate:
+                    return "activate";
+                case ParserVariables.vlan:
+                    return "vlan";
+                case ParserVariables.underlyingdev:
+                    return "underlyingdev";
+                case ParserVariables.Name:
+                    return "Name";
+                case ParserVariables.tag:
+                    return "tag";
+                case ParserVariables.apptype:
+                    return "apptype";
+                case ParserVariables.ipaddress:
+                    return "ipaddress";
+                case ParserVariables.prefixlength:
+                    return "prefixlength";
+                case ParserVariables.gateway:
+                    return "gateway";
+                case ParserVariables.underlyingif:
+                    return "underlyingif";
+                case ParserVariables.proxyname:
+                    return "proxyname";
+                case ParserVariables.proxyenablekeepalive:
+                    return "proxyenablekeepalive";
+                case ParserVariables.srdname:
+                    return "srdname";
+                case ParserVariables.sbcipv4sipintname:
+                    return "sbcipv4sipintname";
+                case ParserVariables.keepalivefailresp:
+                    return "keepalivefailresp";
+                case ParserVariables.successdetectretries:
+                    return "successdetectretries";
+                case ParserVariables.successdetectint:
+                    return "successdetectint";
+                case ParserVariables.proxyredundancymode:
+                    return "proxyredundancymode";
+                case ParserVariables.isproxyhotswap:
+                    return "isproxyhotswap";
+                case ParserVariables.proxyloadbalancingmethod:
+                    return "proxyloadbalancingmethod";
+                case ParserVariables.minactiveservlb:
+                    return "minactiveservlb";
+                case ParserVariables.proxyaddress:
+                    return "proxyaddress";
+                case ParserVariables.transporttype:
+                    return "transporttype";
+                default:
+                    return null;
             }
-            Enum.TryParse(peka, out proxyenablekeepalive blub);
-            Enum.TryParse(prm, out proxyredundancymode blab);
-            Proxyset prse = new Proxyset
-            {
-                listid = subidentvalue,
-                proxyname = prname,
-                Proxyenablekeepalive = blub,
-                srdname = srdname,
-                sbcipv4sipintname = ssin,
-                keepalivefailresp = kfr,
-                successdetectretries = sdr,
-                successdetectint = sdi,
-                Proxyredundancymode = blab,
-                isproxyhotswap = iphs,
-                proxyloadbalancingmethod =plbm,
-                minactiveservlb= masl,
-                activate = activate
-            };
-            return prse;
         }
-        private Interfacenetworkif createlistinif(string apptype, string ipadr, int prel, string gateway, string name2, string udev, int listid, bool activate)
+        private ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent)
         {
-            Enum.TryParse(apptype, out applicationtype Apptype);
-            Interfacenetworkif inif = new Interfacenetworkif
+            ;
+            if (Value == null)
             {
-                Applicationtype = Apptype,
-                ipadress =ipadr,
-                prefixlength =prel,
-                gateway = gateway,
-                name = name2,
-                underlyingdev =udev,
-                listid = listid,
-                activate = activate
-            };
-            return inif;
+                return Config;
+            }
+            foreach (var item in myList[Index].GetType().GetProperties())
+            {
+                var property = item;
+                if (property.Name != Name)
+                {
+                    continue;
+                }
+                var propertyType = property.PropertyType;
+
+                if (propertyType == typeof(Int32) || propertyType == typeof(Nullable<Int32>))
+                {
+                    property.SetValue(myList[Index], Convert.ToInt32(Value));
+                }
+                else if (propertyType.IsEnum)
+                {
+                    var enumMember = propertyType
+                        .GetFields(); // List all fields of an enum
+                    foreach (var member in enumMember)
+                    {
+                        if (member.Name == Convert.ToString(Value) ||
+                             Convert.ToString(Value) == Convert.ToString(member.GetCustomAttributes(typeof(NameAttribute), false)))
+                        {
+                            if (member == null)
+                            {
+                                Console.WriteLine($"Warn: skip property {property.Name} because the value {Value} is not valid for this field.");
+                                return Config;
+                            }
+                            var enumValue = Enum.Parse(propertyType, member.Name);
+                            property.SetValue(myList[Index], enumValue);
+
+                        }  //Console.WriteLine($"Warn: skip property {property.Name} because enums currently not supported.");
+                    }
+                }
+                else if (propertyType == typeof(Boolean))
+                {
+                    property.SetValue(myList[Index], Convert.ToBoolean(Value));
+                }
+                else
+                {
+                    property.SetValue(myList[Index], Value);
+                }
+                switch (subIdent)
+                {
+                    case "network-dev":
+                        Config.configureNetwork.networkdev = myList;
+                        return Config;
+                    case "interfacenetworkif":
+                        Config.configureNetwork.interfacenetworkif.Add(myList);
+                        return Config;
+                    case "proxyset":
+                        Config.configureviop.proxyset.Add(myList);
+                        return Config;
+                    case "proxyip":
+                        Config.configureviop.proxyip.Add(myList);
+                        return Config;
+                    default:
+                        break;
+                }
+                return Config;
+            }
+            return Config;
         }
         private string validpath(CommandOption filepath)
         {
@@ -427,74 +482,57 @@ namespace secondtry
                 }
             }
         }
-        public void replaceitem(ACConfig AC, ACConfig myconfig)
+        public ACConfig replaceitem(ACConfig AC, dynamic list, string whatlist)
         {
-            if (myconfig.configureNetwork != null)
+            if (list == null)
             {
-                if (myconfig.configureNetwork.networkdev != null)
+                return AC;
+            }
+            foreach (var item in list)
+            {
+                switch (whatlist)
                 {
-                    foreach (var item in myconfig.configureNetwork.networkdev)
-                    {
+                    case "networkdev":
                         foreach (var i in AC.configureNetwork.networkdev)
                         {
                             if (item.listid == i.listid)
                             {
-                                
                                 change(i, item);
                             }
                         }
-                    }
-                }
-                if (myconfig.configureNetwork.interfacenetworkif != null)
-                {
-                    foreach (var item in myconfig.configureNetwork.interfacenetworkif)
-                    {
+                        break;
+                    case "networkinterfaceif":
                         foreach (var i in AC.configureNetwork.interfacenetworkif)
                         {
                             if (item.listid == i.listid)
                             {
-
                                 change(i, item);
                             }
                         }
-                    }
-                }
-            }
-            if (myconfig.configureviop != null)
-            {
-                if (myconfig.configureviop.proxyset != null)
-                {
-                    foreach (var item in myconfig.configureviop.proxyset)
-                    {
+                        break;
+                    case "proxyset":
                         foreach (var i in AC.configureviop.proxyset)
                         {
                             if (item.listid == i.listid)
                             {
-
                                 change(i, item);
                             }
                         }
-                    }
-                }
-                if (myconfig.configureviop.proxyset != null)
-                {
-                    foreach (var item in myconfig.configureviop.proxyip)
-                    {
+                        break;
+                    case "proxyip":
                         foreach (var i in AC.configureviop.proxyip)
                         {
-                            foreach (var propertyInfo in item.GetType().GetProperties())
+                            if (item.ip == i.ip)
                             {
-                                if (item.ip == i.ip)
-                                {
-
-                                    change(i, item);
-                                }
+                                change(i, item);
                             }
                         }
-                    }
+                        break;
+                    default:
+                        break;
                 }
             }
-           
+            return AC;
         }
 
         public void RunCreate (CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip)
