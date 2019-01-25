@@ -45,33 +45,33 @@ namespace secondtry
                    select search;
         }
 
-        public static Parser<string> NameParser =
-    findName(ParserVariables.apptype).Or
-    (findName(ParserVariables.gateway)).Or
-    (findName(ParserVariables.ipaddress)).Or
-    (findName(ParserVariables.isproxyhotswap)).Or
-    (findName(ParserVariables.keepalivefailresp)).Or
-    (findName(ParserVariables.minactiveservlb)).Or
-    (findName(ParserVariables.Name)).Or
-    (findName(ParserVariables.prefixlength)).Or
-    (findName(ParserVariables.proxyaddress)).Or
-    (findName(ParserVariables.proxyenablekeepalive)).Or
-    (findName(ParserVariables.proxyloadbalancingmethod)).Or
-    (findName(ParserVariables.proxyname)).Or
-    (findName(ParserVariables.proxyredundancymode)).Or
-    (findName(ParserVariables.sbcipv4sipintname)).Or
-    (findName(ParserVariables.srdname)).Or
-    (findName(ParserVariables.successdetectint)).Or
-    (findName(ParserVariables.successdetectretries)).Or
-    (findName(ParserVariables.tag)).Or
-    (findName(ParserVariables.transporttype)).Or
-    (findName(ParserVariables.underlyingdev)).Or
-    (findName(ParserVariables.underlyingif)).Or
-    (findName(ParserVariables.vlan)).Or
-    (findName(ParserVariables.activate)).Or
-    (findName(ParserVariables.exit));
+       public static Parser<string> NameParser =
+           findName(ParserVariables.apptype).Or
+           (findName(ParserVariables.gateway)).Or
+           (findName(ParserVariables.ipaddress)).Or
+           (findName(ParserVariables.isproxyhotswap)).Or
+           (findName(ParserVariables.keepalivefailresp)).Or
+           (findName(ParserVariables.minactiveservlb)).Or
+           (findName(ParserVariables.Name)).Or
+           (findName(ParserVariables.prefixlength)).Or
+           (findName(ParserVariables.proxyaddress)).Or
+           (findName(ParserVariables.proxyenablekeepalive)).Or
+           (findName(ParserVariables.proxyloadbalancingmethod)).Or
+           (findName(ParserVariables.proxyname)).Or
+           (findName(ParserVariables.proxyredundancymode)).Or
+           (findName(ParserVariables.sbcipv4sipintname)).Or
+           (findName(ParserVariables.srdname)).Or
+           (findName(ParserVariables.successdetectint)).Or
+           (findName(ParserVariables.successdetectretries)).Or
+           (findName(ParserVariables.tag)).Or
+           (findName(ParserVariables.transporttype)).Or
+           (findName(ParserVariables.underlyingdev)).Or
+           (findName(ParserVariables.underlyingif)).Or
+           (findName(ParserVariables.vlan)).Or
+           (findName(ParserVariables.activate)).Or
+           (findName(ParserVariables.exit));
 
-        public static Parser<string> ValueParser =
+       public static Parser<string> ValueParser =
            findValue(ParserVariables.apptype).Or
            (findValue(ParserVariables.gateway)).Or
            (findValue(ParserVariables.ipaddress)).Or
