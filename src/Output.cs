@@ -7,7 +7,7 @@ namespace secondtry
 {
     public class Output
     {
-        public void getobject(ACConfig AC,string path)
+        public void getobject(ACConfig AC, string path)
         {
             List<string> configback = new List<string>();
             if (AC.configureNetwork != null)
@@ -17,35 +17,57 @@ namespace secondtry
                     configback.Add("configure network");
                     foreach (var item in AC.configureNetwork.networkdev)
                     {
-                        foreach (var i in AC.configureNetwork.networkdev)
+                        foreach (var propertyInfo in item.GetType().GetProperties())
                         {
-                            if (item.listid == i.listid)
+                            var value = propertyInfo.GetValue(item);
+                            if (value != null)
                             {
-                                foreach (var propertyInfo in item.GetType().GetProperties())
+                                if (value.ToString() == "True")
                                 {
-                                    var value = propertyInfo.GetValue(item);
-                                    if (value != null)
-                                    {
-                                        if (value.ToString() == "True")
-                                        {
-                                            configback.Add("  activate");
-                                        }
-                                        else
-                                        {
-                                            configback.Add("  " + propertyInfo.Name + " " + value);
-                                        }
-                                    }
+                                    configback.Add("  activate");
                                 }
-                                configback.Add(" exit");
+                                else
+                                {
+                                    configback.Add("  " + propertyInfo.Name + " " + value);
+                                }
                             }
                         }
+                        configback.Add(" exit");
                     }
                 }
                 if (AC.configureNetwork.interfacenetworkif != null)
                 {
                     foreach (var item in AC.configureNetwork.interfacenetworkif)
                     {
-                        foreach (var i in AC.configureNetwork.interfacenetworkif)
+                        foreach (var propertyInfo in item.GetType().GetProperties())
+                        {
+                            var value = propertyInfo.GetValue(item);
+                            if (value != null)
+                            {
+                                if (value.ToString() == "True")
+                                {
+                                    configback.Add("  activate");
+                                }
+                                else
+                                {
+                                    configback.Add("  " + propertyInfo.Name + " " + value);
+                                }
+                            }
+                        }
+                        configback.Add(" exit");
+                    }
+                    configback.Add("exit");
+                }
+            }
+            if (AC.configureNetwork != null)
+            {
+
+                if (AC.configureviop != null)
+                {
+                    configback.Add("configure voip");
+                    if (AC.configureviop.proxyset != null)
+                    {
+                        foreach (var item in AC.configureviop.proxyset)
                         {
                             foreach (var propertyInfo in item.GetType().GetProperties())
                             {
@@ -59,71 +81,39 @@ namespace secondtry
                                     else
                                     {
                                         configback.Add("  " + propertyInfo.Name + " " + value);
+
                                     }
                                 }
                             }
                             configback.Add(" exit");
                         }
-                        configback.Add("exit");
                     }
-                }
-            }
-            if (AC.configureNetwork != null)
-            {
-
-                if (AC.configureviop != null)
-                {
-                    configback.Add("configure voip");
-                    if (AC.configureviop.proxyset != null)
+                    foreach (var item in AC.configureviop.proxyip)
                     {
-                        foreach (var item in AC.configureviop.proxyset)
+                        foreach (var propertyInfo in item.GetType().GetProperties())
                         {
-                            foreach (var i in AC.configureviop.proxyset)
+                            var value = propertyInfo.GetValue(item);
+                            if (value != null)
                             {
-                                foreach (var propertyInfo in item.GetType().GetProperties())
+                                if (value.ToString() == "True")
                                 {
-                                    var value = propertyInfo.GetValue(item);
-                                    if (value != null)
-                                    {
-                                        if (value.ToString() == "True")
-                                        {
-                                            configback.Add("  activate");
-                                        }
-                                        else
-                                        {
-                                            configback.Add("  " + propertyInfo.Name + " " + value);
-
-                                        }
-                                    }
+                                    configback.Add("  activate");
                                 }
-                                configback.Add(" exit");
-                            }
-                        }
-                        foreach (var item in AC.configureviop.proxyip)
-                        {
-                            foreach (var propertyInfo in item.GetType().GetProperties())
-                            {
-                                var value = propertyInfo.GetValue(item); // erweitere das auf die Ausgabe und dann sollte es funktionieren
-                                if (value != null)
+                                else
                                 {
-                                        if (value.ToString() == "True")
-                                            {
-                                                configback.Add("  activate");
-                                             }
-                                             else
-                                              {
-                                        configback.Add("  " + propertyInfo.Name + " " + value);  
-                                              }
-                                    }
+                                    configback.Add("  " + propertyInfo.Name + " " + value);
+                                }
                             }
-                            configback.Add(" exit");
                         }
-                        configback.Add("exit");
+                        configback.Add(" exit");
                     }
+                    configback.Add("exit");
                 }
-                giveitback(configback, path);
             }
+            giveitback(configback, path);
         }
+
+
 
         private void giveitback(List<string> back, string path)
         {
