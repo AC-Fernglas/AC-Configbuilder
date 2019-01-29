@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace secondtry
+namespace ACConfigBuilder
 {
     public class ACConfig
     {

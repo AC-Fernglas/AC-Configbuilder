@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace secondtry
+namespace ACConfigBuilder
 {
     internal class NameAttribute : Attribute
     {

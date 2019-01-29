@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Sprache;
 
-namespace secondtry
+namespace ACConfigBuilder
 {
     class Parserarguments
     {
