@@ -24,7 +24,7 @@ namespace secondtry
             var app = new CommandLineApplication();
             Execute obj = new Execute();
             var helptemplate = "-h|--help"; //definition of the helptemplate
-            app.HelpOption(helptemplate);            
+            app.HelpOption(helptemplate);
             app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
@@ -38,13 +38,14 @@ namespace secondtry
                 c.Description = "Erstellt eine neue Configvorlage.";
                 var path = c.Option("--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
 
-                var Net =  c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Net = c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Int = c.Option("--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Set = c.Option("--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Ip = c.Option("--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
-                c.OnExecute(() => { obj.RunCreate(path, Net,Int,Set,Ip); });
+                c.OnExecute(() => { obj.RunCreate(path, Net, Int, Set, Ip); });
             });
-            app.Command(null, c => {
+            app.Command(null, c =>
+            {
                 app.ShowHelp();
             });
             return app.Execute(commands);
@@ -72,41 +73,34 @@ namespace secondtry
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
-            string mypath = $@"..\\..\\..\\..\\samples";
-            if (exe.validpath(path) != null & path.Value() != " ") //valify path if is on given
-            {
-                // mypath = exe.validpath(path); //sets user path for usage
-                var newFile = new StringBuilder();
-                var config = File.ReadAllText(@"..\..\..\..\config\qwertz.json"); //get json
-                var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
-                var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
-                List<string> dirs = new List<string>();
-                dirs.Add(exe.findDirectorys(mypath)); //search all files in Directory 
-                foreach (var item in dirs)
-                {
-                    AC = exe.parseinobject(item); //parses current configuration into the AC object
-                    if (myconfig.configureNetwork != null)
-                    {
-                        AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
-                        AC = exe.replaceitem(AC, myconfig.configureNetwork.interfacenetworkif, "interfacenetworkif");
-                    }
-                    if (myconfig.configureviop != null)
-                    {
-                        AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
-                        AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
-                    }
-                    obj.getobject(AC, item); //output
-                }
-            } 
-        }
-        private string findDirectorys(string mypath) // opens the .txt files in the directorypath
-        {
-            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
+            var mypath = validpath(path,null);
+            var configPath = validpath(null,EnviromentVariable.configDirectory);
+            var config = File.ReadAllText(configPath+"qwertz.json"); //get json
+            var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
+            List<string> dirs = new List<string>();
+            dirs = exe.findDirectorys(mypath); //search all files in Directory 
             foreach (var item in dirs)
             {
-                return item;
+                AC = exe.parseinobject(item); //parses current configuration into the AC object
+                if (myconfig.configureNetwork != null)
+                {
+                    AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
+                    AC = exe.replaceitem(AC, myconfig.configureNetwork.interfacenetworkif, "interfacenetworkif");
+                }
+                if (myconfig.configureviop != null)
+                {
+                    AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
+                    AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
+                }
+                obj.getobject(AC, item); //output
             }
-            return null;
+
+        }
+        private List<string> findDirectorys(string mypath) // opens the .txt files in the directorypath
+        {
+            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
+            return dirs.ToList<string>();
         }
         private void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue) // parses the Indentifyer for the current block of the configuration
         {
@@ -116,7 +110,7 @@ namespace secondtry
             subIdentValue = String.Empty;
             if (subIdent == ParserVariables.networkDev ||
                 subIdent == ParserVariables.interfaceNetwokIf ||
-                subIdent == ParserVariables.proxySet||
+                subIdent == ParserVariables.proxySet ||
                 subIdent == ParserVariables.proxyIp ||
                 subIdent == ParserVariables.exit)
             {
@@ -142,37 +136,37 @@ namespace secondtry
         }
         private ACConfig parseinobject(string path)
         {
-            Configureviop vo = new Configureviop();                                                         
-            ConfigureNetwork co = new ConfigureNetwork();                                                   
-            List<Networkdev> networkDevs = new List<Networkdev>();                                          
-            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();                  
-            List<Proxyip> proxyIps = new List<Proxyip>();                                                   
-            List<Proxyset> proxySets = new List<Proxyset>();                                                
-            ACConfig AC = new ACConfig();                                                                   
-                                                                                                            
-            Networkdev newListNetworkDev = new Networkdev();                                                
-            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();                        
-            Proxyip newListProxyIp = new Proxyip();                                                         
-            Proxyset newListProxySet = new Proxyset();                                                      
-                                                                                                                                                                                                                         
-            AC.configureNetwork = co;                                                                       
-            AC.configureviop = vo;                                                                          
-                                                                                                            
-            AC.configureNetwork.networkdev = networkDevs;                                                   
-            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;                                   
-                                                                                                            
-            AC.configureviop.proxyip = proxyIps;                                                            
-            AC.configureviop.proxyset = proxySets;                                                          
-                                                                                                            
-            string ident = " ";                                                                             
-            bool configureExit = true;                                                                      
-            string subIdent = " ";                                                                          
-            bool subIdentExit = true;                                                                       
-            string subIdentValue = "";                                                                       
-            int networkDevListTndex = 0;                                                                    
-            int interfaceNetwokIfListTndex = 0;                                                             
-            int proxySetListTndex = 0;                                                                      
-            int proxyIpListTndex = 0;                                                                       
+            Configureviop vo = new Configureviop();
+            ConfigureNetwork co = new ConfigureNetwork();
+            List<Networkdev> networkDevs = new List<Networkdev>();
+            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();
+            List<Proxyip> proxyIps = new List<Proxyip>();
+            List<Proxyset> proxySets = new List<Proxyset>();
+            ACConfig AC = new ACConfig();
+
+            Networkdev newListNetworkDev = new Networkdev();
+            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
+            Proxyip newListProxyIp = new Proxyip();
+            Proxyset newListProxySet = new Proxyset();
+
+            AC.configureNetwork = co;
+            AC.configureviop = vo;
+
+            AC.configureNetwork.networkdev = networkDevs;
+            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;
+
+            AC.configureviop.proxyip = proxyIps;
+            AC.configureviop.proxyset = proxySets;
+
+            string ident = " ";
+            bool configureExit = true;
+            string subIdent = " ";
+            bool subIdentExit = true;
+            string subIdentValue = "";
+            int networkDevListTndex = 0;
+            int interfaceNetwokIfListTndex = 0;
+            int proxySetListTndex = 0;
+            int proxyIpListTndex = 0;
 
             using (StreamReader Reader = new StreamReader(path))
             {
@@ -225,7 +219,7 @@ namespace secondtry
                             continue;
                         }
                         Name = returnRealName(Name);
-                        if (Name == null) 
+                        if (Name == null)
                         {
                             continue;
                         }
@@ -411,7 +405,7 @@ namespace secondtry
                         .GetFields(); // List all fields of an enum
                     foreach (var member in enumMember)
                     {
-                        if (member.Name == Convert.ToString(Value) || 
+                        if (member.Name == Convert.ToString(Value) ||
                              Convert.ToString(Value) == Convert.ToString(member.GetCustomAttributes(typeof(NameAttribute), false))) // if the name of the field = Name or the Attribute = Name 
                         {
                             if (member == null)
@@ -454,19 +448,26 @@ namespace secondtry
             }
             return Config;
         }
-        private string validpath(CommandOption filepath) //valify the userpath
+        private string validpath(CommandOption filepath, string otherPath) //valify the userpath
         {
-
+            EnviromentVariable enviroment = new EnviromentVariable();
+            var path = String.Empty;
             if (filepath.HasValue() && filepath.Value() != " " && filepath.Value() != null)
             {
-                var path = filepath.Value().ToString();
-                path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
-                string temp = Path.GetPathRoot(path); //For cases like: \text.txt
-                if (temp.StartsWith(@"\")) return null;
-                string pt = Path.GetFullPath(path);
-                return pt;
+                path = filepath.Value().ToString();
             }
-            return null;
+            else
+            { path = EnviromentVariable.samplesDirectory; }
+            if (otherPath != null)
+            {
+                path = otherPath;
+            }
+            path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
+            string temp = Path.GetPathRoot(path); //For cases like: \text.txt
+            if (temp.StartsWith(@"\")) return null;
+            string pt = Path.GetFullPath(path);
+            return pt;
+            
         }
         private void change(dynamic i, dynamic item) //replaces the Item
         {
@@ -485,7 +486,7 @@ namespace secondtry
             {
                 return AC;
             }
-            foreach (var item in list) 
+            foreach (var item in list)
             {
                 switch (whatlist)   // switches on which list is now given 
                 {
@@ -532,19 +533,13 @@ namespace secondtry
             return AC;
         }
 
-        public void RunCreate (CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
+        public void RunCreate(CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
-            Execute exe = new Execute();
-            ACConfig AC = new ACConfig();
-            string mypath = $@"..\\..\\..\\..\\samples";
-            if (exe.validpath(path) != " ")
-            {
-                mypath = exe.validpath(path);
-            }
+            var mypath = validpath(path, null);
             DateTime time = new DateTime();
             time = DateTime.Now;
             var filepath = mypath + @"\\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
-            
+
             Write(Net, Dev, Set, Ip, filepath);
         }
         private void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath)
@@ -553,9 +548,9 @@ namespace secondtry
             var devcounter = 1;
             var setcounter = 1;
             var ipcounter = 1;
-            if (Net.HasValue() == true && Net.Value() != null )
+            if (Net.HasValue() == true && Net.Value() != null)
             {
-                int.TryParse(Net.Value(), out  netcounter);
+                int.TryParse(Net.Value(), out netcounter);
             }
             if (Ip.HasValue() == true && Ip.Value() != null)
             {
@@ -569,10 +564,11 @@ namespace secondtry
             {
                 int.TryParse(Dev.Value(), out devcounter);
             }
-            var Networkdevvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Networkdevvorlage.txt");
-            var Interfacenetworkifvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Interfacenetworkifvorlage.txt");
-            var Proxysetvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Proxysetvorlage.txt");
-            var Proxyipvorlage = File.ReadAllText($@"..\\..\\..\\..\\config\\Proxyipvorlage.txt");
+            var configPath = validpath(null, EnviromentVariable.configDirectory);
+            var Networkdevvorlage = File.ReadAllText(configPath+"Networkdevvorlage.txt");
+            var Interfacenetworkifvorlage = File.ReadAllText(configPath + "Interfacenetworkifvorlage.txt");
+            var Proxysetvorlage = File.ReadAllText(configPath + "Proxysetvorlage.txt");
+            var Proxyipvorlage = File.ReadAllText(configPath + "Proxyipvorlage.txt");
             using (StreamWriter writer = new StreamWriter(mypath))
             {
                 writer.WriteLine("configure network");
@@ -600,7 +596,7 @@ namespace secondtry
                 writer.WriteLine(@" exit");
                 writer.WriteLine("exit");
             }
-            
+
         }
     }
 }
