@@ -28,6 +28,7 @@ Commands:
   create     Erstellt eine neue Configvorlage.
   replace    Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren. 
 ```
+
 ## Replace-Command
 Der Replace-Command soll eine bereits bestehende Konfiguration editieren. <br> 
 Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
@@ -85,24 +86,35 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
     }
 }
 ```  
+ListId, beschreibt in diesem Kontext, den Wert, welcher nach ```network-dev``` , ```ìnterface network-if``` oder ```proxy-set``` kommen würde. <br>
+Damit beschreibt ListId, welcher Abschnitt in der Konfiguration bearbeitet werden soll. <br>
 
-</details>
 
-### Was soll es können
-**1.  .config Datei erstellen, die AC-Datein n-fach erstellen kann.**
-   * Config Strucktur erstellen [GUID](https://www.audiocodes.com/media/13244/gateway-and-sbc-cli-reference-guide-ver-72.pdf)
-   * .json file für Config
-   * Konfigurationen als Template definieren
+## Options für die Commands
+### Replace
+Der Replace-Command hat eine zusätzliche Option. <br>
+``` replace --path <path>```
+Mit der Option ```--path <path>``` wird dauerhaft der Pfad, in welchem das Programm nach Konfigurationen zum überarbeiten sucht verädnert. <br>
+Default ist der Wert auf den Samplesordner gelegt.
 
-**2. ID's über API ermitteln und einfügen**
-  * API ansprechen [GUID](https://www.audiocodes.com/media/13528/rest-api-for-mediant-devices-ver-72.pdf)
-  * festgelegte ID's abrufen und übernehmen
- 
-**3. Konfigurationen automatisch einspielen**
-  * n-viele Konfiguratioenn einspielen [GUID](https://www.audiocodes.com/media/13528/rest-api-for-mediant-devices-ver-72.pdf)
-  * multible Devices zulassen
+### Create
+Der Create-Command hat mehrere zusätzliche Optionen. <br>
+``` create --path <path>```
+Mit der Option ```--path <path>``` wird der Pfad, welcher angibt wo die leere Konfiguration erstellt werden soll, für diese Ausführung verändert. <br>
+<br>
+``` create --networkdev <anzahl>```
+Mit der Option ```--networkdev <anzahl>``` wird die Anzahl der network-dev Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
+<br>
+``` create --interfacenetworkif <anzahl>```
+Mit der Option ```--interfacenetworkif <anzahl>``` wird die Anzahl der interface network-if Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
+<br>
+``` create --proxyset <anzahl>```
+Mit der Option ```--proxyset <anzahl>``` wird die Anzahl der proxy-set Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
+<br>
+``` create --proxyip <anzahl>```
+Mit der Option ```--proxyip <anzahl>``` wird die Anzahl der proxy-ip Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
 
 ### [Release Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Ver.01/ReleaseNote.md)
 
-Danke das du dir die Zeit genommen hast mich zu lesen. 
+Danke das du dir die Zeit genommen hast mich zu lesen. <br>
 Habe einen schönen Tag :)
