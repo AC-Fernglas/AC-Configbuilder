@@ -14,7 +14,7 @@ Hast du schon eine ältere Version istalliert und möchtest diese auf eine neuer
 
 ## Benutzung
 ```
-Usage:  acb [options] [command]
+Usage: [options] [command]
 
 Options:
   -h|--help  Show help information
@@ -24,6 +24,8 @@ Commands:
   create     Erstellt eine neue Configvorlage.
   replace    Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren. 
 ```
+## Replace-Command
+Der Replace-Command soll eine bereits bestehende Konfiguration editieren. Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
 
 ### Was soll es können
 **1.  .config Datei erstellen, die AC-Datein n-fach erstellen kann.**

@@ -29,14 +29,14 @@ namespace ACConfigBuilder
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var path = u.Option("--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.run(path); });
             });
             app.Command("create", c => //creats a new config 
             {
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
-                var path = c.Option("--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                var path = c.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
 
                 var Net = c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Int = c.Option("--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
@@ -545,12 +545,25 @@ namespace ACConfigBuilder
         }
 
         public void RunCreate(CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
-        {
-            var mypath = validpath(path, null);
+        { 
+            var currentDirectory = Directory.GetCurrentDirectory();
+            if (currentDirectory == validpath(path,@"..\netcoreapp2.2"))
+            {
+                Directory.SetCurrentDirectory(@"..\..\..\");
+            }
+            var configPath = validpath(path, EnviromentVariable.configDirectory);
+            var mypath = String.Empty;
+            if (path.HasValue() && path.Value() != " " && path.Value() != null)
+            {
+               mypath = validpath(path, null);
+            }
+            else
+            {
+                mypath = validpath(path, EnviromentVariable.changeDirectory);
+            }
             DateTime time = new DateTime();
             time = DateTime.Now;
             var filepath = mypath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
-            var configPath = validpath(path, EnviromentVariable.configDirectory);
             Write(Net, Dev, Set, Ip, filepath, configPath);
         }
         private void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath,string configPath)
@@ -576,10 +589,10 @@ namespace ACConfigBuilder
                 int.TryParse(Dev.Value(), out devcounter);
             }
             
-            var Networkdevvorlage = File.ReadAllText(configPath+@"\Networkdevvorlage.txt");
-            var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Interfacenetworkifvorlage.txt");
-            var Proxysetvorlage = File.ReadAllText(configPath + @"\Proxysetvorlage.txt");
-            var Proxyipvorlage = File.ReadAllText(configPath + @"\Proxyipvorlage.txt");
+            var Networkdevvorlage = File.ReadAllText(configPath+@"\Vorlagen\Networkdevvorlage.txt");
+            var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Vorlagen\Interfacenetworkifvorlage.txt");
+            var Proxysetvorlage = File.ReadAllText(configPath + @"\Vorlagen\Proxysetvorlage.txt");
+            var Proxyipvorlage = File.ReadAllText(configPath + @"\Vorlagen\Proxyipvorlage.txt");
             using (StreamWriter writer = new StreamWriter(mypath))
             {
                 writer.WriteLine("configure network");
