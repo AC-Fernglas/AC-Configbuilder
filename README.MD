@@ -33,6 +33,7 @@ Der Replace-Command soll eine bereits bestehende Konfiguration editieren. <br>
 Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
 <details close>
 <summary>Beispiel für Change.json</summary>
+
 ```
 {
     "configurenetwork": {
@@ -84,6 +85,7 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
     }
 }
 ```  
+
 </details>
 
 ### Was soll es können
