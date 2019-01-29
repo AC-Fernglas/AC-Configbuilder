@@ -74,7 +74,7 @@ namespace secondtry
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             var mypath = validpath(path,null);
-            var configPath = validpath(null,EnviromentVariable.configDirectory);
+            var configPath = validpath(path,EnviromentVariable.configDirectory);
             var config = File.ReadAllText(configPath+"qwertz.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
@@ -539,10 +539,10 @@ namespace secondtry
             DateTime time = new DateTime();
             time = DateTime.Now;
             var filepath = mypath + @"\\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
-
-            Write(Net, Dev, Set, Ip, filepath);
+            var configPath = validpath(path, EnviromentVariable.configDirectory);
+            Write(Net, Dev, Set, Ip, filepath, configPath);
         }
-        private void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath)
+        private void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath,string configPath)
         {
             var netcounter = 1;
             var devcounter = 1;
@@ -564,7 +564,7 @@ namespace secondtry
             {
                 int.TryParse(Dev.Value(), out devcounter);
             }
-            var configPath = validpath(null, EnviromentVariable.configDirectory);
+            
             var Networkdevvorlage = File.ReadAllText(configPath+"Networkdevvorlage.txt");
             var Interfacenetworkifvorlage = File.ReadAllText(configPath + "Interfacenetworkifvorlage.txt");
             var Proxysetvorlage = File.ReadAllText(configPath + "Proxysetvorlage.txt");
