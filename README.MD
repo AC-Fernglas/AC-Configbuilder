@@ -8,9 +8,13 @@ Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme 
 
 Für die Installation wir [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download) oder neuer gebraucht. <br>
 Ist .Net Core 2.2 SDK installiert, benutze folgenden Code <br>
+<br>
 ```dotnet tool install --global ACConfigBuilder``` <br>
+<br>
 Hast du schon eine ältere Version istalliert und möchtest diese auf eine neuere updaten, benutze folgenden Code <br>
-```dotnet tool update --global ACConfigBuilder``` <br> 
+<br>
+```dotnet tool update --global ACConfigBuilder``` <br>
+<br>
 
 ## Benutzung
 ```
@@ -25,7 +29,62 @@ Commands:
   replace    Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren. 
 ```
 ## Replace-Command
-Der Replace-Command soll eine bereits bestehende Konfiguration editieren. Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
+Der Replace-Command soll eine bereits bestehende Konfiguration editieren. <br> 
+Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
+<details close>
+<summary>Beispiel</summary>
+```
+{
+    "configurenetwork": {
+      "networkdev": [
+        {
+          "listid": <value>,
+          "vlan": "<value>",
+          "underlyingif": "<value>",
+          "Name" : "<value>",
+          "tag": "<value>"
+        }
+      ],
+      "interfacenetworkif":[
+        {
+          "listid": <value>,
+          "apptype": "<value>",
+          "ipaddress":"<value>",
+          "prefixlength": <value>,
+          "gateway": "<value>",
+          "Name": "<value>",
+          "underlyingdev": "<value>"
+        }
+      ]
+    },
+    "configureviop":{
+      "proxyset":[
+        {
+          "listid": <value>,
+          "proxyname": "<value>",
+          "proxyenablekeepalive": "<value>",
+          "srdname":"<value>",
+          "sbcipv4sipintname": "<value>",
+          "keepalivefailresp":"<value>",
+          "successdetectretries": <vaule>,
+          "successdetectint" : <value>,
+          "proxyredundancymode" : "<value>",
+          "isproxyhotswap": <value>,
+          "proxyloadbalancingmethod": <value>,
+          "minactiveservlb": <value>
+        }
+      ],
+      "proxyip":[
+        {
+          "ip": "<value>",
+          "proxyadress": "<value>",
+          "transporttype": "<value>"
+        }
+      ]
+    }
+}
+```  
+</details>
 
 ### Was soll es können
 **1.  .config Datei erstellen, die AC-Datein n-fach erstellen kann.**
