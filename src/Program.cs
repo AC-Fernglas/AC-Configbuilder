@@ -14,11 +14,9 @@ namespace secondtry
         static void Main(string[] args)
         {
             Commands obj = new Commands();
-
             obj.Idel(args);
         }
     }
-
     class Commands
     {
         public int Idel(string[] commands)  // start 
@@ -26,25 +24,28 @@ namespace secondtry
             var app = new CommandLineApplication();
             Execute obj = new Execute();
             var helptemplate = "-h|--help"; //definition of the helptemplate
-            app.HelpOption(helptemplate);
+            app.HelpOption(helptemplate);            
             app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var path = u.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                var path = u.Option("--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.run(path); });
             });
             app.Command("create", c => //creats a new config 
             {
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
-                var path = c.Option(@"--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
+                var path = c.Option("--path <fullpath>", "Setzt einen benutzerdefinierten Pfad, wenn dieser Befehl nicht benutzt wird, wird der Sampelsordner benutzt.", CommandOptionType.SingleValue);
 
-                var Net =  c.Option(@"--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
-                var Int = c.Option(@"--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
-                var Set = c.Option(@"--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
-                var Ip = c.Option(@"--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Net =  c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Int = c.Option("--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Set = c.Option("--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
+                var Ip = c.Option("--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 c.OnExecute(() => { obj.RunCreate(path, Net,Int,Set,Ip); });
+            });
+            app.Command(null, c => {
+                app.ShowHelp();
             });
             return app.Execute(commands);
 
@@ -96,8 +97,7 @@ namespace secondtry
                     }
                     obj.getobject(AC, item); //output
                 }
-            }
-            
+            } 
         }
         private string findDirectorys(string mypath) // opens the .txt files in the directorypath
         {
@@ -114,13 +114,13 @@ namespace secondtry
             configureExit = false;
             subIdentExit = false;
             subIdentValue = String.Empty;
-            if (subIdent == "network-dev" ||
-                subIdent == "interface network-if" ||
-                subIdent == "proxy-set" ||
-                subIdent == "proxy-ip" ||
-                subIdent == "exit")
+            if (subIdent == ParserVariables.networkDev ||
+                subIdent == ParserVariables.interfaceNetwokIf ||
+                subIdent == ParserVariables.proxySet||
+                subIdent == ParserVariables.proxyIp ||
+                subIdent == ParserVariables.exit)
             {
-                if (subIdent == "exit")
+                if (subIdent == ParserVariables.exit)
                 {
                     configureExit = true;
                     subIdentExit = true;
@@ -142,38 +142,37 @@ namespace secondtry
         }
         private ACConfig parseinobject(string path)
         {
-            Configureviop vo = new Configureviop();                                                         //
-            ConfigureNetwork co = new ConfigureNetwork();                                                   //
-            List<Networkdev> networkDevs = new List<Networkdev>();                                          //
-            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();                  //
-            List<Proxyip> proxyIps = new List<Proxyip>();                                                   //
-            List<Proxyset> proxySets = new List<Proxyset>();                                                //
-            ACConfig AC = new ACConfig();                                                                   //
-                                                                                                            //
-            Networkdev newListNetworkDev = new Networkdev();                                                //
-            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();                        //
-            Proxyip newListProxyIp = new Proxyip();                                                         //
-            Proxyset newListProxySet = new Proxyset();                                                      //
-                                                                                                            //   Objekt zusammenbauen
-                                                                                                            //
-            AC.configureNetwork = co;                                                                       //
-            AC.configureviop = vo;                                                                          //
-                                                                                                            //
-            AC.configureNetwork.networkdev = networkDevs;                                                   //
-            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;                                   //
-                                                                                                            //
-            AC.configureviop.proxyip = proxyIps;                                                            //
-            AC.configureviop.proxyset = proxySets;                                                          //
+            Configureviop vo = new Configureviop();                                                         
+            ConfigureNetwork co = new ConfigureNetwork();                                                   
+            List<Networkdev> networkDevs = new List<Networkdev>();                                          
+            List<Interfacenetworkif> interfaceNetworkIfs = new List<Interfacenetworkif>();                  
+            List<Proxyip> proxyIps = new List<Proxyip>();                                                   
+            List<Proxyset> proxySets = new List<Proxyset>();                                                
+            ACConfig AC = new ACConfig();                                                                   
                                                                                                             
-            string ident = " ";                                                                             //
-            bool configureExit = true;                                                                      //
-            string subIdent = " ";                                                                          //
-            bool subIdentExit = true;                                                                       //
-            string subIdentValue = "";                                                                      // Variablen 
-            int networkDevListTndex = 0;                                                                    //
-            int interfaceNetwokIfListTndex = 0;                                                             //
-            int proxySetListTndex = 0;                                                                      //
-            int proxyIpListTndex = 0;                                                                       //
+            Networkdev newListNetworkDev = new Networkdev();                                                
+            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();                        
+            Proxyip newListProxyIp = new Proxyip();                                                         
+            Proxyset newListProxySet = new Proxyset();                                                      
+                                                                                                                                                                                                                         
+            AC.configureNetwork = co;                                                                       
+            AC.configureviop = vo;                                                                          
+                                                                                                            
+            AC.configureNetwork.networkdev = networkDevs;                                                   
+            AC.configureNetwork.interfacenetworkif = interfaceNetworkIfs;                                   
+                                                                                                            
+            AC.configureviop.proxyip = proxyIps;                                                            
+            AC.configureviop.proxyset = proxySets;                                                          
+                                                                                                            
+            string ident = " ";                                                                             
+            bool configureExit = true;                                                                      
+            string subIdent = " ";                                                                          
+            bool subIdentExit = true;                                                                       
+            string subIdentValue = "";                                                                       
+            int networkDevListTndex = 0;                                                                    
+            int interfaceNetwokIfListTndex = 0;                                                             
+            int proxySetListTndex = 0;                                                                      
+            int proxyIpListTndex = 0;                                                                       
 
             using (StreamReader Reader = new StreamReader(path))
             {
@@ -193,31 +192,30 @@ namespace secondtry
                     {
                         getIdentNameAndValue(line, out configureExit, out subIdentExit, out subIdent, out subIdentValue);  // wenn true -> keien Bereich(networkDev / interfaceNetworkIf) in dem Konfig konfiguriert wird
                         var Name = returnRealName(subIdent);
-                        if (Name != null && subIdent == "network-dev")
+                        if (Name != null && subIdent == ParserVariables.networkDev)
                         {
                             networkDevs.Add(newListNetworkDev);                                            //neue Liste wird erstellt für jede Bereich von networkDev
                             AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
                         }
-                        else if (Name != null && subIdent == "interface network-if")
+                        else if (Name != null && subIdent == ParserVariables.interfaceNetwokIf)
                         {
                             interfaceNetworkIfs.Add(newListInterfaceNetworkIf);
                             AC = ListParsing(AC, Name, subIdentValue, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
                         }
-                        else if (Name != null && subIdent == "proxy-set")
+                        else if (Name != null && subIdent == ParserVariables.proxySet)
                         {
                             proxySets.Add(newListProxySet);
                             AC = ListParsing(AC, Name, subIdentValue, proxySetListTndex, AC.configureviop.proxyset, subIdent);
                         }
-                        else if (Name != null && subIdent == "proxy-ip")
+                        else if (Name != null && subIdent == ParserVariables.proxyIp)
                         {
                             proxyIps.Add(newListProxyIp);
                             AC = ListParsing(AC, Name, subIdentValue, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
                         }
                         continue;
-
                     }
 
-                    if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "network-dev")
+                    if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == ParserVariables.networkDev)
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit) // Bereich wird durch exit beendet -> Listenindex wird erhöht und es gibt keinen Bereich in dem definiert die Konfig defoiniert wird
@@ -231,7 +229,7 @@ namespace secondtry
                         {
                             continue;
                         }
-                        if (Name == "activate") //boolscher wert der in der KOnfiguration keinen weiteren Wert zugewieden bekommt -> entweder da oder nicht
+                        if (Name == ParserVariables.activate) //boolscher wert der in der KOnfiguration keinen weiteren Wert zugewieden bekommt -> entweder da oder nicht
                         {
                             var Value = true;
                             AC = ListParsing(AC, Name, Value, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
@@ -245,7 +243,7 @@ namespace secondtry
 
                         continue;
                     }
-                    else if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == "interface network-if")
+                    else if (configureExit == false && subIdentExit == false && ident == "configure network" && subIdent == ParserVariables.interfaceNetwokIf)
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
@@ -259,7 +257,7 @@ namespace secondtry
                         {
                             continue;
                         }
-                        if (Name == "activate")
+                        if (Name == ParserVariables.activate)
                         {
                             var Value = true;
                             AC = ListParsing(AC, Name, Value, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
@@ -271,7 +269,7 @@ namespace secondtry
                         }
                         continue;
                     }
-                    if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == "proxy-set")
+                    if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == ParserVariables.proxySet)
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
@@ -285,7 +283,7 @@ namespace secondtry
                         {
                             continue;
                         }
-                        if (Name == "activate")
+                        if (Name == ParserVariables.activate)
                         {
                             var Value = true;
                             AC = ListParsing(AC, Name, Value, proxySetListTndex, AC.configureviop.proxyset, subIdent);
@@ -297,7 +295,7 @@ namespace secondtry
                         }
                         continue;
                     }
-                    else if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == "proxy-ip")
+                    else if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == ParserVariables.proxySet)
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
@@ -311,7 +309,7 @@ namespace secondtry
                         {
                             continue;
                         }
-                        if (Name == "activate")
+                        if (Name == ParserVariables.activate)
                         {
                             var Value = true;
                             AC = ListParsing(AC, Name, Value, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
@@ -331,58 +329,58 @@ namespace secondtry
         {
             switch (Name)
             {
-                case ParserVariables.prosetlistident:
-                case ParserVariables.devlistident:
-                case ParserVariables.interlistident:
-                    return "listid";
-                case ParserVariables.proiplistident:
-                    return "ip";
+                case ParserVariables.proxySet:
+                case ParserVariables.networkDev:
+                case ParserVariables.interfaceNetwokIf:
+                    return ParserVariables.listid;
+                case ParserVariables.proxyIp:
+                    return ParserVariables.ip;
                 case ParserVariables.activate:
-                    return "activate";
-                case ParserVariables.vlan:
-                    return "vlan";
+                    return ParserVariables.activate;
+                case ParserVariables.vlanid:
+                    return ParserVariables.vlan;
                 case ParserVariables.underlyingdev:
-                    return "underlyingdev";
+                    return ParserVariables.udev;
                 case ParserVariables.Name:
-                    return "Name";
-                case ParserVariables.tag:
-                    return "tag";
+                    return ParserVariables.name;
+                case ParserVariables.tagging:
+                    return ParserVariables.Tag;
                 case ParserVariables.apptype:
-                    return "apptype";
+                    return ParserVariables.appt;
                 case ParserVariables.ipaddress:
-                    return "ipaddress";
+                    return ParserVariables.ipa;
                 case ParserVariables.prefixlength:
-                    return "prefixlength";
+                    return ParserVariables.prefix;
                 case ParserVariables.gateway:
-                    return "gateway";
+                    return ParserVariables.gate;
                 case ParserVariables.underlyingif:
-                    return "underlyingif";
+                    return ParserVariables.uif;
                 case ParserVariables.proxyname:
-                    return "proxyname";
+                    return ParserVariables.pname;
                 case ParserVariables.proxyenablekeepalive:
-                    return "proxyenablekeepalive";
+                    return ParserVariables.proxyalive;
                 case ParserVariables.srdname:
-                    return "srdname";
+                    return ParserVariables.sname;
                 case ParserVariables.sbcipv4sipintname:
-                    return "sbcipv4sipintname";
+                    return ParserVariables.sbcipv;
                 case ParserVariables.keepalivefailresp:
-                    return "keepalivefailresp";
+                    return ParserVariables.keepresp;
                 case ParserVariables.successdetectretries:
-                    return "successdetectretries";
+                    return ParserVariables.successdet;
                 case ParserVariables.successdetectint:
-                    return "successdetectint";
+                    return ParserVariables.successdetectint;
                 case ParserVariables.proxyredundancymode:
-                    return "proxyredundancymode";
+                    return ParserVariables.proxymode;
                 case ParserVariables.isproxyhotswap:
-                    return "isproxyhotswap";
+                    return ParserVariables.proxyswap;
                 case ParserVariables.proxyloadbalancingmethod:
-                    return "proxyloadbalancingmethod";
+                    return ParserVariables.proxymode;
                 case ParserVariables.minactiveservlb:
-                    return "minactiveservlb";
+                    return ParserVariables.minlb;
                 case ParserVariables.proxyaddress:
-                    return "proxyaddress";
+                    return ParserVariables.padress;
                 case ParserVariables.transporttype:
-                    return "transporttype";
+                    return ParserVariables.ttype;
                 default:
                     return null;
             }
@@ -437,16 +435,16 @@ namespace secondtry
                 }
                 switch (subIdent) // returns the right Config 
                 {
-                    case "network-dev":
+                    case ParserVariables.networkDev:
                         Config.configureNetwork.networkdev = myList;
                         return Config;
-                    case "interfacenetworkif":
+                    case ParserVariables.interfaceNetwokIf:
                         Config.configureNetwork.interfacenetworkif.Add(myList);
                         return Config;
-                    case "proxyset":
+                    case ParserVariables.proxySet:
                         Config.configureviop.proxyset.Add(myList);
                         return Config;
-                    case "proxyip":
+                    case ParserVariables.proxyIp:
                         Config.configureviop.proxyip.Add(myList);
                         return Config;
                     default:

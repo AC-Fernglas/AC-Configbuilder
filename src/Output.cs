@@ -81,7 +81,6 @@ namespace secondtry
                                     else
                                     {
                                         configback.Add("  " + propertyInfo.Name + " " + value);
-
                                     }
                                 }
                             }
@@ -112,9 +111,6 @@ namespace secondtry
             }
             giveitback(configback, path);
         }
-
-
-
         private void giveitback(List<string> back, string path)
         {
             using (StreamWriter writer = new StreamWriter(@path))

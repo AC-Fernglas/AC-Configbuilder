@@ -24,10 +24,10 @@ namespace secondtry
                (findName(ParserVariables.exit));
 
         public static readonly Parser<string> subidentvalue =
-                     findValue(ParserVariables.devlistident)
-                 .Or(findValue(ParserVariables.interlistident))
-                 .Or(findValue(ParserVariables.prosetlistident))
-                 .Or(findValue(ParserVariables.proiplistident))
+                     findValue(ParserVariables.networkDev)
+                 .Or(findValue(ParserVariables.interfaceNetwokIf))
+                 .Or(findValue(ParserVariables.proxySet))
+                 .Or(findValue(ParserVariables.proxyIp))
                  .Or(findName(ParserVariables.exit));
 
         public static Parser<string> findValue(string search)
@@ -63,7 +63,7 @@ namespace secondtry
            (findName(ParserVariables.srdname)).Or
            (findName(ParserVariables.successdetectint)).Or
            (findName(ParserVariables.successdetectretries)).Or
-           (findName(ParserVariables.tag)).Or
+           (findName(ParserVariables.tagging)).Or
            (findName(ParserVariables.transporttype)).Or
            (findName(ParserVariables.underlyingdev)).Or
            (findName(ParserVariables.underlyingif)).Or
@@ -89,7 +89,7 @@ namespace secondtry
            (findValue(ParserVariables.srdname)).Or
            (findValue(ParserVariables.successdetectint)).Or
            (findValue(ParserVariables.successdetectretries)).Or
-           (findValue(ParserVariables.tag)).Or
+           (findValue(ParserVariables.tagging)).Or
            (findValue(ParserVariables.transporttype)).Or
            (findValue(ParserVariables.underlyingdev)).Or
            (findValue(ParserVariables.underlyingif)).Or

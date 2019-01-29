@@ -11,27 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="config\qwertz.json" />
-    <None Remove="samples\Beispieldaten - Kopie.txt" />
-    <None Remove="samples\mysuperconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="config\qwertz.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="samples\Beispieldaten - Kopie.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="samples\mysuperconfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="samples\Verzeichnis A\mysuperconfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Sprache" Version="2.2.0" />

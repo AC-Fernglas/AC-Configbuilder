@@ -24,7 +24,6 @@ namespace secondtry
         public tag tag { get; set; }
         public bool activate { get; set; }
     }
-
     public class  Interfacenetworkif {
         public int? listid { get; set; }
         public applicationtype apptype { get; set; }
@@ -33,15 +32,12 @@ namespace secondtry
         public string gateway { get; set; }
         public string Name{ get; set; }
         public string underlyingdev { get; set; }
-
         public bool activate { get; set; }
     }
-
     public class Configureviop
     {
         public List<Proxyset> proxyset { get; set; }
         public List<Proxyip> proxyip { get; set; }
-
     }
     public class Proxyset
     {
@@ -59,17 +55,12 @@ namespace secondtry
         public int? minactiveservlb { get; set; }
         public bool activate { get; set; }
     }
-
-
     public class Proxyip {
         public string ip { get; set; }
         public string proxyadress { get; set; }
         public transporttype transporttype { get; set; }
         public bool activate { get; set; }
     }
-
-    
-
     public enum tag
     {        
         tagged,        
@@ -79,8 +70,7 @@ namespace secondtry
     {
         udp,
         tcp
-    };
-    
+    };   
     public enum proxyenablekeepalive
     {        
         [Name("using-options")]
