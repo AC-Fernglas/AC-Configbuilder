@@ -1,5 +1,5 @@
 {
-  "userpath": "C:\\Develop\\AC-Configbuilder\\samples\\mysuperconfig.json" , 
+  "userpath": "../config/change.json" , 
    "Customer": "string",
   "configure network": {
     "network-dev": -1,
