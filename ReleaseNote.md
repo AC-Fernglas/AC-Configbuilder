@@ -3,6 +3,12 @@
 <summary>Version 01</summary>
 <br>
 
+**Version 01.09**
+    * fixed issiues with the paths
+    * updated README
+    * working now as Consoleapplication
+    * renamed the Configuration JSONfiles
+
 **Version 01.08**
     * simplify the main program code
     * added new command to create an empty configuration 
