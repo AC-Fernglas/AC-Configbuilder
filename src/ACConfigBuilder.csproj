@@ -8,6 +8,8 @@
     <Product>AC-Configurator</Product>
     <Version>1.1.0</Version>
     <PackageId>ACConfigbuilder</PackageId>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>acb</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>

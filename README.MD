@@ -1,18 +1,29 @@
 # AC-Configbuilder
 
+## Überblick
 Der AC-Configbuilder soll eine automatisierung für das Erstellen von Konfigurationsdatein für AudioCode werden. <br>
 Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme Teile einer bereits bestehenden.
 
-## Struktur
+## Installation
 
-Der AC-Configbuilder ist eine Consolenanwendung, welche über Commands gesteuert werden soll. <br>
+Für die Installation wir [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download) oder neuer gebraucht. <br>
+Ist .Net Core 2.2 SDK installiert, benutze folgenden Code <br>
+```dotnet tool install --global ACConfigBuilder``` <br>
+Hast du schon eine ältere Version istalliert und möchtest diese auf eine neuere updaten, benutze folgenden Code <br>
+```dotnet tool update --global ACConfigBuilder``` <br> 
 
-Mit dem Befehl ```--replace``` ist es möglich bestehende Konfigurationen zu bearbeiten. <br>
-Durch die Option ```--path <pathtothedirectory>```kann der Benutzer das Verzeichniss in welchem Konfigurationsdatein geändert werden soll ändern. <br>
+## Benutzung
+```
+Usage:  acb [options] [command]
 
-Der Befehl ```--create```erstellt eine neue konfigurationsdatei. <br>
-Durch die Option ```--path <pathtothedirectory>```kann der Benutzer das Verzeichniss in welchem Konfigurationsdatein erstellt werden soll ändern. <br>
-Die Anzahl der einzelnen, von der Datei zu konfigurienden Abschnitte, können mit ```--networkdev <Anzahl>``` , ```--interfacenetworkif <Anzahl>``` , ```--proxyset <Anzahl>``` und ```--proxyip <Anzahl>``` variiertwerden.
+Options:
+  -h|--help  Show help information
+
+Commands:
+
+  create     Erstellt eine neue Configvorlage.
+  replace    Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren. 
+```
 
 ### Was soll es können
 **1.  .config Datei erstellen, die AC-Datein n-fach erstellen kann.**
