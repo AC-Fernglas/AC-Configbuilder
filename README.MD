@@ -33,52 +33,52 @@ Der Replace-Command soll eine bereits bestehende Konfiguration editieren. <br>
 Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
 <details close>
 <summary>Beispiel</summary>
-```
+```json
 {
     "configurenetwork": {
       "networkdev": [
         {
-          "listid": <value>,
-          "vlan": "<value>",
-          "underlyingif": "<value>",
-          "Name" : "<value>",
-          "tag": "<value>"
+          "listid": <\value>,
+          "vlan": "<\value>",
+          "underlyingif": "<\value>",
+          "Name" : "<\value>",
+          "tag": "<\value>"
         }
       ],
       "interfacenetworkif":[
         {
-          "listid": <value>,
-          "apptype": "<value>",
-          "ipaddress":"<value>",
-          "prefixlength": <value>,
-          "gateway": "<value>",
-          "Name": "<value>",
-          "underlyingdev": "<value>"
+          "listid": <\value>,
+          "apptype": "<\value>",
+          "ipaddress":"<\value>",
+          "prefixlength": <\value>,
+          "gateway": "<\value>",
+          "Name": "<\value>",
+          "underlyingdev": "<\value>"
         }
       ]
     },
     "configureviop":{
       "proxyset":[
         {
-          "listid": <value>,
-          "proxyname": "<value>",
-          "proxyenablekeepalive": "<value>",
-          "srdname":"<value>",
-          "sbcipv4sipintname": "<value>",
-          "keepalivefailresp":"<value>",
-          "successdetectretries": <vaule>,
-          "successdetectint" : <value>,
-          "proxyredundancymode" : "<value>",
-          "isproxyhotswap": <value>,
-          "proxyloadbalancingmethod": <value>,
-          "minactiveservlb": <value>
+          "listid": <\value>,
+          "proxyname": "<\value>",
+          "proxyenablekeepalive": "<\value>",
+          "srdname":"<\value>",
+          "sbcipv4sipintname": "<\value>",
+          "keepalivefailresp":"<\value>",
+          "successdetectretries": <\vaule>,
+          "successdetectint" : <\value>,
+          "proxyredundancymode" : "<\value>",
+          "isproxyhotswap": <\value>,
+          "proxyloadbalancingmethod": <\value>,
+          "minactiveservlb": <\value>
         }
       ],
       "proxyip":[
         {
-          "ip": "<value>",
-          "proxyadress": "<value>",
-          "transporttype": "<value>"
+          "ip": "<\value>",
+          "proxyadress": "<\value>",
+          "transporttype": "<\value>"
         }
       ]
     }
