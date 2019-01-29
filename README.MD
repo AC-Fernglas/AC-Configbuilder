@@ -86,6 +86,7 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
     }
 }
 ```  
+</details>
 ListId, beschreibt in diesem Kontext, den Wert, welcher nach ```network-dev``` , ```ìnterface network-if``` oder ```proxy-set``` kommen würde. <br>
 Damit beschreibt ListId, welcher Abschnitt in der Konfiguration bearbeitet werden soll. <br>
 
