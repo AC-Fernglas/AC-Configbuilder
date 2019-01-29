@@ -1,5 +1,6 @@
 {
   "userpath": "../config/change.json" , 
+  "changeDirectory": "../samples/",
    "Customer": "string",
   "configure network": {
     "network-dev": -1,

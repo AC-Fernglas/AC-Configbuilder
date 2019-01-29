@@ -55,29 +55,37 @@ namespace secondtry
 
     class Execute
     {
-        private void setuserpath(string mypath)
+        private void setuserpath(string configPath, string changePath)
         {
-            string[] userconfig = File.ReadAllLines(@"..\\..\\..\\..\\..\\config\\qwertz.json");
             StringBuilder newFile = new StringBuilder();
-            string[] file = File.ReadAllLines($@"..\\..\\..\\..\\..\\config\\qwertz.json");
+            string[] file = File.ReadAllLines(configPath + "Config.json");
             List<string> list = new List<string>(file);
-            list[2] = "\"userpath\": " + "\"" + mypath + "\"";
+            list[3] = "\"changeDirectory\": " +  changePath;
             foreach (string line in list)
             {
                 newFile.Append(line + "\n");
             }
-            File.WriteAllText($@"..\\..\\..\\..\\config\\qwertz.json", newFile.ToString());
-        }
+            File.WriteAllText(configPath + "Config.json", newFile.ToString());
+}
         public void run(CommandOption path) //run for replace
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
-            var mypath = validpath(path,null);
-            var configPath = validpath(path,EnviromentVariable.configDirectory);
-            var config = File.ReadAllText(configPath+"qwertz.json"); //get json
+            var configPath = validpath(path, EnviromentVariable.configDirectory);
+            var config = File.ReadAllText(configPath + "Config.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
+            var changePath = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.changeDirectory));
+            var mypath = String.Empty;
+            if (path.HasValue() && path.Value() != " " && path.Value() != null)
+            {
+               mypath = validpath(path, null);
+            }
+            else
+            {
+                mypath = validpath(path, changePath.ToString());
+            }
             List<string> dirs = new List<string>();
             dirs = exe.findDirectorys(mypath); //search all files in Directory 
             foreach (var item in dirs)
@@ -450,17 +458,14 @@ namespace secondtry
         }
         private string validpath(CommandOption filepath, string otherPath) //valify the userpath
         {
-            EnviromentVariable enviroment = new EnviromentVariable();
             var path = String.Empty;
-            if (filepath.HasValue() && filepath.Value() != " " && filepath.Value() != null)
-            {
-                path = filepath.Value().ToString();
-            }
-            else
-            { path = EnviromentVariable.samplesDirectory; }
             if (otherPath != null)
             {
                 path = otherPath;
+            }
+            else
+            {
+                path = filepath.Value().ToString();
             }
             path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
             string temp = Path.GetPathRoot(path); //For cases like: \text.txt
