@@ -1,0 +1,12 @@
+{
+    "configurenetwork": {
+      "networkdev": [
+        {
+          "listid": 16,
+          "vlanip": 322,
+          "underlyingif": "string"
+        }
+      ]
+    }
+  }
+  
