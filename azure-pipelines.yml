@@ -1,0 +1,22 @@
+resources:
+- repo: self
+queue:
+  name: Hosted VS2017
+variables:
+  versionSuffixForPre: 'pre-$(Build.BuildNumber)'
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+
+    projects: 'src/**.*csproj'
+
+    restoreDirectory: 'Destination dotNET'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: 'src/**.*csproj'
+
