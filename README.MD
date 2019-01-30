@@ -1,6 +1,8 @@
 # AC-Configbuilder
 Der AC-Configbuilder wird ein Tool sein mit dem man Audio Codes Massenverarbeitung machen kann. Dies bedeutet das man z.b. für Device Namen ein globales Präfix vergeben kann welches dann zuverlässig auf alle Konfigurationen angewandt wird.
 
+[![Build Status](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_apis/build/status/AC-Fernglas.AC-Configbuilder?branchName=Ver.01)](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_build/latest?definitionId=4&branchName=Ver.01)
+
 ## Struktur
 _/samples_
 Hier findet man Beispielkonfigurationen für eine Audio Codes Anlage
