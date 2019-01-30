@@ -56,15 +56,13 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack prod'
   inputs:
-    command: custom
+    command: pack
     
     configuration: 'release'
 
     projects: csprojPath
 
     packagesToPack: csprojPath
-
-    custom: pack
 
     arguments: 
 
