@@ -5,13 +5,14 @@ queue:
 variables:
   versionSuffixForPre: 'pre-$(Build.BuildNumber)'
   csprojPath: 'src/**.*csproj'
+
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
     command: restore
 
-    projects: csprojPath
+    projects: '$(csprojPath)'
 
     restoreDirectory: 'Destination dotNET'
 
@@ -19,7 +20,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: csprojPath
+    projects: '$(csprojPath)'
 
 
 - task: DotNetCoreCLI@2
@@ -29,7 +30,7 @@ steps:
 
     publishWebProjects: false
 
-    projects: csprojPath
+    projects: '$(csprojPath)'
 
 
 - task: DotNetCoreCLI@2
@@ -39,7 +40,7 @@ steps:
     
     configuration: 'release'
 
-    projects: csprojPath
+    projects: '$(csprojPath)'
 
     custom: pack
 
@@ -60,11 +61,9 @@ steps:
     
     configuration: 'release'
 
-    projects: csprojPath
+    projects: '$(csprojPath)'
 
-    packagesToPack: csprojPath
-
-    arguments: 
+    packagesToPack: '$(csprojPath)'
 
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   
