@@ -4,13 +4,14 @@ queue:
   name: Hosted VS2017
 variables:
   versionSuffixForPre: 'pre-$(Build.BuildNumber)'
+  csprojPath: 'src/**.*csproj'
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
     command: restore
 
-    projects: 'src/**.*csproj'
+    projects: csprojPath
 
     restoreDirectory: 'Destination dotNET'
 
@@ -18,7 +19,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: 'src/**.*csproj'
+    projects: csprojPath
 
 
 - task: DotNetCoreCLI@2
@@ -28,7 +29,7 @@ steps:
 
     publishWebProjects: false
 
-    projects: 'src/**.*csproj'
+    projects: csprojPath
 
 
 - task: DotNetCoreCLI@2
@@ -38,7 +39,7 @@ steps:
     
     configuration: 'release'
 
-    projects: 'src/**.*csproj'
+    projects: csprojPath
 
     custom: pack
 
@@ -55,9 +56,17 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack prod'
   inputs:
-    command: pack
+    command: custom
     
     configuration: 'release'
+
+    projects: csprojPath
+
+    packagesToPack: csprojPath
+
+    custom: pack
+
+    arguments: 
 
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   
