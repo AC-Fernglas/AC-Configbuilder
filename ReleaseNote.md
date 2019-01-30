@@ -66,18 +66,9 @@
 * added test/
 * added and updated [README](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Version_00/README.MD)
 
+
 **Version 00**
 * OrdnerStrucktur 
 * README.md
 * Beispieldaten
-
-
-
-
-
-
-
-
-
-
 
