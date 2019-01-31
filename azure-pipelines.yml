@@ -65,6 +65,8 @@ steps:
 
     packagesToPack: '$(csprojPath)'
 
+    packDirectory: '$(build.artifactStagingDirectory)'
+
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   
 
