@@ -4,6 +4,7 @@ queue:
   name: Hosted VS2017
 variables:
   versionSuffixForPre: 'pre-$(Build.BuildNumber)'
+  versionSuffixForProd: 'prod-$(Build.BuildNumber)'
   csprojPath: 'src/**.*csproj'
 
 steps:
@@ -67,6 +68,10 @@ steps:
 
     packDirectory: '$(build.artifactStagingDirectory)'
 
+    versioningScheme: byEnvVar
+
+    versionEnvVar: versionSuffixForProd
+
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   
 
@@ -75,4 +80,4 @@ steps:
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'drop' 
-publishLocation: 'container'
+    publishLocation: 'container'
