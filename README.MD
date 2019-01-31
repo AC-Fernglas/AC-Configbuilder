@@ -7,7 +7,7 @@ Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme 
 
 | Build     |     Master-Status         |
 | ------------- |:-------------:|
-|   ACConfigBuilder   | [![Build Status](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_apis/build/status/AC-Fernglas.AC-Configbuilder%20(1)?branchName=master)](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_build/latest?definitionId=7&branchName=master) |
+|   ACConfigBuilder   | [![Build Status](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_apis/build/status/AC-Fernglas.AC-Configbuilder%20(1)?branchName=master)](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_build/latest?definitionId=7&branchName=master)|
 
 ## Installation
 
