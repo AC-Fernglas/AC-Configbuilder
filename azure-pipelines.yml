@@ -55,6 +55,7 @@ steps:
     configuration: 'release'
     projects: '$(csprojPath)'
     packagesToPack: '$(csprojPath)'
+    arguments: --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)'
     packDirectory: '$(build.artifactStagingDirectory)'
     versioningScheme: byEnvVar
     versionEnvVar: versionSuffixForProd
