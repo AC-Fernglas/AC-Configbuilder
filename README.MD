@@ -5,7 +5,7 @@ Der AC-Configbuilder soll eine automatisierung für das Erstellen von Konfigurat
 Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme Teile einer bereits bestehenden.
 
 
-| Nugett        |      Status         |
+| Build     |     Master-Status         |
 | ------------- |:-------------:|
 |   ACConfigBuilder   | [![Build Status](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_apis/build/status/AC-Fernglas.AC-Configbuilder%20(1)?branchName=master)](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_build/latest?definitionId=7&branchName=master) |
 
@@ -23,7 +23,7 @@ Hast du schon eine ältere Version istalliert und möchtest diese auf eine neuer
 
 ## Benutzung
 ```
-Usage: [options] [command]
+Usage: acb [options] [command]
 
 Options:
   -h|--help  Show help information
@@ -99,25 +99,25 @@ Damit beschreibt ListId, welcher Abschnitt in der Konfiguration bearbeitet werde
 ## Options für die Commands
 ### Replace
 Der Replace-Command hat eine zusätzliche Option. <br>
-``` replace --path <path>```
+``` acb replace --path <path>```
 Mit der Option ```--path <path>``` wird dauerhaft der Pfad, in welchem das Programm nach Konfigurationen zum überarbeiten sucht verädnert. <br>
 Default ist der Wert auf den Samplesordner gelegt.
 
 ### Create
 Der Create-Command hat mehrere zusätzliche Optionen. <br>
-``` create --path <path>```
+``` acb create --path <path>```
 Mit der Option ```--path <path>``` wird der Pfad, welcher angibt wo die leere Konfiguration erstellt werden soll, für diese Ausführung verändert. <br>
 <br>
-``` create --networkdev <anzahl>```
+``` acb create --networkdev <anzahl>```
 Mit der Option ```--networkdev <anzahl>``` wird die Anzahl der network-dev Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
 <br>
-``` create --interfacenetworkif <anzahl>```
+``` acb create --interfacenetworkif <anzahl>```
 Mit der Option ```--interfacenetworkif <anzahl>``` wird die Anzahl der interface network-if Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
 <br>
-``` create --proxyset <anzahl>```
+``` acb create --proxyset <anzahl>```
 Mit der Option ```--proxyset <anzahl>``` wird die Anzahl der proxy-set Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
 <br>
-``` create --proxyip <anzahl>```
+``` acb create --proxyip <anzahl>```
 Mit der Option ```--proxyip <anzahl>``` wird die Anzahl der proxy-ip Blöcken varriert, standartmäßig ist diese auf 1 gesetzt. <br>
 
 ### [Release Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Ver.01/ReleaseNote.md)
