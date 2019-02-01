@@ -1,0 +1,68 @@
+resources:
+  repositories:
+  - repository:  self 
+queue:
+  name: Hosted VS2017
+variables:
+  versionSuffixForPre: 'pre-$(Build.BuildNumber)'
+  versionSuffixForProd: 'prod-$(Build.BuildNumber)'
+  csprojPath: 'src/**.*csproj'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: 'restore'
+    projects: '$(csprojPath)'
+    restoreDirectory: 'Destination dotNET'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: '$(csprojPath)'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '$(csprojPath)'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack pre'
+  inputs:
+    command: custom
+    configuration: 'release'
+    projects: '$(csprojPath)'
+    custom: pack
+    arguments: '--version-suffix $(versionSuffixForPre) --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)'
+    versioningScheme: byEnvVar
+    versionEnvVar: versionSuffixForPre
+    packagesToPack: '$(csprojPath)'
+    packDirectory: '$(build.artifactStagingDirectory)'
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+  
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack prod'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    command: pack    
+    configuration: 'release'
+    projects: '$(csprojPath)'
+    packagesToPack: '$(csprojPath)'
+    arguments: --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)'
+    packDirectory: '$(build.artifactStagingDirectory)'
+    versioningScheme: byEnvVar
+    versionEnvVar: versionSuffixForProd
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'drop' 
+    publishLocation: 'container'
