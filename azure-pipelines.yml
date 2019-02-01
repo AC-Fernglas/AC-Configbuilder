@@ -57,8 +57,6 @@ steps:
     packagesToPack: '$(csprojPath)'
     arguments: --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)'
     packDirectory: '$(build.artifactStagingDirectory)'
-    versioningScheme: byEnvVar
-    versionEnvVar: versionSuffixForProd
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
