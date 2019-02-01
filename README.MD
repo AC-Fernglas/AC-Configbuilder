@@ -1,7 +1,7 @@
 # AC-Configbuilder
 
 ## Überblick
-Der AC-Configbuilder soll eine automatisierung für das Erstellen von Konfigurationsdatein für AudioCode werden. <br>
+Der AC-Configbuilder soll eine Automatisierung für das Erstellen von Konfigurationsdatein für AudioCode werden. <br>
 Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme Teile einer bereits bestehenden.
 
 
@@ -11,7 +11,7 @@ Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme 
 
 ## Installation
 
-Für die Installation wir [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download) oder neuer gebraucht. <br>
+Für die Installation wird [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download) oder neuer gebraucht. <br>
 Ist .Net Core 2.2 SDK installiert, benutze folgenden Code <br>
 <br>
 ```dotnet tool install --global ACConfigBuilder``` <br>
