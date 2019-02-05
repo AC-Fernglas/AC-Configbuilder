@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
     <Authors>Zeroks77</Authors>
     <Company />
     <Product>AC-Configurator</Product>
@@ -19,7 +21,7 @@
     <None Remove="config\Template\NetworkDev.template" />
     <None Remove="config\Template\ProxyIp.template" />
     <None Remove="config\Template\ProxySet.template" />
-    <None Remove="samples\Beispieldaten - Kopie.txt" />
+    <None Remove="samples\Beispieldaten.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +45,7 @@
     <Resource Include="config\Template\ProxySet.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="samples\Beispieldaten - Kopie.txt">
+    <Resource Include="samples\Beispieldaten.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
