@@ -8,7 +8,7 @@ Er erstellt lerre Vorlagen der gewünschten Konfiguration oder ersetzt bestimme 
 | Build     |     Master-Status | NuGet |Packagestatus|
 | ------------- |-------------| -------|--------- |
 |   ACConfigBuilder   | [![Build Status](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_apis/build/status/AC-Fernglas.AC-Configbuilder%20(1)?branchName=master)](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_build/latest?definitionId=7&branchName=master)|ACConfigbuilder|[![ACConfigbuilder package in artifact_ACB feed in Azure Artifacts](https://feeds.dev.azure.com/dominikmangatter/_apis/public/Packaging/Feeds/029c8be4-1017-41ac-9482-75d3c6d96884/Packages/62646a40-7810-4d42-9c39-b8b78d3f5ba8/Badge)](https://dev.azure.com/dominikmangatter/ACConfigBuilder/_packaging?_a=package&feed=029c8be4-1017-41ac-9482-75d3c6d96884&package=62646a40-7810-4d42-9c39-b8b78d3f5ba8&preferRelease=true)
-|
+
 ## Installation
 
 Für die Installation wird [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download) oder neuer gebraucht. <br>
