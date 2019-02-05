@@ -19,6 +19,7 @@
     <None Remove="config\Template\NetworkDev.template" />
     <None Remove="config\Template\ProxyIp.template" />
     <None Remove="config\Template\ProxySet.template" />
+    <None Remove="samples\Beispieldaten - Kopie.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +43,9 @@
     <Resource Include="config\Template\ProxySet.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="samples\Beispieldaten - Kopie.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -51,10 +55,6 @@
     <Resource Update="config\Template\InterfaceNetwokIf.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="samples\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties samples_4mysuperconfig_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" /></VisualStudio></ProjectExtensions>
