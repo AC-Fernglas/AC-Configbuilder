@@ -1,0 +1,8 @@
+﻿ interface network-if 
+  application-type 
+  ip-address 
+  prefix-length 
+  gateway 
+  name 
+  underlying-dev 
+  activate

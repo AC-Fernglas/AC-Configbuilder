@@ -7,7 +7,7 @@ namespace ACConfigBuilder
 {
     class EnviromentVariable
     {
-        public const string changeDirectory = @"..\samples";
-        public const string configDirectory = @"..\config";
+        public const string changeDirectory = @"samples";
+        public const string configDirectory = @"config";
     }
 }

@@ -77,6 +77,8 @@ namespace ACConfigBuilder
             {
                 Directory.SetCurrentDirectory(@"..\..\..\");
             }
+            fileproof();
+
             var configPath = validpath(path, EnviromentVariable.configDirectory);
             var config = File.ReadAllText(configPath + @"\Config.json"); //get json
             var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
@@ -110,6 +112,14 @@ namespace ACConfigBuilder
                 obj.getobject(AC, item); //output
             }
 
+        }
+        private void fileproof()
+        {
+           bool exists = System.IO.Directory.Exists(EnviromentVariable.changeDirectory);
+            if (!exists)
+            { 
+                System.IO.Directory.CreateDirectory(EnviromentVariable.configDirectory);
+            }
         }
         private List<string> findDirectorys(string mypath) // opens the .txt files in the directorypath
         {
@@ -551,6 +561,7 @@ namespace ACConfigBuilder
             {
                 Directory.SetCurrentDirectory(@"..\..\..\");
             }
+            fileproof();
             var configPath = validpath(path, EnviromentVariable.configDirectory);
             var mypath = String.Empty;
             if (path.HasValue() && path.Value() != " " && path.Value() != null)
@@ -589,10 +600,11 @@ namespace ACConfigBuilder
                 int.TryParse(Dev.Value(), out devcounter);
             }
             
-            var Networkdevvorlage = File.ReadAllText(configPath+@"\Vorlagen\Networkdevvorlage.txt");
-            var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Vorlagen\Interfacenetworkifvorlage.txt");
-            var Proxysetvorlage = File.ReadAllText(configPath + @"\Vorlagen\Proxysetvorlage.txt");
-            var Proxyipvorlage = File.ReadAllText(configPath + @"\Vorlagen\Proxyipvorlage.txt");
+            var Networkdevvorlage = File.ReadAllText(configPath+ @"\Template\NetworkDev.template");
+            Console.WriteLine(configPath);
+            var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Template\InterfaceNetwokIf.template");
+            var Proxysetvorlage = File.ReadAllText(configPath + @"\Template\ProxySet.template");
+            var Proxyipvorlage = File.ReadAllText(configPath + @"\Template\ProxyIp.template");
             using (StreamWriter writer = new StreamWriter(mypath))
             {
                 writer.WriteLine("configure network");
