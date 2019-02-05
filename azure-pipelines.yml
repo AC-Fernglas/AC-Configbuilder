@@ -9,6 +9,11 @@ variables:
   csprojPath: 'src/**.*csproj'
 
 steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    packageType: 'sdk'
+    version: '2.2.103' 
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
