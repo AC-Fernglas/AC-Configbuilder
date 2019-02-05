@@ -601,7 +601,6 @@ namespace ACConfigBuilder
             }
             
             var Networkdevvorlage = File.ReadAllText(configPath+ @"\Template\NetworkDev.template");
-            Console.WriteLine(configPath);
             var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Template\InterfaceNetwokIf.template");
             var Proxysetvorlage = File.ReadAllText(configPath + @"\Template\ProxySet.template");
             var Proxyipvorlage = File.ReadAllText(configPath + @"\Template\ProxyIp.template");
