@@ -29,14 +29,14 @@ namespace ACConfigBuilder
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
+                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als userpath angegeben ist verwendet.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.run(path); });
             });
             app.Command("create", c => //creats a new config 
             {
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
-                var path = c.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
+                var path = c.Option("--path <fullpath>", "Benutzt einen benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
 
                 var Net = c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Int = c.Option("--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
