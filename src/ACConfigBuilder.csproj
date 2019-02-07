@@ -6,7 +6,7 @@
     <Authors>Zeroks77</Authors>
     <Company />
     <Product>AC-Configurator</Product>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <PackageId>ACConfigbuilder</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>acb</ToolCommandName>
@@ -29,32 +29,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="config\change.json">
+    <Content Include="config\change.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="config\Config.json">
+    </Content>
+    <Content Include="config\Config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="config\Template\NetworkDev.template" />
-    <Resource Include="config\Template\InterfaceNetwokIf.template" />
-    <Resource Include="config\Template\ProxyIp.template">
+    </Content>
+    <Content Include="config\Template\NetworkDev.template" />
+    <Content Include="config\Template\InterfaceNetwokIf.template" />
+    <Content Include="config\Template\ProxyIp.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="config\Template\ProxySet.template">
+    </Content>
+    <Content Include="config\Template\ProxySet.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="samples\Beispieldaten.txt">
+    </Content>
+    <Content Include="samples\Beispieldaten.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Update="config\Template\NetworkDev.template">
+    <Content Update="config\Template\NetworkDev.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Update="config\Template\InterfaceNetwokIf.template">
+    </Content>
+    <Content Update="config\Template\InterfaceNetwokIf.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties samples_4mysuperconfig_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" /></VisualStudio></ProjectExtensions>
