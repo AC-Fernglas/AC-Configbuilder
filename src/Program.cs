@@ -343,7 +343,7 @@ namespace ACConfigBuilder
             }
             return AC;
         }
-        private string returnRealName(string Name) // wandelt die in der Konfiguration enthaltenen bezeichner in die Variablen Namen der Listen um da diese nicht zu 100% übereinstimmen 
+        public string returnRealName(string Name) // wandelt die in der Konfiguration enthaltenen bezeichner in die Variablen Namen der Listen um da diese nicht zu 100% übereinstimmen 
         {
             switch (Name)
             {
@@ -457,13 +457,13 @@ namespace ACConfigBuilder
                         Config.configureNetwork.networkdev = myList;
                         return Config;
                     case ParserVariables.interfaceNetwokIf:
-                        Config.configureNetwork.interfacenetworkif.Add(myList);
+                        Config.configureNetwork.interfacenetworkif = myList;
                         return Config;
                     case ParserVariables.proxySet:
-                        Config.configureviop.proxyset.Add(myList);
+                        Config.configureviop.proxyset = myList;
                         return Config;
                     case ParserVariables.proxyIp:
-                        Config.configureviop.proxyip.Add(myList);
+                        Config.configureviop.proxyip = myList;
                         return Config;
                     default:
                         break;

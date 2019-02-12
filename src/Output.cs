@@ -2,115 +2,108 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace ACConfigBuilder
 {
     public class Output
     {
-        public void getobject(ACConfig AC, string path)
+        public void  startOutput(ACConfig AC, string path)
+        {
+            giveitback(objectToList(AC), path);
+        }
+        public List<string> objectToList(ACConfig AC)
         {
             List<string> configback = new List<string>();
             if (AC.configureNetwork != null)
             {
-                if (AC.configureNetwork.networkdev != null)
-                {
-                    configback.Add("configure network");
-                    foreach (var item in AC.configureNetwork.networkdev)
-                    {
-                        foreach (var propertyInfo in item.GetType().GetProperties())
-                        {
-                            var value = propertyInfo.GetValue(item);
-                            if (value != null)
-                            {
-                                if (value.ToString() == "True")
-                                {
-                                    configback.Add("  activate");
-                                }
-                                else
-                                {
-                                    configback.Add("  " + propertyInfo.Name + " " + value);
-                                }
-                            }
-                        }
-                        configback.Add(" exit");
-                    }
-                }
-                if (AC.configureNetwork.interfacenetworkif != null)
-                {
-                    foreach (var item in AC.configureNetwork.interfacenetworkif)
-                    {
-                        foreach (var propertyInfo in item.GetType().GetProperties())
-                        {
-                            var value = propertyInfo.GetValue(item);
-                            if (value != null)
-                            {
-                                if (value.ToString() == "True")
-                                {
-                                    configback.Add("  activate");
-                                }
-                                else
-                                {
-                                    configback.Add("  " + propertyInfo.Name + " " + value);
-                                }
-                            }
-                        }
-                        configback.Add(" exit");
-                    }
-                    configback.Add("exit");
-                }
+                configback.Add("configure network");
+                AddNetworkDevices(AC, configback);
+                AddInterfaces(AC, configback);
+                configback.Add("exit");
             }
-            if (AC.configureNetwork != null)
+            if (AC.configureviop != null)
             {
+                configback.Add("configure voip");
+                AddProxy(AC, configback);
+                AddProxyIp(AC, configback);
+                configback.Add("exit");
+            }
+            return configback;
+        }
 
-                if (AC.configureviop != null)
+        private static void AddProxyIp(ACConfig AC, List<string> configback)
+        {
+            if (AC.configureviop.proxyip == null)
+            {
+                return;
+            }
+            foreach (var item in AC.configureviop.proxyip)
+            {
+                    configback.AddRange(GetConfigStringFromObject(item));
+                
+            }
+        }
+
+        private static void AddProxy(ACConfig AC, List<string> configback)
+        {
+            if (AC.configureviop.proxyset == null)
+            {
+                return;
+            }
+            foreach (var item in AC.configureviop.proxyset)
+            {
+                    configback.AddRange(GetConfigStringFromObject(item));
+            }
+        }
+
+        private static void AddInterfaces(ACConfig AC, List<string> configback)
+        {
+            if (AC.configureNetwork.interfacenetworkif == null)
+            {
+                return;
+            }
+            foreach (var item in AC.configureNetwork.interfacenetworkif)
+            {
+                    configback.AddRange(GetConfigStringFromObject(item));
+            }
+        }
+
+        private static void AddNetworkDevices(ACConfig AC, List<string> configback)
+        {
+            if (AC.configureNetwork.networkdev == null)
+            {
+                return;
+            }
+            foreach (var item in AC.configureNetwork.networkdev)
+            {
+                configback.AddRange(GetConfigStringFromObject(item));
+            }
+        }
+
+        private static IEnumerable<string> GetConfigStringFromObject(object item)
+        {
+            foreach (var propertyInfo in item.GetType().GetProperties())
+            {
+                var acProperty = propertyInfo.GetCustomAttributes(typeof(AcPropertyAttribute), false).FirstOrDefault() as AcPropertyAttribute;
+                var name = acProperty == null ? propertyInfo.Name : acProperty.PropertyName;
+                var value = propertyInfo.GetValue(item);
+                if (value != null)
                 {
-                    configback.Add("configure voip");
-                    if (AC.configureviop.proxyset != null)
+                    if (value.ToString() == "True")
                     {
-                        foreach (var item in AC.configureviop.proxyset)
-                        {
-                            foreach (var propertyInfo in item.GetType().GetProperties())
-                            {
-                                var value = propertyInfo.GetValue(item);
-                                if (value != null)
-                                {
-                                    if (value.ToString() == "True")
-                                    {
-                                        configback.Add("  activate");
-                                    }
-                                    else
-                                    {
-                                        configback.Add("  " + propertyInfo.Name + " " + value);
-                                    }
-                                }
-                            }
-                            configback.Add(" exit");
-                        }
+                        yield return "  activate";
                     }
-                    foreach (var item in AC.configureviop.proxyip)
+                    else
                     {
-                        foreach (var propertyInfo in item.GetType().GetProperties())
-                        {
-                            var value = propertyInfo.GetValue(item);
-                            if (value != null)
-                            {
-                                if (value.ToString() == "True")
-                                {
-                                    configback.Add("  activate");
-                                }
-                                else
-                                {
-                                    configback.Add("  " + propertyInfo.Name + " " + value);
-                                }
-                            }
-                        }
-                        configback.Add(" exit");
+                        yield return "  " + name + " " + value;
                     }
-                    configback.Add("exit");
                 }
             }
-            giveitback(configback, path);
+            yield return " exit";
         }
+
         private void giveitback(List<string> back, string path)
         {
             using (StreamWriter writer = new StreamWriter(@path))

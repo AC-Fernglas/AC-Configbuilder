@@ -11,3 +11,4 @@
   proxy-load-balancing-method 
   min-active-serv-lb 
   activate
+exit
