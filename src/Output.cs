@@ -82,8 +82,9 @@ namespace ACConfigBuilder
             }
         }
 
-        private static IEnumerable<string> GetConfigStringFromObject(object item)
+        protected static IEnumerable<string> GetConfigStringFromObject(object item)
         {
+            var isSetValue = false;
             foreach (var propertyInfo in item.GetType().GetProperties())
             {
                 var acProperty = propertyInfo.GetCustomAttributes(typeof(AcPropertyAttribute), false).FirstOrDefault() as AcPropertyAttribute;
@@ -91,6 +92,7 @@ namespace ACConfigBuilder
                 var value = propertyInfo.GetValue(item);
                 if (value != null)
                 {
+                    isSetValue = true;
                     if (value.ToString() == "True")
                     {
                         yield return "  activate";
@@ -101,7 +103,14 @@ namespace ACConfigBuilder
                     }
                 }
             }
-            yield return " exit";
+            if (isSetValue)
+            {
+                yield return " exit";
+            }
+            else
+            {
+                yield break;
+            }
         }
 
         private void giveitback(List<string> back, string path)

@@ -109,7 +109,7 @@ namespace ACConfigBuilder
                     AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
                     AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
                 }
-                obj.getobject(AC, item); //output
+                obj.startOutput(AC, item); //output
             }
 
         }
