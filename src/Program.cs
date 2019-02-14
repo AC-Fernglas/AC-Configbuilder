@@ -12,6 +12,7 @@ namespace ACConfigBuilder
     class Program
     {
         static void Main(string[] args)
+
         {
             Commands obj = new Commands();
             obj.Idel(args);
@@ -109,7 +110,8 @@ namespace ACConfigBuilder
                     AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
                     AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
                 }
-                obj.startOutput(AC, item); //output
+                var objList = obj.objectToList(AC);
+                obj.writeOutput(objList, item); //output
             }
 
         }

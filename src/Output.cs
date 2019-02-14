@@ -9,9 +9,19 @@ namespace ACConfigBuilder
 {
     public class Output
     {
-        public void  startOutput(ACConfig AC, string path)
+        public void writeOutput(List<string> AC, StreamWriter writer)
         {
-            giveitback(objectToList(AC), path);
+            using (writer)
+            {
+                foreach (var item in AC)
+                {
+                    writer.WriteLine(item);
+                }
+            }
+        }
+        public void  writeOutput(List<string> AC, string path)
+        {
+            writeOutput(AC, new StreamWriter(path));
         }
         public List<string> objectToList(ACConfig AC)
         {
@@ -90,14 +100,18 @@ namespace ACConfigBuilder
                 var acProperty = propertyInfo.GetCustomAttributes(typeof(AcPropertyAttribute), false).FirstOrDefault() as AcPropertyAttribute;
                 var name = acProperty == null ? propertyInfo.Name : acProperty.PropertyName;
                 var value = propertyInfo.GetValue(item);
+                if (((value is Boolean || value is bool) && (bool)value == false))
+                {
+                    continue;
+                }
                 if (value != null)
                 {
                     isSetValue = true;
-                    if (value.ToString() == "True")
+                    if ((value is Boolean || value is bool) && (bool)value == true)
                     {
                         yield return "  activate";
                     }
-                    else
+                    else 
                     {
                         yield return "  " + name + " " + value;
                     }
@@ -113,15 +127,5 @@ namespace ACConfigBuilder
             }
         }
 
-        private void giveitback(List<string> back, string path)
-        {
-            using (StreamWriter writer = new StreamWriter(@path))
-            {
-                foreach (var item in back)
-                {
-                    writer.WriteLine(item);
-                }
-            }
-        }
     }
 }

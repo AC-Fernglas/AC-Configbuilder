@@ -1,20 +1,18 @@
 configure network
- network-dev 16
-  vlan-id 322
-  underlying-if string
-  name   "EthD_UNP-1"
-  tagging tagged
- exit
- network-dev 17
-  vlan-id 1606
+  network-dev 17
   underlying-if   "GROUP_6"
   name   "EthD_UNP-2"
   tagging tagged
   activate
  exit
- interface network-if 87
+  network-dev 17
+  underlying-if   "GROUP_6"
+  name   "EthD_UNP-2"
+  tagging tagged
+  activate
+ exit
+  interface network-if 87
   application-type control
-  ip-address   10.49.50.12
   prefix-length 28
   gateway   10.49.50.1
   name   "IpInf_UNP-FR"
@@ -23,27 +21,20 @@ configure network
  exit
 exit
 configure voip
- proxy-set 4
+  proxy-set 4
   proxy-name   "PS_UNP-FR"
-  proxy-enable-keep-alive uoptions
+  proxy-enable-keep-alive usingOptions
   srd-name   "SRD_UNP"
   sbcipv4-sip-int-name   "SipInf_UNP-FR"
   keepalive-fail-resp   "500,503"
   success-detect-retries 1
-  success-detect-int 5
   proxy-redundancy-mode homing
   is-proxy-hot-swap 1
-  proxy-load-balancing-method 1
   min-active-serv-lb 1
+  activate False
  exit
- proxy-ip 4/0
-  proxy-address   "1.1.1.10:5060"
+  proxy-ip 4/0
   transport-type udp
-  activate
- exit
- proxy-ip 4/1
-  proxy-address   "1.1.1.11:5060"
-  transport-type udp
-  activate
+  activate False
  exit
 exit
