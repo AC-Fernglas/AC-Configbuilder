@@ -54,9 +54,9 @@ namespace ACConfigBuilder
         }
     }
 
-    class Execute
+    public class Execute
     {
-        private void setuserpath(string configPath, string changePath)
+        protected void setuserpath(string configPath, string changePath)
         {
             StringBuilder newFile = new StringBuilder();
             string[] file = File.ReadAllLines(configPath + @"\Config.json");
@@ -68,11 +68,12 @@ namespace ACConfigBuilder
             }
             File.WriteAllText(configPath + @"\Config.json", newFile.ToString());
 }
-        public void run(CommandOption path) //run for replace
+        public void run(CommandOption Path) //run for replace
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
+            var path =  Path.ToString();
             var currentDirectory = Directory.GetCurrentDirectory();
             if (currentDirectory == validpath(path,@"..\netcoreapp2.2"))
             {
@@ -86,7 +87,7 @@ namespace ACConfigBuilder
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
             var changePath = host.changeDirectory;
             var mypath = String.Empty;
-            if (path.HasValue() && path.Value() != " " && path.Value() != null)
+            if (path != " " && path != null)
             {
                mypath = validpath(path, null);
                setuserpath(configPath,mypath);
@@ -99,7 +100,7 @@ namespace ACConfigBuilder
             dirs = exe.findDirectorys(mypath); //search all files in Directory 
             foreach (var item in dirs)
             {
-                AC = exe.parseinobject(item); //parses current configuration into the AC object
+                AC = exe.parseinobject(new StreamReader(item)); //parses current configuration into the AC object
                 if (myconfig.configureNetwork != null)
                 {
                     AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
@@ -115,7 +116,7 @@ namespace ACConfigBuilder
             }
 
         }
-        private void fileproof()
+        protected void fileproof()
         {
            bool exists = System.IO.Directory.Exists(EnviromentVariable.changeDirectory);
             if (!exists)
@@ -123,12 +124,12 @@ namespace ACConfigBuilder
                 System.IO.Directory.CreateDirectory(EnviromentVariable.configDirectory);
             }
         }
-        private List<string> findDirectorys(string mypath) // opens the .txt files in the directorypath
+        protected List<string> findDirectorys(string mypath) // opens the .txt files in the directorypath
         {
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
             return dirs.ToList<string>();
         }
-        private void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue) // parses the Indentifyer for the current block of the configuration
+        protected void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue) // parses the Indentifyer for the current block of the configuration
         {
             subIdent = ParserGrammar.getsubident.Parse(line);
             configureExit = false;
@@ -150,7 +151,7 @@ namespace ACConfigBuilder
                 subIdentValue = ParserGrammar.subidentvalue.Parse(line);
             }
         }
-        private void getConfigureIdent(string line, out bool configureExit, out string ident) //parses the head of the currend configurationblock
+        public void getConfigureIdent(string line, out bool configureExit, out string ident) //parses the head of the currend configurationblock
         {
             ident = String.Empty;
             configureExit = true;
@@ -160,7 +161,7 @@ namespace ACConfigBuilder
                 configureExit = false;
             }
         }
-        private ACConfig parseinobject(string path)
+        protected ACConfig parseinobject(StreamReader Reader)
         {
             Configureviop vo = new Configureviop();
             ConfigureNetwork co = new ConfigureNetwork();
@@ -194,7 +195,7 @@ namespace ACConfigBuilder
             int proxySetListTndex = 0;
             int proxyIpListTndex = 0;
 
-            using (StreamReader Reader = new StreamReader(path))
+            using (Reader)
             {
                 string line = " ";
                 while ((line = Reader.ReadLine()) != null)                                                  // zu editierende File einlesen (Zeile für Zeile)
@@ -388,13 +389,13 @@ namespace ACConfigBuilder
                 case ParserVariables.successdetectretries:
                     return ParserVariables.successdet;
                 case ParserVariables.successdetectint:
-                    return ParserVariables.successdetectint;
+                    return ParserVariables.successdetint;
                 case ParserVariables.proxyredundancymode:
                     return ParserVariables.proxymode;
                 case ParserVariables.isproxyhotswap:
                     return ParserVariables.proxyswap;
                 case ParserVariables.proxyloadbalancingmethod:
-                    return ParserVariables.proxymode;
+                    return ParserVariables.proxymethod;
                 case ParserVariables.minactiveservlb:
                     return ParserVariables.minlb;
                 case ParserVariables.proxyaddress:
@@ -405,7 +406,7 @@ namespace ACConfigBuilder
                     return null;
             }
         }
-        private ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) //setzt die Value in aus dfem Bereich in die Passende liste an der Richtigen stelle
+        protected ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) //setzt die Value in aus dfem Bereich in die Passende liste an der Richtigen stelle
         {
             ;
             if (Value == null) // falls es keine Value gibt brauch es nix machen
@@ -474,7 +475,7 @@ namespace ACConfigBuilder
             }
             return Config;
         }
-        private string validpath(CommandOption filepath, string otherPath) //valify the userpath
+        protected string validpath(string filepath, string otherPath) //valify the userpath
         {
             var path = String.Empty;
             if (otherPath != null)
@@ -483,7 +484,7 @@ namespace ACConfigBuilder
             }
             else
             {
-                path = filepath.Value().ToString();
+                path = filepath;
             }
             path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
             string temp = Path.GetPathRoot(path); //For cases like: \text.txt
@@ -492,7 +493,7 @@ namespace ACConfigBuilder
             return pt;
             
         }
-        private void change(dynamic i, dynamic item) //replaces the Item
+        protected void change(dynamic i, dynamic item) //replaces the Item
         {
             foreach (var propertyInfo in item.GetType().GetProperties())
             {
@@ -556,9 +557,10 @@ namespace ACConfigBuilder
             return AC;
         }
 
-        public void RunCreate(CommandOption path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
+        public void RunCreate(CommandOption Path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         { 
             var currentDirectory = Directory.GetCurrentDirectory();
+            var path = Path.ToString();
             if (currentDirectory == validpath(path,@"..\netcoreapp2.2"))
             {
                 Directory.SetCurrentDirectory(@"..\..\..\");
@@ -566,7 +568,7 @@ namespace ACConfigBuilder
             fileproof();
             var configPath = validpath(path, EnviromentVariable.configDirectory);
             var mypath = String.Empty;
-            if (path.HasValue() && path.Value() != " " && path.Value() != null)
+            if (path != " " && path != null)
             {
                mypath = validpath(path, null);
             }
@@ -579,7 +581,7 @@ namespace ACConfigBuilder
             var filepath = mypath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
             Write(Net, Dev, Set, Ip, filepath, configPath);
         }
-        private void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath,string configPath)
+        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath,string configPath)
         {
             var netcounter = 1;
             var devcounter = 1;

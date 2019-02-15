@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace XUnitTestProject1
+namespace Tests
 {
     public class OutputTests
     {
@@ -131,13 +131,6 @@ namespace XUnitTestProject1
             testreturnConfigList = new TestOutput().objectToList(AC);
             Assert.NotEmpty(testreturnConfigList);
         }
-        [Fact]
-        public void TestOutut()
-        {
-            ACConfig AC = new ACConfig();
-
-        }
-
     }
 
     public class TestOutput : Output

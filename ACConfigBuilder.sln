@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{9AEE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Verzeichniss_A", "Verzeichniss_A", "{669FA4B2-33C4-4632-B02A-8A740C1D802A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutputTest", "test\OutputTest\OutputTest.csproj", "{85D0E10C-393C-4FC8-9970-67990807835D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "test\OutputTest\Tests.csproj", "{85D0E10C-393C-4FC8-9970-67990807835D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

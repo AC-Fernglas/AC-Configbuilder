@@ -54,7 +54,7 @@ namespace ACConfigBuilder
         public const string name = "Name";
         public const string Tag = "tag";
         public const string appt = "apptype";
-        public const string ipa = "ipadress";
+        public const string ipa = "ipaddress";
         public const string prefix = "prefixlength";
         public const string gate = "gateway";
         public const string uif = "underlyingif";
