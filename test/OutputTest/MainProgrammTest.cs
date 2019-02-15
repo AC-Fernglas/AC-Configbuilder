@@ -5,6 +5,8 @@ using System.Linq;
 using Xunit;
 using ACConfigBuilder;
 using Sprache;
+using System.IO;
+using Moq;
 
 namespace Tests
 {
@@ -201,6 +203,36 @@ namespace Tests
             Testpath = new TestMainProgramm().ValidTestPath(OtherPath, Testpath);
             Assert.Contains(@"C:\", Testpath);
         }
+        [Fact]
+       public void TestFileProof()
+        {
+            new TestMainProgramm().fileproof();
+        }
+        [Fact]
+        public void findTestDirectory()
+        {
+            string TestDirectory = @"C:\";
+            List<string> Testlist = new TestMainProgramm().FindTestDirectory(TestDirectory);
+            Assert.NotNull(Testlist);
+            Assert.Empty(Testlist);
+        }
+        [Fact]
+        public void TestParseInObject()
+        {
+            List<string> FakeConfig = new List<string>()
+            {
+                "configure network",
+                " network-dev 123",
+                "  name blub",
+                "  vlan-id 1234",
+                "  activate",
+                " exit",
+                "exit"
+            };
+            ACConfig TestAC = new TestMainProgramm().ParseInTestObject(new StringReader(FakeConfig));
+
+
+        }
     }
     public class TestMainProgramm : Execute
     {
@@ -212,5 +244,15 @@ namespace Tests
         {
             return validpath(Path,OtherPath);
         }
+        public List<string> FindTestDirectory(string path)
+        {
+            return findDirectorys(path);
+        }
+        public ACConfig ParseInTestObject(StringReader Reader)
+        {
+            return parseinobject(Reader);
+        }
+       
     }
+
 }

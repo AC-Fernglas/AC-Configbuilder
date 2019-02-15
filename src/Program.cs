@@ -66,7 +66,7 @@ namespace ACConfigBuilder
             {
                 newFile.Append(line + "\n");
             }
-            File.WriteAllText(configPath + @"\Config.json", newFile.ToString());
+           File.WriteAllText(configPath + @"\Config.json", newFile.ToString());
 }
         public void run(CommandOption Path) //run for replace
         {
