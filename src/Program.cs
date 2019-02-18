@@ -116,7 +116,7 @@ namespace ACConfigBuilder
             }
 
         }
-        protected void fileproof()
+        public void fileproof()
         {
            bool exists = System.IO.Directory.Exists(EnviromentVariable.changeDirectory);
             if (!exists)
@@ -162,7 +162,7 @@ namespace ACConfigBuilder
             }
         }
         protected ACConfig parseinobject(StreamReader Reader)
-        {
+{
             Configureviop vo = new Configureviop();
             ConfigureNetwork co = new ConfigureNetwork();
             List<Networkdev> networkDevs = new List<Networkdev>();
@@ -316,7 +316,7 @@ namespace ACConfigBuilder
                         }
                         continue;
                     }
-                    else if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == ParserVariables.proxySet)
+                    else if (configureExit == false && subIdentExit == false && ident == "configure voip" && subIdent == ParserVariables.proxyIp)
                     {
                         var Name = ParserGrammar.NameParser.Parse(line);
                         if (Name == ParserVariables.exit)
@@ -523,7 +523,7 @@ namespace ACConfigBuilder
                             }
                         }
                         break;
-                    case "networkinterfaceif":
+                    case "interfacenetworkif":
                         foreach (var i in AC.configureNetwork.interfacenetworkif)
                         {
                             if (item.listid == i.listid)

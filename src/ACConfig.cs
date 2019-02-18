@@ -111,7 +111,7 @@ namespace ACConfigBuilder
         public string ip { get; set; }
         [JsonProperty(PropertyName = "proxy-adress")]
         [AcProperty(PropertyName = "proxy-adress")]
-        public string proxyadress { get; set; }
+        public string proxyaddress { get; set; }
         [JsonProperty(PropertyName = "transport-type")]
         [AcProperty(PropertyName = "transport-type")]
         public transporttype transporttype { get; set; }
