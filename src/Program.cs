@@ -18,7 +18,7 @@ namespace ACConfigBuilder
             obj.Idel(args);
         }
     }
-    class Commands
+   public class Commands
     {
         public int Idel(string[] commands)  // start 
         {

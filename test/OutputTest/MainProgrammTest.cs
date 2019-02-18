@@ -396,6 +396,12 @@ namespace Tests
             var TestAc = new TestMainProgramm().replaceitem(Ac, list, what);
             Assert.Same(Ac,TestAc);
         }
+        [Fact]
+        public void IdelTest()
+        {
+           int? Empty =  new TestCommands().TestIdel(null);
+            Assert.Equal(0,Empty);
+        }
     }
     public class TestMainProgramm : Execute
     {
@@ -421,6 +427,14 @@ namespace Tests
             return replaceitem(AC, list, whatlist);
         }
 
+    }
+
+    public class TestCommands : Commands
+    {
+        public int TestIdel(string[] commands)
+        {
+            return Idel(commands);
+        }
     }
 
 }
