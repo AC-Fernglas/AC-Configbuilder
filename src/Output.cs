@@ -24,7 +24,9 @@ namespace ACConfigBuilder
         }
         public void  writeOutput(List<string> AC, string path)
         {
-            writeOutput(AC, path);
+            using(var stream = new StreamWriter(path)){
+               writeOutput(AC, stream);
+            }
         }
         public List<string> objectToList(ACConfig AC)
         {
