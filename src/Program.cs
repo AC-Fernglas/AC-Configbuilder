@@ -18,7 +18,7 @@ namespace ACConfigBuilder
             obj.Idel(args);
         }
     }
-   public class Commands
+    public class Commands
     {
         public int Idel(string[] commands)  // start 
         {
@@ -56,26 +56,26 @@ namespace ACConfigBuilder
 
     public class Execute
     {
-        protected void setuserpath(string configPath, string changePath)
+        protected dynamic setuserpath(string configPath, string changePath)
         {
-            StringBuilder newFile = new StringBuilder();
+            StreamWriter writer = new StreamWriter(configPath);
             string[] file = File.ReadAllLines(configPath + @"\Config.json");
             List<string> list = new List<string>(file);
-            list[3] = "\"changeDirectory\": " +  changePath;
+            list[3] = "\"changeDirectory\": " + changePath;
             foreach (string line in list)
             {
-                newFile.Append(line + "\n");
+                writer.WriteLine(line);
             }
-           File.WriteAllText(configPath + @"\Config.json", newFile.ToString());
-}
+            return writer;
+        }
         public void run(CommandOption Path) //run for replace
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
-            var path =  Path.ToString();
+            var path = Path.ToString();
             var currentDirectory = Directory.GetCurrentDirectory();
-            if (currentDirectory == validpath(path,@"..\netcoreapp2.2"))
+            if (currentDirectory == validpath(path, @"..\netcoreapp2.2"))
             {
                 Directory.SetCurrentDirectory(@"..\..\..\");
             }
@@ -89,8 +89,8 @@ namespace ACConfigBuilder
             var mypath = String.Empty;
             if (path != " " && path != null)
             {
-               mypath = validpath(path, null);
-               setuserpath(configPath,mypath);
+                mypath = validpath(path, null);
+                setuserpath(configPath, mypath);
             }
             else
             {
@@ -118,9 +118,9 @@ namespace ACConfigBuilder
         }
         public void fileproof()
         {
-           bool exists = System.IO.Directory.Exists(EnviromentVariable.changeDirectory);
+            bool exists = System.IO.Directory.Exists(EnviromentVariable.changeDirectory);
             if (!exists)
-            { 
+            {
                 System.IO.Directory.CreateDirectory(EnviromentVariable.configDirectory);
             }
         }
@@ -162,7 +162,7 @@ namespace ACConfigBuilder
             }
         }
         protected ACConfig parseinobject(StreamReader Reader)
-{
+        {
             Configureviop vo = new Configureviop();
             ConfigureNetwork co = new ConfigureNetwork();
             List<Networkdev> networkDevs = new List<Networkdev>();
@@ -491,7 +491,7 @@ namespace ACConfigBuilder
             if (temp.StartsWith(@"\")) return null;
             string pt = Path.GetFullPath(path);
             return pt;
-            
+
         }
         protected void change(dynamic i, dynamic item) //replaces the Item
         {
@@ -558,10 +558,10 @@ namespace ACConfigBuilder
         }
 
         public void RunCreate(CommandOption Path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
-        { 
+        {
             var currentDirectory = Directory.GetCurrentDirectory();
             var path = Path.ToString();
-            if (currentDirectory == validpath(path,@"..\netcoreapp2.2"))
+            if (currentDirectory == validpath(path, @"..\netcoreapp2.2"))
             {
                 Directory.SetCurrentDirectory(@"..\..\..\");
             }
@@ -570,7 +570,7 @@ namespace ACConfigBuilder
             var mypath = String.Empty;
             if (path != " " && path != null)
             {
-               mypath = validpath(path, null);
+                mypath = validpath(path, null);
             }
             else
             {
@@ -581,7 +581,7 @@ namespace ACConfigBuilder
             var filepath = mypath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
             Write(Net, Dev, Set, Ip, filepath, configPath);
         }
-        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath,string configPath)
+        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string configPath)
         {
             var netcounter = 1;
             var devcounter = 1;
@@ -603,8 +603,8 @@ namespace ACConfigBuilder
             {
                 int.TryParse(Dev.Value(), out devcounter);
             }
-            
-            var Networkdevvorlage = File.ReadAllText(configPath+ @"\Template\NetworkDev.template");
+
+            var Networkdevvorlage = File.ReadAllText(configPath + @"\Template\NetworkDev.template");
             var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Template\InterfaceNetwokIf.template");
             var Proxysetvorlage = File.ReadAllText(configPath + @"\Template\ProxySet.template");
             var Proxyipvorlage = File.ReadAllText(configPath + @"\Template\ProxyIp.template");

@@ -9,19 +9,22 @@ namespace ACConfigBuilder
 {
     public class Output
     {
-        public void writeOutput(List<string> AC, StreamWriter writer)
+        public dynamic writeOutput(List<string> AC, dynamic s)
         {
+            StreamWriter writer = new StreamWriter(s);
             using (writer)
             {
                 foreach (var item in AC)
                 {
                     writer.WriteLine(item);
+                    writer.Flush();
                 }
             }
+            return s;
         }
         public void  writeOutput(List<string> AC, string path)
         {
-            writeOutput(AC, new StreamWriter(path));
+            writeOutput(AC, path);
         }
         public List<string> objectToList(ACConfig AC)
         {

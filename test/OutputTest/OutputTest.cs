@@ -1,7 +1,9 @@
 using ACConfigBuilder;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace Tests
@@ -128,8 +130,35 @@ namespace Tests
                 ip = "213"
             };
             AC.configureviop.proxyip.Add(PI);
-            testreturnConfigList = new TestOutput().objectToList(AC);
+            testreturnConfigList = new TestOutput().TestObjectToList(AC);
             Assert.NotEmpty(testreturnConfigList);
+        }
+
+        [Fact]
+        public void TestWriteOutputFromList()
+        {
+            List<string> AC = new List<string>()
+            {
+                "Line1",
+                "Line 2 with whitespaces   ",
+                "This is Line 3 as sentence"
+            };
+          MemoryStream s = new MemoryStream();
+          s =  new TestOutput().WriteTestOutput(AC, s);
+          Assert.NotEmpty(s.ToArray());
+          Assert.NotNull(s);
+          byte[] bytes = s.ToArray();
+            using (var stream = new MemoryStream(bytes))
+            using (var reader = new StreamReader(stream))
+            {
+                var collection = new List<string>();
+                string input;
+
+                while ((input = reader.ReadLine()) != null)
+                    collection.Add(input);
+
+                Assert.Equal(3, collection.Count);
+            }
         }
     }
 
@@ -143,6 +172,10 @@ namespace Tests
         public List<string> TestObjectToList(ACConfig AC)
         {
             return objectToList(AC);
+        }
+        public MemoryStream WriteTestOutput(List<string> AC, dynamic s)
+        {
+            return writeOutput(AC, s);
         }
     }
 

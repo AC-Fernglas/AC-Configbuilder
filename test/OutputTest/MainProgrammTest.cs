@@ -393,7 +393,7 @@ namespace Tests
             Ac.configureNetwork.networkdev.Add(Nd);
             List<string> list = new List<string>(); 
             var what = "networkdev";
-            var TestAc = new TestMainProgramm().replaceitem(Ac, list, what);
+            var TestAc = new TestMainProgramm().ReplaceTestValues(Ac, list, what);
             Assert.Same(Ac,TestAc);
         }
         [Fact]
@@ -426,6 +426,7 @@ namespace Tests
         {
             return replaceitem(AC, list, whatlist);
         }
+        
 
     }
 
