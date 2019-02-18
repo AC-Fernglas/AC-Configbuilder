@@ -9,7 +9,7 @@ namespace ACConfigBuilder
 {
     public class Output
     {
-        public dynamic writeOutput(List<string> AC, dynamic s)
+        public void writeOutput(List<string> AC, StreamWriter s)
         {
             StreamWriter writer = new StreamWriter(s);
             using (writer)
