@@ -173,7 +173,17 @@ namespace Tests
         {
             return objectToList(AC);
         }
-        public MemoryStream WriteTestOutput(List<string> AC, dynamic s)
+        public string WriteTestOutput(List<string> AC)
+         { 
+            var output = "";
+            using(var stream = new MemoryStream()){
+               writeOutput(AC, stream);
+               // reset stream position to 0. Because the writer may leave the stream at the end.
+               stream.Position = 0;
+               output = StreamReader(stream).ReadToEnd();
+            }
+            return output;
+         }
         {
             return writeOutput(AC, s);
         }
