@@ -9,23 +9,22 @@ namespace ACConfigBuilder
 {
     public class Output
     {
-        public void writeOutput(List<string> AC, StreamWriter s)
+        public void writeOutput(List<string> AC, Stream s)
         {
             StreamWriter writer = new StreamWriter(s);
-            using (writer)
+
+            foreach (var item in AC)
             {
-                foreach (var item in AC)
-                {
-                    writer.WriteLine(item);
-                    writer.Flush();
-                }
+                writer.WriteLine(item);
+                writer.Flush();
             }
-            return s;
+
         }
-        public void  writeOutput(List<string> AC, string path)
+        public void writeOutput(List<string> AC, string path)
         {
-            using(var stream = new StreamWriter(path)){
-               writeOutput(AC, stream);
+            using (var stream = new StreamWriter(path))
+            {
+                writeOutput(AC, stream.BaseStream);
             }
         }
         public List<string> objectToList(ACConfig AC)
@@ -56,8 +55,8 @@ namespace ACConfigBuilder
             }
             foreach (var item in AC.configureviop.proxyip)
             {
-                    configback.AddRange(GetConfigStringFromObject(item));
-                
+                configback.AddRange(GetConfigStringFromObject(item));
+
             }
         }
 
@@ -69,7 +68,7 @@ namespace ACConfigBuilder
             }
             foreach (var item in AC.configureviop.proxyset)
             {
-                    configback.AddRange(GetConfigStringFromObject(item));
+                configback.AddRange(GetConfigStringFromObject(item));
             }
         }
 
@@ -81,7 +80,7 @@ namespace ACConfigBuilder
             }
             foreach (var item in AC.configureNetwork.interfacenetworkif)
             {
-                    configback.AddRange(GetConfigStringFromObject(item));
+                configback.AddRange(GetConfigStringFromObject(item));
             }
         }
 
@@ -116,7 +115,7 @@ namespace ACConfigBuilder
                     {
                         yield return "  activate";
                     }
-                    else 
+                    else
                     {
                         yield return "  " + name + " " + value;
                     }

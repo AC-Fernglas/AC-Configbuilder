@@ -143,22 +143,8 @@ namespace Tests
                 "Line 2 with whitespaces   ",
                 "This is Line 3 as sentence"
             };
-          MemoryStream s = new MemoryStream();
-          s =  new TestOutput().WriteTestOutput(AC, s);
-          Assert.NotEmpty(s.ToArray());
-          Assert.NotNull(s);
-          byte[] bytes = s.ToArray();
-            using (var stream = new MemoryStream(bytes))
-            using (var reader = new StreamReader(stream))
-            {
-                var collection = new List<string>();
-                string input;
-
-                while ((input = reader.ReadLine()) != null)
-                    collection.Add(input);
-
-                Assert.Equal(3, collection.Count);
-            }
+          var testString = new TestOutput().WriteTestOutput(AC);
+          Assert.Equal("Line1"+System.Environment.NewLine + "Line 2 with whitespaces   " + System.Environment.NewLine + "This is Line 3 as sentence" + System.Environment.NewLine, testString);
         }
     }
 
@@ -174,19 +160,23 @@ namespace Tests
             return objectToList(AC);
         }
         public string WriteTestOutput(List<string> AC)
-         { 
+         {
             var output = "";
-            using(var stream = new MemoryStream()){
-               writeOutput(AC, stream);
-               // reset stream position to 0. Because the writer may leave the stream at the end.
-               stream.Position = 0;
-               output = StreamReader(stream).ReadToEnd();
+            using (var stream = new MemoryStream())
+            {
+                writeOutput(AC, stream);
+                // reset stream position to 0. Because the writer may leave the stream at the end.
+                stream.Position = 0;
+                output = new System.IO.StreamReader(stream).ReadToEnd();
+
             }
             return output;
-         }
-        {
-            return writeOutput(AC, s);
         }
+
+        //private object StreamReader(MemoryStream stream)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 
     public class TestConfig
