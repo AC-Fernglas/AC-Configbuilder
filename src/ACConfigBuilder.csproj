@@ -13,13 +13,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="samples\**" />
+    <EmbeddedResource Remove="samples\**" />
+    <None Remove="samples\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="config\change.json" />
     <None Remove="config\Config.json" />
     <None Remove="config\Template\InterfaceNetwokIf.template" />
     <None Remove="config\Template\NetworkDev.template" />
     <None Remove="config\Template\ProxyIp.template" />
     <None Remove="config\Template\ProxySet.template" />
-    <None Remove="samples\Beispieldaten.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,9 +46,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="config\Template\ProxySet.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="samples\Beispieldaten.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -2,9 +2,9 @@
     "configurenetwork": {
       "networkdev": [
         {
-          "listid": 16,
-          "vlanip": 322,
-          "underlyingif": "string"
+          "network-dev": 16,
+          "vlan-id": 322,
+          "underlying-if": "done:DDDDDDD"
         }
       ]
     }
