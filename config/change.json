@@ -3,8 +3,8 @@
       "networkdev": [
         {
           "listid": 16,
-          "vlanip": 322,
-          "underlyingif": "string"
+          "vlan-id": 322,
+          "underlying-if": "string"
         }
       ]
     }
