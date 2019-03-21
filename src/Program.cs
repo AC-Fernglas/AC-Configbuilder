@@ -6,6 +6,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Sprache;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Reflection;
 
 namespace ACConfigBuilder
 {
@@ -22,7 +23,7 @@ namespace ACConfigBuilder
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-            }            
+            }
         }
     }
     public class Commands
@@ -38,19 +39,22 @@ namespace ACConfigBuilder
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
                 var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als userpath angegeben ist verwendet.", CommandOptionType.SingleValue);
-                u.OnExecute(() => { obj.run(path); });
+                var configPath = u.Option("--config <fullpath>", "Benutzt ein benutzerdefinierte Konfiguration. Wenn dieser Befehl nicht benutzt wird die Standardkonfiguration verwendet.", CommandOptionType.SingleValue);
+                var templatePath = u.Option("--template <fullpath>", "Benutzt einen benutzerdefiniertes Templateverzeichnis. Wenn dieser Befehl nicht benutzt wird, werden die Standardtemplates verwendet.", CommandOptionType.SingleValue);
+                u.OnExecute(() => { obj.runReplace(path, configPath, templatePath); });
             });
             app.Command("create", c => //creats a new config 
             {
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
                 var path = c.Option("--path <fullpath>", "Benutzt einen benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
-
+                var configPath = c.Option("--config <fullpath>", "Benutzt ein benutzerdefinierte Konfiguration. Wenn dieser Befehl nicht benutzt wird die Standardkonfiguration verwendet.", CommandOptionType.SingleValue);
+                var templatePath = c.Option("--template <fullpath>", "Benutzt einen benutzerdefiniertes Templateverzeichnis. Wenn dieser Befehl nicht benutzt wird, werden die Standardtemplates verwendet.", CommandOptionType.SingleValue);
                 var Net = c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Int = c.Option("--interfacenetworkif <anzahl>", "Setzt die Anzahl für Interfacenetworkifabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Set = c.Option("--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Ip = c.Option("--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
-                c.OnExecute(() => { obj.RunCreate(path, Net, Int, Set, Ip); });
+                c.OnExecute(() => { obj.RunCreate(path, configPath, templatePath, Net, Int, Set, Ip); });
             });
             app.Command(null, c =>
             {
@@ -63,7 +67,7 @@ namespace ACConfigBuilder
 
     public class Execute
     {
-        protected dynamic setuserpath(string configPath, string changePath)
+        protected void setuserpath(string configPath, string changePath)
         {
             StreamWriter writer = new StreamWriter(configPath);
             string[] file = File.ReadAllLines(configPath + @"\Config.json");
@@ -73,41 +77,26 @@ namespace ACConfigBuilder
             {
                 writer.WriteLine(line);
             }
-            return writer;
         }
-        public void run(CommandOption Path) //run for replace
+        public void runReplace(
+            CommandOption Path,
+            CommandOption configPath,
+            CommandOption templatePath) //run for replace
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
-            Output obj = new Output();
-            var path = Path.ToString();
-            var currentDirectory = Directory.GetCurrentDirectory();
-            if (currentDirectory == validpath(path, @"..\netcoreapp2.2"))
-            {
-                Directory.SetCurrentDirectory(@"..\..\..\");
-            }
+            Output obj = new Output();            
+            var paths = getDefaultPaths(Path, configPath, templatePath);    
             fileproof();
 
-            var configPath = validpath(path, EnviromentVariable.configDirectory);
-            var config = File.ReadAllText(configPath + @"\Config.json"); //get json
-            var host = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
-            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(host.userpath));//open json to use
-            var changePath = host.changeDirectory;
-            var mypath = String.Empty;
-            if (path != " " && path != null)
+            var config = File.ReadAllText(paths.configPath + @"\Config.json"); //get json
+            var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+            var changePath = configuration.userpath;
+            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(changePath));//open json to use
+            var dirs = exe.findFilesInDirectory(paths.path); //search all files in Directory 
+            foreach (var file in dirs)
             {
-                mypath = validpath(path, null);
-                setuserpath(configPath, mypath);
-            }
-            else
-            {
-                mypath = validpath(path, changePath.ToString());
-            }
-            List<string> dirs = new List<string>();
-            dirs = exe.findDirectorys(mypath); //search all files in Directory 
-            foreach (var item in dirs)
-            {
-                AC = exe.parseinobject(new StreamReader(item)); //parses current configuration into the AC object
+                AC = exe.parseinobject(new StreamReader(file)); //parses current configuration into the AC object
                 if (myconfig.configureNetwork != null)
                 {
                     AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
@@ -119,7 +108,7 @@ namespace ACConfigBuilder
                     AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
                 }
                 var objList = obj.objectToList(AC);
-                obj.writeOutput(objList, item); //output
+                obj.writeOutput(objList, file); //output
             }
 
         }
@@ -131,7 +120,7 @@ namespace ACConfigBuilder
                 System.IO.Directory.CreateDirectory(EnviromentVariable.configDirectory);
             }
         }
-        protected List<string> findDirectorys(string mypath) // opens the .txt files in the directorypath
+        protected List<string> findFilesInDirectory(string mypath) // opens the .txt files in the directorypath
         {
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
             return dirs.ToList<string>();
@@ -162,9 +151,10 @@ namespace ACConfigBuilder
         {
             ident = String.Empty;
             configureExit = true;
-            if (ParserGrammar.getidentifier.Parse(line) == "configure network" || ParserGrammar.getidentifier.Parse(line) == "configure voip" || ParserGrammar.getidentifier.Parse(line) == Environment.NewLine || ParserGrammar.getidentifier.Parse(line) == "\n")
+            var parsedLine = ParserGrammar.getidentifier.Parse(line);
+            if (parsedLine == "configure network" || parsedLine == "configure voip" || parsedLine == Environment.NewLine || parsedLine == "\n")
             {
-                ident = ParserGrammar.getidentifier.Parse(line);
+                ident = parsedLine;
                 configureExit = false;
             }
         }
@@ -415,8 +405,7 @@ namespace ACConfigBuilder
         }
         protected ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) //setzt die Value in aus dfem Bereich in die Passende liste an der Richtigen stelle
         {
-            ;
-            if (Value == null) // falls es keine Value gibt brauch es nix machen
+            if (String.IsNullOrWhiteSpace(Value.ToString())) // falls es keine Value gibt brauch es nix machen
             {
                 return Config;
             }
@@ -482,12 +471,12 @@ namespace ACConfigBuilder
             }
             return Config;
         }
-        protected string validpath(string filepath, string otherPath) //valify the userpath
+        protected string validpath(string filepath, string otherPath) //validate the userpath
         {
             var path = String.Empty;
             if (otherPath != null)
             {
-                path = otherPath;
+                path = string.Concat(filepath, @"\", otherPath);
             }
             else
             {
@@ -517,43 +506,43 @@ namespace ACConfigBuilder
             {
                 return AC;
             }
-            foreach (var item in list)
+            foreach (var config in list)
             {
                 switch (whatlist)   // switches on which list is now given 
                 {
                     case "networkdev":
                         foreach (var i in AC.configureNetwork.networkdev)
                         {
-                            if (item.listid == i.listid)
+                            if (config.listid == i.listid)
                             {
-                                change(i, item);
+                                change(i, config);
                             }
                         }
                         break;
                     case "interfacenetworkif":
                         foreach (var i in AC.configureNetwork.interfacenetworkif)
                         {
-                            if (item.listid == i.listid)
+                            if (config.listid == i.listid)
                             {
-                                change(i, item);
+                                change(i, config);
                             }
                         }
                         break;
                     case "proxyset":
                         foreach (var i in AC.configureviop.proxyset)
                         {
-                            if (item.listid == i.listid)
+                            if (config.listid == i.listid)
                             {
-                                change(i, item);
+                                change(i, config);
                             }
                         }
                         break;
                     case "proxyip":
                         foreach (var i in AC.configureviop.proxyip)
                         {
-                            if (item.ip == i.ip)
+                            if (config.ip == i.ip)
                             {
-                                change(i, item);
+                                change(i, config);
                             }
                         }
                         break;
@@ -564,31 +553,23 @@ namespace ACConfigBuilder
             return AC;
         }
 
-        public void RunCreate(CommandOption Path, CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
+        public void RunCreate(
+            CommandOption Path,
+            CommandOption configPath,
+            CommandOption templatePath,
+            CommandOption Net,
+            CommandOption Dev,
+            CommandOption Set,
+            CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var path = Path.ToString();
-            if (currentDirectory == validpath(path, @"..\netcoreapp2.2"))
-            {
-                Directory.SetCurrentDirectory(@"..\..\..\");
-            }
             fileproof();
-            var configPath = validpath(path, EnviromentVariable.configDirectory);
-            var mypath = String.Empty;
-            if (path != " " && path != null)
-            {
-                mypath = validpath(path, null);
-            }
-            else
-            {
-                mypath = validpath(path, EnviromentVariable.changeDirectory);
-            }
+            var paths = getDefaultPaths(Path, configPath, templatePath);
             DateTime time = new DateTime();
             time = DateTime.Now;
-            var filepath = mypath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
-            Write(Net, Dev, Set, Ip, filepath, configPath);
+            var filepath = paths.path + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
+            Write(Net, Dev, Set, Ip, filepath, paths.configPath, paths.tempaltePath);
         }
-        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string configPath)
+        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string configPath, string tempaltePath)
         {
             var netcounter = 1;
             var devcounter = 1;
@@ -611,10 +592,10 @@ namespace ACConfigBuilder
                 int.TryParse(Dev.Value(), out devcounter);
             }
 
-            var Networkdevvorlage = File.ReadAllText(configPath + @"\Template\NetworkDev.template");
-            var Interfacenetworkifvorlage = File.ReadAllText(configPath + @"\Template\InterfaceNetwokIf.template");
-            var Proxysetvorlage = File.ReadAllText(configPath + @"\Template\ProxySet.template");
-            var Proxyipvorlage = File.ReadAllText(configPath + @"\Template\ProxyIp.template");
+            var Networkdevvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"NetworkDev.template"));
+            var Interfacenetworkifvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"InterfaceNetwokIf.template"));
+            var Proxysetvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"ProxySet.template"));
+            var Proxyipvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"ProxyIp.template"));
             using (StreamWriter writer = new StreamWriter(mypath))
             {
                 writer.WriteLine("configure network");
@@ -643,6 +624,24 @@ namespace ACConfigBuilder
                 writer.WriteLine("exit");
             }
 
+        }
+        private string GetToolPath()
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            path = System.IO.Path.GetDirectoryName(path).ToString();
+            Console.WriteLine($"Source path is: {path}");
+            return path;
+        }
+        private (string path, string configPath, string tempaltePath) getDefaultPaths(
+            CommandOption Path,
+            CommandOption configPath,
+            CommandOption templatePath)
+        {
+            return (
+                path: Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory(),
+                configPath: configPath.HasValue() ? configPath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory),
+                tempaltePath: templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory, "Template")
+                );
         }
     }
 }
