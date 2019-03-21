@@ -49,13 +49,13 @@ steps:
     versionEnvVar: versionSuffixForPre
     packagesToPack: '$(csprojPath)'
     packDirectory: '$(build.artifactStagingDirectory)'
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), ne(contains(variables['Build.SourceBranch'], 'refs/heads/rc'), true))
   
 
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack prod'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/rc'))
   inputs:
     command: pack    
     configuration: 'release'
