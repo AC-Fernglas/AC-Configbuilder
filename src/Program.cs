@@ -14,8 +14,15 @@ namespace ACConfigBuilder
         static void Main(string[] args)
 
         {
-            Commands obj = new Commands();
-            obj.Idel(args);
+            try
+            {
+                Commands obj = new Commands();
+                obj.Idel(args);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }            
         }
     }
     public class Commands
