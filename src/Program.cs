@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -85,15 +85,15 @@ namespace ACConfigBuilder
         {
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
-            Output obj = new Output();            
-            var paths = getDefaultPaths(Path, configPath, templatePath);    
-            fileproof();
+            Output obj = new Output();
 
+            var paths = getDefaultPaths(Path, configPath, templatePath);
+            fileproof();
             var config = File.ReadAllText(paths.configPath + @"\Config.json"); //get json
             var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var changePath = configuration.userpath;
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(changePath));//open json to use
-            var dirs = exe.findFilesInDirectory(paths.path); //search all files in Directory 
+            var dirs = exe.findFilesInDirectory(configuration.changeDirectory); //search all files in Directory 
             foreach (var file in dirs)
             {
                 AC = exe.parseinobject(new StreamReader(file)); //parses current configuration into the AC object
@@ -168,10 +168,6 @@ namespace ACConfigBuilder
             List<Proxyset> proxySets = new List<Proxyset>();
             ACConfig AC = new ACConfig();
 
-            Networkdev newListNetworkDev = new Networkdev();
-            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
-            Proxyip newListProxyIp = new Proxyip();
-            Proxyset newListProxySet = new Proxyset();
 
             AC.configureNetwork = co;
             AC.configureviop = vo;
@@ -212,21 +208,25 @@ namespace ACConfigBuilder
                         var Name = returnRealName(subIdent);
                         if (Name != null && subIdent == ParserVariables.networkDev)
                         {
+                            Networkdev newListNetworkDev = new Networkdev();
                             networkDevs.Add(newListNetworkDev);                                            //neue Liste wird erstellt für jede Bereich von networkDev
                             AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
                         }
                         else if (Name != null && subIdent == ParserVariables.interfaceNetwokIf)
                         {
+                            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
                             interfaceNetworkIfs.Add(newListInterfaceNetworkIf);
                             AC = ListParsing(AC, Name, subIdentValue, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
                         }
                         else if (Name != null && subIdent == ParserVariables.proxySet)
                         {
+                            Proxyset newListProxySet = new Proxyset();
                             proxySets.Add(newListProxySet);
                             AC = ListParsing(AC, Name, subIdentValue, proxySetListTndex, AC.configureviop.proxyset, subIdent);
                         }
                         else if (Name != null && subIdent == ParserVariables.proxyIp)
                         {
+                            Proxyip newListProxyIp = new Proxyip();
                             proxyIps.Add(newListProxyIp);
                             AC = ListParsing(AC, Name, subIdentValue, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
                         }
@@ -476,7 +476,7 @@ namespace ACConfigBuilder
             var path = String.Empty;
             if (otherPath != null)
             {
-                path = string.Concat(filepath, @"\", otherPath);
+                path = otherPath;
             }
             else
             {
@@ -484,7 +484,7 @@ namespace ACConfigBuilder
             }
             path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
             string temp = Path.GetPathRoot(path); //For cases like: \text.txt
-            if (temp.StartsWith(@"\")) return null;
+            //if (temp.StartsWith(@"\")) return null;
             string pt = Path.GetFullPath(path);
             return pt;
 
@@ -506,7 +506,7 @@ namespace ACConfigBuilder
             {
                 return AC;
             }
-            foreach (var config in list)
+            foreach ( var config in list)
             {
                 switch (whatlist)   // switches on which list is now given 
                 {
@@ -629,19 +629,28 @@ namespace ACConfigBuilder
         {
             var path = Assembly.GetExecutingAssembly().Location;
             path = System.IO.Path.GetDirectoryName(path).ToString();
-            Console.WriteLine($"Source path is: {path}");
+           
+            // Console.WriteLine($"Source path is: {path}");
             return path;
         }
         private (string path, string configPath, string tempaltePath) getDefaultPaths(
             CommandOption Path,
-            CommandOption configPath,
+            CommandOption configpath,
             CommandOption templatePath)
         {
+
+                var configPath = configpath.HasValue() ? configpath.Value() : this.GetToolPath();
+            if (configPath == System.IO.Path.GetFullPath(@"..\netcoreapp2.2"))
+            {
+                Directory.SetCurrentDirectory(@"..\..\..\..");
+                configPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), EnviromentVariable.configDirectory);
+            }
             return (
                 path: Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory(),
-                configPath: configPath.HasValue() ? configPath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory),
+                configPath,
                 tempaltePath: templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory, "Template")
                 );
         }
     }
 }
+
