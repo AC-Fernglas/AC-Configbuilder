@@ -415,7 +415,7 @@ namespace Tests
         }
         public List<string> FindTestDirectory(string path)
         {
-            return findDirectorys(path);
+            return findFilesInDirectory(path);
         }
         public ACConfig ParseInTestObject(StreamReader Reader)
         {

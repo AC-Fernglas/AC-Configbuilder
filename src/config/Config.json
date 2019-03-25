@@ -1,5 +1,5 @@
 {
-  "userpath": "..\\config\\change.json" , 
+  "userpath": ".\\config\\change.json" , 
   "changeDirectory": "..\\samples\\",
    "Customer": "string",
   "configure network": {
