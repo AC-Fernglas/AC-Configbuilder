@@ -6,7 +6,7 @@
     <Authors>Zeroks77</Authors>
     <Company />
     <Product>AC-Configurator</Product>
-    <Version>1.1.3</Version>
+    <Version>1.2.0</Version>
     <PackageId>ACConfigbuilder</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>acb</ToolCommandName>
