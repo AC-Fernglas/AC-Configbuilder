@@ -39,7 +39,7 @@ steps:
   displayName: 'pack with versionnumber'
   inputs:
     targetType: 'inline' # Optional. Options: filePath, inline        
-    script: './tool/gitversion.exe | ConvertFrom-Json | select -ExpandProperty SemVer | %{ dotnet pack /p:VersionPrefix=$_ --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)}' # Required when targetType == Inline
+    script: './tool/dotnet-gitversion.exe | ConvertFrom-Json | select -ExpandProperty SemVer | %{ dotnet pack /p:VersionPrefix=$_ --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)}' # Required when targetType == Inline
     workingDirectory: '$(Build.SourcesDirectory)/src/'
 
 - task: PublishBuildArtifacts@1
