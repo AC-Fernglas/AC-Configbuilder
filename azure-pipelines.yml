@@ -28,41 +28,19 @@ steps:
     command: build
     projects: '$(csprojPath)'
 
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet publish'
+- task: PowerShell@2
+  displayName: 'install GitVersion'
   inputs:
-    command: publish
-    publishWebProjects: false
-    projects: '$(csprojPath)'
+    targetType: 'inline' # Optional. Options: filePath, inline        
+    script: 'dotnet tool install --tool-path ./tool GitVersion.Tool --version 5.0.0-beta2-6' # Required when targetType == Inline
+    workingDirectory: '$(Build.SourcesDirectory)/src/'
 
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack pre'
+- task: PowerShell@2
+  displayName: 'pack with versionnumber'
   inputs:
-    command: custom
-    configuration: 'release'
-    projects: '$(csprojPath)'
-    custom: pack
-    arguments: '--version-suffix $(versionSuffixForPre) --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)'
-    versioningScheme: byEnvVar
-    versionEnvVar: versionSuffixForPre
-    packagesToPack: '$(csprojPath)'
-    packDirectory: '$(build.artifactStagingDirectory)'
-  condition: and(succeeded(), ne(contains(variables['Build.SourceBranch'], 'refs/heads/rc'), true))
-  
-
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack prod'
-  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/rc'))
-  inputs:
-    command: pack    
-    configuration: 'release'
-    projects: '$(csprojPath)'
-    packagesToPack: '$(csprojPath)'
-    arguments: --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)'
-    packDirectory: '$(build.artifactStagingDirectory)'
+    targetType: 'inline' # Optional. Options: filePath, inline        
+    script: './tool/dotnet-gitversion.exe | ConvertFrom-Json | select -ExpandProperty SemVer | %{ dotnet pack /p:VersionPrefix=$_ --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)}' # Required when targetType == Inline
+    workingDirectory: '$(Build.SourcesDirectory)/src/'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
