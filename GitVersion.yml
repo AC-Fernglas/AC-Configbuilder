@@ -3,7 +3,7 @@ next-version: 1.3.0
 branches: 
   pull-request:
     mode: ContinuousDelivery
-    tag: alpha
+    tag: alpha-
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)'
@@ -22,7 +22,7 @@ branches:
     pre-release-weight: 30000
   develop:
     mode: ContinuousDeployment
-    tag: pre
+    tag: pre-
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
@@ -34,7 +34,7 @@ branches:
     pre-release-weight: 0
   master:
     mode: ContinuousDelivery
-    tag: 'pre'
+    tag: 'pre-'
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
