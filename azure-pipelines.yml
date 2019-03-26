@@ -36,11 +36,20 @@ steps:
     workingDirectory: '$(Build.SourcesDirectory)/src/'
 
 - task: PowerShell@2
-  displayName: 'pack with versionnumber'
+  displayName: 'pack with versionnumber pre'
+  condition: and(succeeded(), ne(contains(variables['Build.SourceBranch'], 'refs/heads/rc'), true))
   inputs:
     targetType: 'inline' # Optional. Options: filePath, inline        
     script: './tool/dotnet-gitversion.exe | ConvertFrom-Json | select -ExpandProperty SemVer | %{ dotnet pack /p:VersionPrefix=$_ --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)}' # Required when targetType == Inline
     workingDirectory: '$(Build.SourcesDirectory)/src/'
+
+- task: PowerShell@2
+  displayName: 'pack with versionnumber prod'
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/rc'))
+  inputs:
+    targetType: 'inline' # Optional. Options: filePath, inline        
+    script: './tool/dotnet-gitversion.exe | ConvertFrom-Json | select -ExpandProperty MajorMinorPatch | %{ dotnet pack /p:VersionPrefix=$_ --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)}' # Required when targetType == Inline
+    workingDirectory: '$(Build.SourcesDirectory)/src/'    
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
