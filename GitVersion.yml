@@ -34,7 +34,7 @@ branches:
     pre-release-weight: 0
   master:
     mode: ContinuousDelivery
-    tag: 'pre-'
+    tag: 'pre'
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
