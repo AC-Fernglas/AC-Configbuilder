@@ -182,7 +182,7 @@ acb create --proxyip <anzahl>
 
 Mit der Option `--proxyip <anzahl>` wird die Anzahl der proxy-ip Blöcken varriert, standartmäßig ist diese auf 1 gesetzt.
 
-### [Release Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/Ver.01/ReleaseNote.md)
+### [Release Note](https://github.com/AC-Fernglas/AC-Configbuilder/blob/master/ReleaseNote.md)
 
 Danke das du dir die Zeit genommen hast mich zu lesen.
 
