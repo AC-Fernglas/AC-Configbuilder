@@ -214,9 +214,12 @@ namespace ACConfigBuilder
             CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
             var paths = getDefaultPaths(Path, configPath, templatePath);
-            fileproof(paths.configPath);
+            var configpath = System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json"));
+            var config = File.ReadAllText(configpath); //get json
+            var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+            var outputPath = fileproof(configuration.outputDirectory);
             var time = DateTime.Now;
-            var filepath = paths.path + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
+            var filepath = outputPath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
             Write(Net, Dev, Set, Ip, filepath, paths.configPath, paths.tempaltePath);
         }
         protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string configPath, string tempaltePath)
@@ -290,7 +293,7 @@ namespace ACConfigBuilder
             var toolPath = GetToolPath();
             var path = Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory();
             var configPath = configpath.HasValue() ? configpath.Value() : System.IO.Path.Combine(toolPath, "config");
-            var tempaltePath = templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(toolPath, "onfig", "Template");
+            var tempaltePath = templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(toolPath, "config", "Template");
             return (
                path,
                configPath,
