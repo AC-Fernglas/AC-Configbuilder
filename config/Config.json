@@ -1,7 +1,7 @@
 {
-  "userpath": "\\config\\change.json" , 
-  "changeDirectory": "\\samples\\",
-   "Customer": "string",
+  "userpath": "\\config\\change.json",
+  "outputDirectory": "\\Desktop\\samples\\",
+  "Customer": "string",
   "configure network": {
     "network-dev": -1,
     "vlan-ip": -1,

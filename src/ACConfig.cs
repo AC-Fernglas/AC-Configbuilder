@@ -7,9 +7,8 @@ namespace ACConfigBuilder
 {
     public class ACConfig
     {
-        public string userpath { get; set; }
-        public string changeDirectory { get; set; }
-         public string Customer{ get; set; }
+        public string outputDirectory { get; set; }
+        public string Customer{ get; set; }
         public ConfigureNetwork configureNetwork { get; set; }
         public Configureviop configureviop { get; set; }
     }

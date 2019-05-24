@@ -34,7 +34,7 @@ namespace ACConfigBuilder
             Execute obj = new Execute();
             var helptemplate = "-h|--help"; //definition of the helptemplate
             app.HelpOption(helptemplate);
-            app.Command("replace", u => //should search and replace configs that allready exist
+                app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
@@ -88,12 +88,13 @@ namespace ACConfigBuilder
             Output obj = new Output();
 
             var paths = getDefaultPaths(Path, configPath, templatePath);
-            fileproof();
-            var config = File.ReadAllText(paths.configPath + @"\Config.json"); //get json
+            var configpath = System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json"));
+            var config = File.ReadAllText(configpath); //get json
             var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
-            var changePath = configuration.userpath;
+            var outputPath = fileproof(configuration.outputDirectory);
+            var changePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(fileproof(outputPath), "change.json"));
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(changePath));//open json to use
-            var dirs = exe.findFilesInDirectory(configuration.changeDirectory); //search all files in Directory 
+            var dirs = exe.findFilesInDirectory(outputPath); //search all files in Directory 
             foreach (var file in dirs)
             {
                 AC = new InputToACObject().parseinobject(new StreamReader(file)); //parses current configuration into the AC object
@@ -110,14 +111,28 @@ namespace ACConfigBuilder
                 var objList = obj.objectToList(AC);
                 obj.writeOutput(objList, file); //output
             }
-
         }
-        public void fileproof()
+        public string fileproof(string outputDirectory)
         {
-            bool exists = System.IO.Directory.Exists(EnviromentVariable.changeDirectory);
-            if (!exists)
+            var exit = Directory.Exists(outputDirectory);
+            if (!exit)
             {
-                System.IO.Directory.CreateDirectory(EnviromentVariable.configDirectory);
+                exit = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory));
+            }
+            if (exit == false) 
+            {
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
+                Directory.CreateDirectory(path);
+                File.Create(path + "\\change.json");
+                return path;
+            }
+            if (Directory.Exists(outputDirectory))
+            {
+                return outputDirectory;
+            }
+            else
+            {
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
             }
         }
         protected List<string> findFilesInDirectory(string mypath) // opens the .txt files in the directorypath
@@ -198,10 +213,9 @@ namespace ACConfigBuilder
             CommandOption Set,
             CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
-            fileproof();
             var paths = getDefaultPaths(Path, configPath, templatePath);
-            DateTime time = new DateTime();
-            time = DateTime.Now;
+            fileproof(paths.configPath);
+            var time = DateTime.Now;
             var filepath = paths.path + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
             Write(Net, Dev, Set, Ip, filepath, paths.configPath, paths.tempaltePath);
         }
@@ -228,10 +242,10 @@ namespace ACConfigBuilder
                 int.TryParse(Dev.Value(), out devcounter);
             }
 
-            var Networkdevvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"NetworkDev.template"));
-            var Interfacenetworkifvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"InterfaceNetwokIf.template"));
-            var Proxysetvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"ProxySet.template"));
-            var Proxyipvorlage = File.ReadAllText(System.IO.Path.Combine(tempaltePath, @"ProxyIp.template"));
+            var Networkdevvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"NetworkDev.template"));
+            var Interfacenetworkifvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"InterfaceNetwokIf.template"));
+            var Proxysetvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"ProxySet.template"));
+            var Proxyipvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"ProxyIp.template"));
             using (StreamWriter writer = new StreamWriter(mypath))
             {
                 writer.WriteLine("configure network");
@@ -264,9 +278,7 @@ namespace ACConfigBuilder
         private string GetToolPath()
         {
             var path = Assembly.GetExecutingAssembly().Location;
-            path = System.IO.Path.GetDirectoryName(path).ToString();
-           
-            // Console.WriteLine($"Source path is: {path}");
+            path = Path.GetDirectoryName(path).ToString();
             return path;
         }
         private (string path, string configPath, string tempaltePath) getDefaultPaths(
@@ -275,11 +287,14 @@ namespace ACConfigBuilder
             CommandOption templatePath)
         {
 
-                var configPath = configpath.HasValue() ? configpath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory);
+            var toolPath = GetToolPath();
+            var path = Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory();
+            var configPath = configpath.HasValue() ? configpath.Value() : System.IO.Path.Combine(toolPath, "config");
+            var tempaltePath = templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(toolPath, "onfig", "Template");
             return (
-                path: Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory(),
-                configPath,
-                tempaltePath: templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory, "Template")
+               path,
+               configPath,
+               tempaltePath
                 );
         }
     }
