@@ -7,10 +7,10 @@ namespace ACConfigBuilder
     public static class  ParserVariables
     {
         public const string identifier = "configure";
-
+        public const string configure = "configure network";
+        public const string voip = "configure voip";
         public const string netidentifier = "network";
 
-        
         public const string voipidentifier = "voip";
 
         public const string tap = " ";

@@ -46,7 +46,7 @@ namespace Tests
         }
 
     }
-    public class TestParserGrammar : Execute
+    public class TestParserGrammar : Input2Object
     {
         public void getTestIdentNameAndValue(string Test, out bool cExit,out  bool subexit,out string subidentTest, out string subValue)
         {

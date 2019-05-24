@@ -14,20 +14,21 @@ namespace ACConfigBuilder
             configureExit = false;
             subIdentExit = false;
             subIdentValue = String.Empty;
-            if (subIdent == ParserVariables.networkDev ||
-                subIdent == ParserVariables.interfaceNetwokIf ||
-                subIdent == ParserVariables.proxySet ||
-                subIdent == ParserVariables.proxyIp ||
-                subIdent == ParserVariables.exit)
+            switch (subIdent)
             {
-                if (subIdent == ParserVariables.exit)
-                {
+                case ParserVariables.networkDev:
+                case ParserVariables.interfaceNetwokIf:
+                case ParserVariables.proxySet:
+                case ParserVariables.proxyIp:
+                    subIdentExit = false;
+                    subIdentValue = ParserGrammar.subidentvalue.Parse(line);
+                    return;
+                case ParserVariables.exit:
                     configureExit = true;
                     subIdentExit = true;
                     return;
-                }
-                subIdentExit = false;
-                subIdentValue = ParserGrammar.subidentvalue.Parse(line);
+                default:
+                    return;
             }
         }
         public void getConfigureIdent(string line, out bool configureExit, out string ident) //parses the head of the currend configurationblock
@@ -35,10 +36,16 @@ namespace ACConfigBuilder
             ident = String.Empty;
             configureExit = true;
             var parsedLine = ParserGrammar.getidentifier.Parse(line);
-            if (parsedLine == "configure network" || parsedLine == "configure voip" || parsedLine == Environment.NewLine || parsedLine == "\n")
+            switch (parsedLine)
             {
-                ident = parsedLine;
-                configureExit = false;
+                case ParserVariables.configure: 
+                case ParserVariables.voip:
+                case "\n":
+                    ident = parsedLine;
+                    configureExit = false;
+                    break;
+                default:
+                    break;
             }
         }
         public ACConfig parseinobject(StreamReader Reader)
@@ -66,10 +73,11 @@ namespace ACConfigBuilder
             string subIdent = String.Empty;
             bool subIdentExit = true;
             string subIdentValue = String.Empty;
-            int networkDevListTndex = 0;
-            int interfaceNetwokIfListTndex = 0;
-            int proxySetListTndex = 0;
-            int proxyIpListTndex = 0;
+            int networkDevListTndex = -1;
+            int interfaceNetwokIfListTndex = -1;
+            int proxySetListTndex = -1;
+            int proxyIpListTndex = -1;
+            string Name = string.Empty;
 
             using (Reader)
             {
@@ -88,120 +96,88 @@ namespace ACConfigBuilder
                     if (subIdentExit)
                     {
                         getIdentNameAndValue(line, out configureExit, out subIdentExit, out subIdent, out subIdentValue);                   // wenn true -> keien Bereich(networkDev / interfaceNetworkIf) in dem Konfig konfiguriert wird
-                        var Name = returnRealName(subIdent);
+                        Name = returnRealName(subIdent);
                         if (Name == null)
                         {
                             continue;
                         }
-                        if (subIdent == ParserVariables.networkDev)
+                        switch (subIdent)
                         {
-                            Networkdev newListNetworkDev = new Networkdev();
-                            networkDevs.Add(newListNetworkDev);                                                                           //neue Liste wird erstellt für jede Bereich von networkDev
-                            AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
+                            case ParserVariables.networkDev:
+                                Networkdev newListNetworkDev = new Networkdev();
+                                networkDevs.Add(newListNetworkDev);
+                                networkDevListTndex++;
+                                AC = ListParsing(AC, Name, subIdentValue, networkDevListTndex, AC.configureNetwork.networkdev, subIdent);
+                                continue;
+                            case ParserVariables.interfaceNetwokIf:
+                                Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
+                                interfaceNetworkIfs.Add(newListInterfaceNetworkIf);
+                                interfaceNetwokIfListTndex++;
+                                AC = ListParsing(AC, Name, subIdentValue, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
+                                continue;
+                            case ParserVariables.proxyIp:
+                                Proxyip newListProxyIp = new Proxyip();
+                                proxyIps.Add(newListProxyIp);
+                                proxyIpListTndex++;
+                                AC = ListParsing(AC, Name, subIdentValue, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
+                                continue;
+                            case ParserVariables.proxySet:
+                                Proxyset newListProxySet = new Proxyset();
+                                proxySets.Add(newListProxySet);
+                                proxySetListTndex++;
+                                AC = ListParsing(AC, Name, subIdentValue, proxySetListTndex, AC.configureviop.proxyset, subIdent);
+                                continue;
+                            default:
+                                continue; ;
                         }
-                        else if (subIdent == ParserVariables.interfaceNetwokIf)
-                        {
-                            Interfacenetworkif newListInterfaceNetworkIf = new Interfacenetworkif();
-                            interfaceNetworkIfs.Add(newListInterfaceNetworkIf);
-                            AC = ListParsing(AC, Name, subIdentValue, interfaceNetwokIfListTndex, AC.configureNetwork.interfacenetworkif, subIdent);
-                        }
-                        else if (subIdent == ParserVariables.proxySet)
-                        {
-                            Proxyset newListProxySet = new Proxyset();
-                            proxySets.Add(newListProxySet);
-                            AC = ListParsing(AC, Name, subIdentValue, proxySetListTndex, AC.configureviop.proxyset, subIdent);
-                        }
-                        else if (subIdent == ParserVariables.proxyIp)
-                        {
-                            Proxyip newListProxyIp = new Proxyip();
-                            proxyIps.Add(newListProxyIp);
-                            AC = ListParsing(AC, Name, subIdentValue, proxyIpListTndex, AC.configureviop.proxyip, subIdent);
-                        }
-                        continue;
                     }
+                    Name = ParserGrammar.NameParser.Parse(line);
+                    if (Name == ParserVariables.exit)
+                    {
+                        subIdentExit = true;
 
-                    if (ident == "configure network" && subIdent == ParserVariables.networkDev)
-                    {
-                        var Name = ParserGrammar.NameParser.Parse(line);
-                        if (Name == ParserVariables.exit) // Bereich wird durch exit beendet -> Listenindex wird erhöht und es gibt keinen Bereich in dem definiert die Konfig defoiniert wird
-                        {
-                            subIdentExit = true;
-                            networkDevListTndex++;
-                            continue;
-                        }
-                        Name = returnRealName(Name);
-                        if (Name == null)
-                        {
-                            continue;
-                        }
-                        AC = AddToList(AC, Name, AC.configureNetwork.networkdev, subIdent, networkDevListTndex, ParserGrammar.ValueParser.Parse(line));
                         continue;
                     }
-                    else if ( ident == "configure network" && subIdent == ParserVariables.interfaceNetwokIf)
+                    Name = returnRealName(Name);
+                    if (Name == null)
                     {
-                        var Name = ParserGrammar.NameParser.Parse(line);
-                        if (Name == ParserVariables.exit)
-                        {
-                            subIdentExit = true;
-                            interfaceNetwokIfListTndex++;
-                            continue;
-                        }
-                        Name = returnRealName(Name);
-                        if (Name == null)
-                        {
-                            continue;
-                        }
-                        AC = AddToList(AC, Name, AC.configureNetwork.interfacenetworkif, subIdent, interfaceNetwokIfListTndex, ParserGrammar.ValueParser.Parse(line));
                         continue;
                     }
-                    if (ident == "configure voip" && subIdent == ParserVariables.proxySet)
+                    switch (subIdent)
                     {
-                        var Name = ParserGrammar.NameParser.Parse(line);
-                        if (Name == ParserVariables.exit)
-                        {
-                            subIdentExit = true;
-                            proxySetListTndex++;
+                        case ParserVariables.networkDev:
+                            AC = AddToList(AC, Name, AC.configureNetwork.networkdev, subIdent, networkDevListTndex,getVar(Name,line));
                             continue;
-                        }
-                        Name = returnRealName(Name);
-                        if (Name == null)
-                        {
+                        case ParserVariables.interfaceNetwokIf:
+                            AC = AddToList(AC, Name, AC.configureNetwork.interfacenetworkif, subIdent, interfaceNetwokIfListTndex, getVar(Name, line));
                             continue;
-                        }
-                        AC = AddToList(AC, Name, AC.configureviop.proxyset, subIdent, proxySetListTndex, ParserGrammar.ValueParser.Parse(line));
-                        continue;
-                    }
-                    else if (ident == "configure voip" && subIdent == ParserVariables.proxyIp)
-                    {
-                        var Name = ParserGrammar.NameParser.Parse(line);
-                        if (Name == ParserVariables.exit)
-                        {
-                            subIdentExit = true;
-                            proxyIpListTndex++;
+                        case ParserVariables.proxyIp:
+                            AC = AddToList(AC, Name, AC.configureviop.proxyip, subIdent, proxyIpListTndex, getVar(Name, line));
                             continue;
-                        }
-                        Name = returnRealName(Name);
-                        if (Name == null)
-                        {
+                        case ParserVariables.proxySet:
+                            AC = AddToList(AC, Name, AC.configureviop.proxyset, subIdent, proxySetListTndex, getVar(Name, line));
                             continue;
-                        }
-                        AC = AddToList(AC,Name, AC.configureviop.proxyip,subIdent,proxyIpListTndex, ParserGrammar.ValueParser.Parse(line));
-                        continue;
+                        default:
+                            break;
                     }
                 }
             }
             return AC;
         }
-        public ACConfig AddToList(ACConfig AC, string Name, dynamic List, string subIdent,int Index, string value )
+        public dynamic getVar(string Name,string line)
         {
             if (Name == ParserVariables.activate)
             {
-                AC = ListParsing(AC, Name, true, Index, List, subIdent);
+                return true;
             }
             else
             {
-                AC = ListParsing(AC, Name, value, Index, List, subIdent);
+                return ParserGrammar.ValueParser.Parse(line);
             }
+        }
+        public ACConfig AddToList(ACConfig AC, string Name, dynamic List, string subIdent,int Index, dynamic value )
+        {
+                AC = ListParsing(AC, Name, value, Index, List, subIdent);
             return AC;
         }
         public string returnRealName(string Name) // wandelt die in der Konfiguration enthaltenen bezeichner in die Variablen Namen der Listen um da diese nicht zu 100% übereinstimmen 
