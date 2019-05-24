@@ -188,22 +188,6 @@ namespace Tests
             Assert.Null(TestName);
         }
         [Fact]
-        public void TestValidPathConfigPath()
-        {
-            string Testpath = @"C:\";
-            string OtherPath = null;
-            Testpath = new TestMainProgramm().ValidTestPath(OtherPath, Testpath);
-            Assert.Contains(@"C:\", Testpath);
-        }
-        [Fact]
-        public void TestValidPathUserPath()
-        {
-            string Testpath = @"C:\";
-            string OtherPath = @"C:\";
-            Testpath = new TestMainProgramm().ValidTestPath(OtherPath, Testpath);
-            Assert.Contains(@"C:\", Testpath);
-        }
-        [Fact]
         public void TestFileProof()
         {
             new TestMainProgramm().fileproof();
@@ -418,10 +402,6 @@ namespace Tests
             public ACConfig ReplaceTestValues(ACConfig AC, dynamic list, string whatlist)
             {
                 return replaceitem(AC, list, whatlist);
-            }
-            public string ValidTestPath(string OtherPath, string Path)
-            {
-                return validpath(Path, OtherPath);
             }
             public List<string> FindTestDirectory(string path)
             {

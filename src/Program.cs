@@ -125,25 +125,6 @@ namespace ACConfigBuilder
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
             return dirs.ToList<string>();
         }
-    
-        protected string validpath(string filepath, string otherPath) //validate the userpath
-        {
-            var path = String.Empty;
-            if (otherPath != null)
-            {
-                path = otherPath;
-            }
-            else
-            {
-                path = filepath;
-            }
-            path = path.Replace(@"\\", ":"); // to cancel out c:\\\\test.text
-            string temp = Path.GetPathRoot(path); //For cases like: \text.txt
-            //if (temp.StartsWith(@"\")) return null;
-            string pt = Path.GetFullPath(path);
-            return pt;
-
-        }
         protected void change(dynamic i, dynamic item) //replaces the Item
         {
             foreach (var propertyInfo in item.GetType().GetProperties())
