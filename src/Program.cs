@@ -255,25 +255,37 @@ namespace ACConfigBuilder
                 for (int i = 0; i < netcounter; i++)
                 {
                     writer.WriteLine(Networkdevvorlage);
+                    if (i == netcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
                 }
-                writer.WriteLine(@" exit");
                 for (int i = 0; i < devcounter; i++)
                 {
                     writer.WriteLine(Interfacenetworkifvorlage);
+                    if (i == devcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
                 }
-                writer.WriteLine(@" exit");
                 writer.WriteLine("exit");
                 writer.WriteLine("configure voip");
                 for (int i = 0; i < setcounter; i++)
                 {
                     writer.WriteLine(Proxysetvorlage);
+                    if (i == setcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
                 }
-                writer.WriteLine(@" exit");
                 for (int i = 0; i < ipcounter; i++)
                 {
                     writer.WriteLine(Proxyipvorlage);
+                    if (i == ipcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
                 }
-                writer.WriteLine(@" exit");
                 writer.WriteLine("exit");
             }
 
