@@ -45,59 +45,62 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
     "configurenetwork": {
       "networkdev": [
         {
-          "listid": <\value>,
-          "vlan": "<\value>",
-          "underlyingif": "<\value>",
-          "Name" : "<\value>",
-          "tag": "<\value>"
+          "network-dev" :  <\value>,
+          "vlan-id " : <\value>,
+          "underlying-if" : <\value>,
+          "name" : <\value>,
+          "tagging" : <\value>,
+          "activate"
         }
       ],
       "interfacenetworkif":[
         {
-          "listid": <\value>,
-          "apptype": "<\value>",
-          "ipaddress":"<\value>",
-          "prefixlength": <\value>,
-          "gateway": "<\value>",
-          "Name": "<\value>",
-          "underlyingdev": "<\value>"
+           "interface network-if" : <\value>,
+           "application-type" : <\value>,
+           "ip-address" : <\value>,
+           "prefix-length" : <\value>,
+           "gateway" : <\value>,
+           "name" : <\value>,
+           "underlying-dev" : <\value>, 
+           "activate"
         }
       ]
     },
     "configureviop":{
       "proxyset":[
         {
-          "listid": <\value>,
-          "proxyname": "<\value>",
-          "proxyenablekeepalive": "<\value>",
-          "srdname":"<\value>",
-          "sbcipv4sipintname": "<\value>",
-          "keepalivefailresp":"<\value>",
-          "successdetectretries": <\vaule>,
-          "successdetectint" : <\value>,
-          "proxyredundancymode" : "<\value>",
-          "isproxyhotswap": <\value>,
-          "proxyloadbalancingmethod": <\value>,
-          "minactiveservlb": <\value>
+            "proxy-set" : <\value>, 
+            "proxy-name" : <\value>, 
+            "proxy-enable-keep-alive" : <\value>,  
+            "srd-name" : <\value>, 
+            "sbcipv4-sip-int-name" : <\value>,  
+            "keepalive-fail-resp" : <\value>, 
+            "success-detect-retries" : <\value>, 
+            "success-detect-int" :  <\value>, 
+            "proxy-redundancy-mode" : <\value>, 
+            "is-proxy-hot-swap" : <\value>, 
+            "proxy-load-balancing-method" : <\value>, 
+            "min-active-serv-lb" : <\value>, 
+            "activate"
         }
       ],
       "proxyip":[
         {
-          "ip": "<\value>",
-          "proxyadress": "<\value>",
-          "transporttype": "<\value>"
+          "proxy-ip" : <\value>,
+          "proxy-address" : <\value>,
+          "transport-type" : <\value>,
+          "activate"
         }
       ]
     }
 }
 ```  
 </details>
-ListId, beschreibt in diesem Kontext, den Wert, welcher nach ```network-dev``` , ```ìnterface network-if``` oder ```proxy-set``` kommen würde. <br>
-Damit beschreibt ListId, welcher Abschnitt in der Konfiguration bearbeitet werden soll. <br>
-
 
 ## Options für die Commands
+
 ### Replace
+
 Der Replace-Command hat eine zusätzliche Option. <br>
 ``` acb replace --path <path>```
 Mit der Option ```--path <path>``` wird dauerhaft der Pfad, in welchem das Programm nach Konfigurationen zum überarbeiten sucht verädnert. <br>

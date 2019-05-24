@@ -294,12 +294,7 @@ namespace ACConfigBuilder
             CommandOption templatePath)
         {
 
-                var configPath = configpath.HasValue() ? configpath.Value() : this.GetToolPath();
-            if (configPath == System.IO.Path.GetFullPath(@"..\netcoreapp2.2"))
-            {
-                Directory.SetCurrentDirectory(@"..\..\..\..");
-                configPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), EnviromentVariable.configDirectory);
-            }
+                var configPath = configpath.HasValue() ? configpath.Value() : System.IO.Path.Combine(this.GetToolPath(), EnviromentVariable.configDirectory);
             return (
                 path: Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory(),
                 configPath,
