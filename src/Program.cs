@@ -85,7 +85,6 @@ namespace ACConfigBuilder
             Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
-
             var paths = getDefaultPaths(Path, configPath, templatePath);
             var configpath = System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json"));
             var config = File.ReadAllText(configpath); //get json
@@ -209,7 +208,6 @@ namespace ACConfigBuilder
             }
             return AC;
         }
-
         public void RunCreate(
             CommandOption Path,
             CommandOption configPath,
