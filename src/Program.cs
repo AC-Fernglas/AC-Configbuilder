@@ -111,7 +111,9 @@ namespace ACConfigBuilder
                 var objList = obj.objectToList(AC);
                 obj.writeOutput(objList, file); //output
             }
-        }
+        }/// <summary>
+        ///  Checks if the Directory exists, if not it creates the Directory and change.json 
+        /// </summary>
         public string fileproof(string outputDirectory)
         {
             var exist = Directory.Exists(outputDirectory);

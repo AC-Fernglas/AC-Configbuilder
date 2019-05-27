@@ -8,7 +8,10 @@ namespace ACConfigBuilder
 {
     public class InputToACObject
     {
-        public void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue) // parses the Indentifyer for the current block of the configuration
+        /// <summary>
+        /// parses the Indentifyer for the current block of the configuration
+        /// </summary>
+        public void getIdentNameAndValue(string line, out bool configureExit, out bool subIdentExit, out string subIdent, out string subIdentValue)
         {
             subIdent = ParserGrammar.getsubident.Parse(line);
             configureExit = false;
@@ -31,7 +34,10 @@ namespace ACConfigBuilder
                     return;
             }
         }
-        public void getConfigureIdent(string line, out bool configureExit, out string ident) //parses the head of the currend configurationblock
+        /// <summary>
+        /// parses the head of the currend configurationblock
+        /// </summary>
+        public void getConfigureIdent(string line, out bool configureExit, out string ident)
         {
             ident = String.Empty;
             configureExit = true;
@@ -180,7 +186,11 @@ namespace ACConfigBuilder
                 AC = ListParsing(AC, Name, value, Index, List, subIdent);
             return AC;
         }
-        public string returnRealName(string Name) // wandelt die in der Konfiguration enthaltenen bezeichner in die Variablen Namen der Listen um da diese nicht zu 100% übereinstimmen 
+        /// <summary>
+        ///  wandelt die in der Konfiguration enthaltenen bezeichner in die Variablen Namen der Listen um da diese nicht zu 100% übereinstimmen.
+        ///  Default return null !
+        /// </summary>
+        public string returnRealName(string Name)
         {
             switch (Name)
             {
@@ -240,7 +250,17 @@ namespace ACConfigBuilder
                     return null;
             }
         }
-        protected ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) //setzt die Value in aus dfem Bereich in die Passende liste an der Richtigen stelle
+        /// <summary>
+        /// setzt die Value in aus dfem Bereich in die Passende liste an der Richtigen stelle
+        /// </summary>
+        /// <param name="Config">Loaded Config</param>
+        /// <param name="Name"> Name of item to change</param>
+        /// <param name="Value"> some Value of the setting</param>
+        /// <param name="Index"></param>
+        /// <param name="myList">SubList like Network-dev</param>
+        /// <param name="subIdent">Name of the Subident like network-dev</param>
+        /// <returns>ACConfig</returns>
+        protected ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) 
         {
             if (String.IsNullOrWhiteSpace(Value.ToString())) // falls es keine Value gibt brauch es nix machen
             {
