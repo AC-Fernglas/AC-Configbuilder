@@ -34,6 +34,7 @@ namespace ACConfigBuilder
             Execute obj = new Execute();
             var helptemplate = "-h|--help"; //definition of the helptemplate
             app.HelpOption(helptemplate);
+            app.ShowHelp();
                 app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
@@ -55,10 +56,6 @@ namespace ACConfigBuilder
                 var Set = c.Option("--proxyset <anzahl>", "Setzt die Anzahl für Proxysetabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 var Ip = c.Option("--proxyip <anzahl>", "Setzt die Anzahl für Proxyipabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
                 c.OnExecute(() => { obj.RunCreate(path, configPath, templatePath, Net, Int, Set, Ip); });
-            });
-            app.Command(null, c =>
-            {
-                app.ShowHelp();
             });
             return app.Execute(commands);
 
@@ -220,9 +217,9 @@ namespace ACConfigBuilder
             var outputPath = fileproof(configuration.outputDirectory);
             var time = DateTime.Now;
             var filepath = outputPath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
-            Write(Net, Dev, Set, Ip, filepath, paths.configPath, paths.tempaltePath);
+            Write(Net, Dev, Set, Ip, filepath, paths.tempaltePath);
         }
-        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string configPath, string tempaltePath)
+        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string tempaltePath)
         {
             var netcounter = 1;
             var devcounter = 1;
