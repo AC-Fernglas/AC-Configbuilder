@@ -128,7 +128,7 @@ namespace ACConfigBuilder
     };   
     public enum proxyenablekeepalive
     {        
-        [Name("using-options")]
+        [AcProperty(PropertyName = "using-options")]
         usingOptions,
         otheroptions
     };

@@ -35,11 +35,11 @@ namespace ACConfigBuilder
             var helptemplate = "-h|--help"; //definition of the helptemplate
             app.HelpOption(helptemplate);
             app.ShowHelp();
-                app.Command("replace", u => //should search and replace configs that allready exist
+            app.Command("replace", u => //should search and replace configs that allready exist
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als userpath angegeben ist verwendet.", CommandOptionType.SingleValue);
+                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als OutputDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);                
                 var configPath = u.Option("--config <fullpath>", "Benutzt ein benutzerdefinierte Konfiguration. Wenn dieser Befehl nicht benutzt wird die Standardkonfiguration verwendet.", CommandOptionType.SingleValue);
                 var templatePath = u.Option("--template <fullpath>", "Benutzt einen benutzerdefiniertes Templateverzeichnis. Wenn dieser Befehl nicht benutzt wird, werden die Standardtemplates verwendet.", CommandOptionType.SingleValue);
                 u.OnExecute(() => { obj.runReplace(path, configPath, templatePath); });
@@ -48,7 +48,7 @@ namespace ACConfigBuilder
             {
                 c.HelpOption(helptemplate);
                 c.Description = "Erstellt eine neue Configvorlage.";
-                var path = c.Option("--path <fullpath>", "Benutzt einen benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als changeDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
+                var path = c.Option("--path <fullpath>", "Benutzt einen benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als OutputDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
                 var configPath = c.Option("--config <fullpath>", "Benutzt ein benutzerdefinierte Konfiguration. Wenn dieser Befehl nicht benutzt wird die Standardkonfiguration verwendet.", CommandOptionType.SingleValue);
                 var templatePath = c.Option("--template <fullpath>", "Benutzt einen benutzerdefiniertes Templateverzeichnis. Wenn dieser Befehl nicht benutzt wird, werden die Standardtemplates verwendet.", CommandOptionType.SingleValue);
                 var Net = c.Option("--networkdev <anzahl>", "Setzt die Anzahl für Networkdevabschnitte. Normal ist dieser Wert auf 1", CommandOptionType.SingleValue);
@@ -61,18 +61,20 @@ namespace ACConfigBuilder
 
         }
     }
-
     public class Execute
     {
         protected void setuserpath(string configPath, string changePath)
         {
-            StreamWriter writer = new StreamWriter(configPath);
-            string[] file = File.ReadAllLines(configPath + @"\Config.json");
+            string[] file = File.ReadAllLines(Path.Combine(configPath, "Config.json"));
             List<string> list = new List<string>(file);
-            list[3] = "\"changeDirectory\": " + changePath;
-            foreach (string line in list)
+            list[1] = "\"outputDirectory\": \"" + @Path.GetFullPath(changePath) + "\",";
+            using (StreamWriter writer = new StreamWriter(Path.Combine(configPath, "Config.json")))
             {
-                writer.WriteLine(line);
+                foreach (var item in list)
+                {
+                    writer.Write(item + Environment.NewLine);
+                    writer.Flush();
+                }
             }
         }
         public void runReplace(
@@ -87,6 +89,7 @@ namespace ACConfigBuilder
             var paths = getDefaultPaths(Path, configPath, templatePath);
             var configpath = System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json"));
             var config = File.ReadAllText(configpath); //get json
+            config = config.Replace(@"\", "/");
             var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
             var outputPath = fileproof(configuration.outputDirectory);
             var changePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(fileproof(outputPath), "change.json"));
@@ -111,20 +114,24 @@ namespace ACConfigBuilder
         }
         public string fileproof(string outputDirectory)
         {
-            var exit = Directory.Exists(outputDirectory);
-            if (!exit)
+            var exist = Directory.Exists(outputDirectory);
+            if (!exist)
             {
-                exit = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory));
+                exist = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory));
             }
-            if (exit == false) 
+            if (exist == false)
             {
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
                 Directory.CreateDirectory(path);
-                File.Create(path + "\\change.json");
+                File.Create(path + "\\change.json").Dispose();
                 return path;
             }
             if (Directory.Exists(outputDirectory))
             {
+                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory, "\\change.json")))
+                {
+                    File.Create(outputDirectory + "\\change.json").Dispose();
+                }
                 return outputDirectory;
             }
             else
@@ -154,7 +161,7 @@ namespace ACConfigBuilder
             {
                 return AC;
             }
-            foreach ( var config in list)
+            foreach (var config in list)
             {
                 switch (whatlist)   // switches on which list is now given 
                 {
@@ -298,10 +305,13 @@ namespace ACConfigBuilder
             CommandOption configpath,
             CommandOption templatePath)
         {
-
             var toolPath = GetToolPath();
-            var path = Path.HasValue() ? Path.Value() : Directory.GetCurrentDirectory();
             var configPath = configpath.HasValue() ? configpath.Value() : System.IO.Path.Combine(toolPath, "config");
+            if (Path.HasValue())
+            {
+                setuserpath(configPath, Path.Value().Replace(@"\", @"\\"));
+            }
+            var path = Path.HasValue() ? Path.Value().Replace(@"\", @"\\") : Directory.GetCurrentDirectory();
             var tempaltePath = templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(toolPath, "config", "Template");
             return (
                path,

@@ -1,17 +1,17 @@
 configure network
-  network-dev 17
+ network-dev 17
   underlying-if   "GROUP_6"
   name   "EthD_UNP-2"
   tagging tagged
   activate
  exit
-  network-dev 17
+ network-dev 17
   underlying-if   "GROUP_6"
   name   "EthD_UNP-2"
   tagging tagged
   activate
  exit
-  interface network-if 87
+ interface network-if 87
   application-type control
   prefix-length 28
   gateway   10.49.50.1
@@ -21,9 +21,9 @@ configure network
  exit
 exit
 configure voip
-  proxy-set 4
+ proxy-set 4
   proxy-name   "PS_UNP-FR"
-  proxy-enable-keep-alive usingOptions
+  proxy-enable-keep-alive using-options
   srd-name   "SRD_UNP"
   sbcipv4-sip-int-name   "SipInf_UNP-FR"
   keepalive-fail-resp   "500,503"
@@ -33,7 +33,7 @@ configure voip
   min-active-serv-lb 1
   activate False
  exit
-  proxy-ip 4/0
+ proxy-ip 4/0
   transport-type udp
   activate False
  exit
