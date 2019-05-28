@@ -67,7 +67,7 @@
 
 </details>
 
-## Verion 0
+## Version 0
 
 <details close>
 
