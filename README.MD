@@ -57,7 +57,7 @@ Commands:
 ## Replace-Command
 
 Der Replace-Command soll eine bereits bestehende Konfiguration editieren. 
-Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
+Dazu muss man in der Change.json im Outputordner angeben, wo etwas geändert werden muss.
 
 <details close>
 
@@ -126,12 +126,12 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
 
 Der Replace-Command hat eine zusätzliche Option.
 
-```bash 
+```bash
 acb replace --path <path>
 ```
 
 Mit der Option `--path <path>` wird dauerhaft der Pfad, in welchem das Programm nach Konfigurationen zum überarbeiten sucht verädnert.
-Default ist der Wert auf den Samplesordner gelegt.
+Default ist der Wert auf `Desktop\ACConfigbuilder` gelegt.
 
 ### Create
 
@@ -142,15 +142,13 @@ Der Create-Command erzuegt eine leere AudioCodes Konfiguration mit bestimmten Ei
 
 | Parameter              | Beschreibung                             | Standardwert                             | Erforderlich | Typ    |
 |------------------------|------------------------------------------|------------------------------------------|--------------|--------|
-| `--path`               | Setzt den Pfad in dem eine neue AudioCodes Konfiguration abgelegt wird. | aktueller Pfad in der Konsole            | nein         | string |
+| `--path`               | Setzt den Pfad in dem eine neue AudioCodes Konfiguration abgelegt wird. | `Desktop\ACConfigbuilder` | nein         | string |
 | `--config`             | Don't do anything                        | Pfad zur Standard ACB Konfiguration die mit dem Tool mitgeliefert wird | nein         | string |
 | `--template`           | Setzt den Pfad zum Template Verzeichnis. Dort liegen AudioCodes Konfiguration Blöcke die das Tool Standardmäßig durch AC-Configuration Builder ausgeliefert werden. | Pfad zum Standard ACB Template Verzeichnis. Dort liegen AudioCodes Konfiguration Blöcke die das Tool Standardm | nein         | string |
 | `--networkdev`         | Eine Anzahl von Netzwerkgeräten die in der generierten AudioCodes Konfiguration vorhanden sein sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
 | `--interfacenetworkif` | Eine Anzahl von "to be defined" die in der generierten AudioCodes Konfiguration vorhanden sein sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
 | `--proxyset`           | Eine Anzahl von Proxys die in der AudioCodes Konfiguration erzeugt werden sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
 | `--proxyip`            | Eine Anzahl von ProxyIps die in der AudioCodes Konfiguration erzeugt werden sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
-
-
 
 #### Examples
 
