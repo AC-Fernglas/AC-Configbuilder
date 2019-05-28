@@ -86,10 +86,7 @@ namespace ACConfigBuilder
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             var paths = getDefaultPaths(Path, configPath, templatePath);
-            var configpath = System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json"));
-            var config = File.ReadAllText(configpath); //get json
-            config = config.Replace(@"\", "/");
-            var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+            var configuration = LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
             var outputPath = fileproof(configuration.outputDirectory);
             var changePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(fileproof(outputPath), "change.json"));
             var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(changePath));//open json to use
@@ -208,6 +205,12 @@ namespace ACConfigBuilder
             }
             return AC;
         }
+        public ACConfig LoadSystemConfig (string ConfigLodingPath)
+        {
+            var config = File.ReadAllText(ConfigLodingPath);
+            config = config.Replace(@"\", "/");//get json
+            return  JsonConvert.DeserializeObject<ACConfig>(config);
+        }
         public void RunCreate(
             CommandOption Path,
             CommandOption configPath,
@@ -218,12 +221,10 @@ namespace ACConfigBuilder
             CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
             var paths = getDefaultPaths(Path, configPath, templatePath);
-            var configpath = System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json"));
-            var config = File.ReadAllText(configpath); //get json
-            var configuration = JsonConvert.DeserializeObject<ACConfig>(config); //get path to json
+            var configuration = LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
             var outputPath = fileproof(configuration.outputDirectory);
             var time = DateTime.Now;
-            var filepath = outputPath + @"\" + time.Year.ToString() + "." + time.Month.ToString() + "." + time.Day.ToString() + "-" + time.Hour.ToString() + "." + time.Minute.ToString() + ".txt"; //creats a time
+            var filepath = outputPath + @"\" + time.ToString("yyyy.mm.dd.hh.mm") + ".txt"; //creats a time
             Write(Net, Dev, Set, Ip, filepath, paths.tempaltePath);
         }
         protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string tempaltePath)
