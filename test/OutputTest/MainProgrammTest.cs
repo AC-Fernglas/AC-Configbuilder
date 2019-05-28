@@ -188,15 +188,10 @@ namespace Tests
             Assert.Null(TestName);
         }
         [Fact]
-        public void TestFileProof()
-        {
-            new TestMainProgramm().fileproof();
-        }
-        [Fact]
         public void findTestDirectory()
         {
             string TestDirectory = @"C:\";
-            List<string> Testlist = new TestMainProgramm().FindTestDirectory(TestDirectory);
+            List<string> Testlist = new TestArrangement().FindTestDirectory(TestDirectory);
             Assert.NotNull(Testlist);
             Assert.Empty(Testlist);
         }
@@ -256,7 +251,6 @@ namespace Tests
                 configureNetwork = new ConfigureNetwork()
                 {
                     networkdev = new List<Networkdev>()
-
                 }
             };
             Networkdev Nd = new Networkdev()
@@ -403,11 +397,14 @@ namespace Tests
             {
                 return replaceitem(AC, list, whatlist);
             }
-            public List<string> FindTestDirectory(string path)
-            {
-                return findFilesInDirectory(path);
-            }
         }
+    public class TestArrangement : Arrangement
+    {
+        public List<string> FindTestDirectory(string path)
+        {
+            return findFilesInDirectory(path);
+        }
+    }
     public class TestCommands : Commands
     {
         public int TestIdel(string[] commands)

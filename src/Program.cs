@@ -63,84 +63,34 @@ namespace ACConfigBuilder
     }
     public class Execute
     {
-        protected void setuserpath(string configPath, string changePath)
-        {
-            string[] file = File.ReadAllLines(Path.Combine(configPath, "Config.json"));
-            List<string> list = new List<string>(file);
-            list[1] = "\"outputDirectory\": \"" + @Path.GetFullPath(changePath) + "\",";
-            using (StreamWriter writer = new StreamWriter(Path.Combine(configPath, "Config.json")))
-            {
-                foreach (var item in list)
-                {
-                    writer.Write(item + Environment.NewLine);
-                    writer.Flush();
-                }
-            }
-        }
         public void runReplace(
             CommandOption Path,
             CommandOption configPath,
             CommandOption templatePath) //run for replace
         {
-            Execute exe = new Execute();
             ACConfig AC = new ACConfig();
             Output obj = new Output();
-            var paths = getDefaultPaths(Path, configPath, templatePath);
-            var configuration = LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
-            var outputPath = fileproof(configuration.outputDirectory);
-            var changePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(fileproof(outputPath), "change.json"));
-            var myconfig = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(changePath));//open json to use
-            var dirs = exe.findFilesInDirectory(outputPath); //search all files in Directory 
+            Execute exe = new Execute();
+            ACConfig ConfigWithChanges = new ACConfig();
+            List<string> dirs = new List<string>();
+            new Arrangement().prepareForStart(Path, configPath, templatePath,out ConfigWithChanges,out dirs);
+            //search all files in Directory 
             foreach (var file in dirs)
             {
                 AC = new InputToACObject().parseinobject(new StreamReader(file)); //parses current configuration into the AC object
-                if (myconfig.configureNetwork != null)
+                if (ConfigWithChanges.configureNetwork != null)
                 {
-                    AC = exe.replaceitem(AC, myconfig.configureNetwork.networkdev, "networkdev");
-                    AC = exe.replaceitem(AC, myconfig.configureNetwork.interfacenetworkif, "interfacenetworkif");
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.networkdev, "networkdev");
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.interfacenetworkif, "interfacenetworkif");
                 }
-                if (myconfig.configureviop != null)
+                if (ConfigWithChanges.configureviop != null)
                 {
-                    AC = exe.replaceitem(AC, myconfig.configureviop.proxyset, "proxyset");
-                    AC = exe.replaceitem(AC, myconfig.configureviop.proxyip, "proxyip"); //replaces the wanted details
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureviop.proxyset, "proxyset");
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureviop.proxyip, "proxyip"); //replaces the wanted details
                 }
                 var objList = obj.objectToList(AC);
                 obj.writeOutput(objList, file); //output
             }
-        }/// <summary>
-        ///  Checks if the Directory exists, if not it creates the Directory and change.json 
-        /// </summary>
-        public string fileproof(string outputDirectory)
-        {
-            var exist = Directory.Exists(outputDirectory);
-            if (!exist)
-            {
-                exist = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory));
-            }
-            if (exist == false)
-            {
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
-                Directory.CreateDirectory(path);
-                File.Create(path + "\\change.json").Dispose();
-                return path;
-            }
-            if (Directory.Exists(outputDirectory))
-            {
-                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory, "\\change.json")))
-                {
-                    File.Create(outputDirectory + "\\change.json").Dispose();
-                }
-                return outputDirectory;
-            }
-            else
-            {
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
-            }
-        }
-        protected List<string> findFilesInDirectory(string mypath) // opens the .txt files in the directorypath
-        {
-            string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);//only the top not sup directorys
-            return dirs.ToList<string>();
         }
         protected void change(dynamic i, dynamic item) //replaces the Item
         {
@@ -205,120 +155,22 @@ namespace ACConfigBuilder
             }
             return AC;
         }
-        public ACConfig LoadSystemConfig (string ConfigLodingPath)
-        {
-            var config = File.ReadAllText(ConfigLodingPath);
-            config = config.Replace(@"\", "/");//get json
-            return  JsonConvert.DeserializeObject<ACConfig>(config);
-        }
         public void RunCreate(
             CommandOption Path,
             CommandOption configPath,
             CommandOption templatePath,
             CommandOption Net,
-            CommandOption Dev,
+            CommandOption Int,
             CommandOption Set,
             CommandOption Ip) // second command -> creates an empty configuration with x list of the diffrent blocks
         {
-            var paths = getDefaultPaths(Path, configPath, templatePath);
-            var configuration = LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
-            var outputPath = fileproof(configuration.outputDirectory);
+            Arrangement arrangement = new Arrangement();
+            var paths = arrangement.getDefaultPaths(Path, configPath, templatePath);
+            var configuration = arrangement.LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
+            var outputPath = arrangement.fileproof(configuration.outputDirectory);
             var time = DateTime.Now;
             var filepath = outputPath + @"\" + time.ToString("yyyy.mm.dd.hh.mm") + ".txt"; //creats a time
-            Write(Net, Dev, Set, Ip, filepath, paths.tempaltePath);
-        }
-        protected void Write(CommandOption Net, CommandOption Dev, CommandOption Set, CommandOption Ip, string mypath, string tempaltePath)
-        {
-            var netcounter = 1;
-            var devcounter = 1;
-            var setcounter = 1;
-            var ipcounter = 1;
-            if (Net.HasValue() == true && Net.Value() != null)
-            {
-                int.TryParse(Net.Value(), out netcounter);
-            }
-            if (Ip.HasValue() == true && Ip.Value() != null)
-            {
-                int.TryParse(Ip.Value(), out ipcounter);
-            }
-            if (Set.HasValue() == true && Set.Value() != null)
-            {
-                int.TryParse(Set.Value(), out setcounter);
-            }
-            if (Dev.HasValue() == true && Dev.Value() != null)
-            {
-                int.TryParse(Dev.Value(), out devcounter);
-            }
-
-            var Networkdevvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"NetworkDev.template"));
-            var Interfacenetworkifvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"InterfaceNetwokIf.template"));
-            var Proxysetvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"ProxySet.template"));
-            var Proxyipvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"ProxyIp.template"));
-            using (StreamWriter writer = new StreamWriter(mypath))
-            {
-                writer.WriteLine("configure network");
-                for (int i = 0; i < netcounter; i++)
-                {
-                    writer.WriteLine(Networkdevvorlage);
-                    if (i == netcounter)
-                    {
-                        writer.WriteLine(@" exit");
-                    }
-                }
-                for (int i = 0; i < devcounter; i++)
-                {
-                    writer.WriteLine(Interfacenetworkifvorlage);
-                    if (i == devcounter)
-                    {
-                        writer.WriteLine(@" exit");
-                    }
-                }
-                writer.WriteLine("exit");
-                writer.WriteLine("configure voip");
-                for (int i = 0; i < setcounter; i++)
-                {
-                    writer.WriteLine(Proxysetvorlage);
-                    if (i == setcounter)
-                    {
-                        writer.WriteLine(@" exit");
-                    }
-                }
-                for (int i = 0; i < ipcounter; i++)
-                {
-                    writer.WriteLine(Proxyipvorlage);
-                    if (i == ipcounter)
-                    {
-                        writer.WriteLine(@" exit");
-                    }
-                }
-                writer.WriteLine("exit");
-            }
-
-        }
-        private string GetToolPath()
-        {
-            var path = Assembly.GetExecutingAssembly().Location;
-            path = Path.GetDirectoryName(path).ToString();
-            return path;
-        }
-        private (string path, string configPath, string tempaltePath) getDefaultPaths(
-            CommandOption Path,
-            CommandOption configpath,
-            CommandOption templatePath)
-        {
-            var toolPath = GetToolPath();
-            var configPath = configpath.HasValue() ? configpath.Value() : System.IO.Path.Combine(toolPath, "config");
-            if (Path.HasValue())
-            {
-                setuserpath(configPath, Path.Value().Replace(@"\", @"\\"));
-            }
-            var path = Path.HasValue() ? Path.Value().Replace(@"\", @"\\") : Directory.GetCurrentDirectory();
-            var tempaltePath = templatePath.HasValue() ? templatePath.Value() : System.IO.Path.Combine(toolPath, "config", "Template");
-            return (
-               path,
-               configPath,
-               tempaltePath
-                );
+            new Output().Write(Net, Int, Set, Ip, filepath, paths.tempaltePath);
         }
     }
 }

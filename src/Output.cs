@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using System.Linq;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace ACConfigBuilder
 {
@@ -130,6 +131,80 @@ namespace ACConfigBuilder
                 yield break;
             }
         }
+        /// <summary>
+        /// Creates the new Configuration for AC
+        /// </summary>
+        /// <param name="Net">Set Count of the Network-Dev Subsection</param>
+        /// <param name="Int">Set Count of the Interface Network-if Subsection</param>
+        /// <param name="Set">Set Count of the Proxy-Set Subsection</param>
+        /// <param name="Ip">Set Count of the Proxy-IP Subsection</param>
+         public void Write(CommandOption Net, CommandOption Int, CommandOption Set, CommandOption Ip, string OutputPath, string tempaltePath)
+        {
+            var netcounter = 1;
+            var devcounter = 1;
+            var setcounter = 1;
+            var ipcounter = 1;
+            if (Net.HasValue() == true && Net.Value() != null)
+            {
+                int.TryParse(Net.Value(), out netcounter);
+            }
+            if (Ip.HasValue() == true && Ip.Value() != null)
+            {
+                int.TryParse(Ip.Value(), out ipcounter);
+            }
+            if (Set.HasValue() == true && Set.Value() != null)
+            {
+                int.TryParse(Set.Value(), out setcounter);
+            }
+            if (Int.HasValue() == true && Int.Value() != null)
+            {
+                int.TryParse(Int.Value(), out devcounter);
+            }
 
+            var Networkdevvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"NetworkDev.template"));
+            var Interfacenetworkifvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"InterfaceNetwokIf.template"));
+            var Proxysetvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"ProxySet.template"));
+            var Proxyipvorlage = File.ReadAllText(Path.Combine(tempaltePath, @"ProxyIp.template"));
+            using (StreamWriter writer = new StreamWriter(OutputPath))
+            {
+                writer.WriteLine("configure network");
+                for (int i = 0; i < netcounter; i++)
+                {
+                    writer.WriteLine(Networkdevvorlage);
+                    if (i == netcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
+                }
+                for (int i = 0; i < devcounter; i++)
+                {
+                    writer.WriteLine(Interfacenetworkifvorlage);
+                    if (i == devcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
+                }
+                writer.WriteLine("exit");
+                writer.WriteLine("configure voip");
+                for (int i = 0; i < setcounter; i++)
+                {
+                    writer.WriteLine(Proxysetvorlage);
+                    if (i == setcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
+                }
+                for (int i = 0; i < ipcounter; i++)
+                {
+                    writer.WriteLine(Proxyipvorlage);
+                    if (i == ipcounter)
+                    {
+                        writer.WriteLine(@" exit");
+                    }
+                }
+                writer.WriteLine("exit");
+            }
+
+        }
     }
 }

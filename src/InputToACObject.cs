@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
+using System.Reflection;
 
 namespace ACConfigBuilder
 {
@@ -44,7 +46,7 @@ namespace ACConfigBuilder
             var parsedLine = ParserGrammar.getidentifier.Parse(line);
             switch (parsedLine)
             {
-                case ParserVariables.configure: 
+                case ParserVariables.configure:
                 case ParserVariables.voip:
                 case "\n":
                     ident = parsedLine;
@@ -152,7 +154,7 @@ namespace ACConfigBuilder
                     switch (subIdent)
                     {
                         case ParserVariables.networkDev:
-                            AC = AddToList(AC, Name, AC.configureNetwork.networkdev, subIdent, networkDevListTndex,getVar(Name,line));
+                            AC = AddToList(AC, Name, AC.configureNetwork.networkdev, subIdent, networkDevListTndex, getVar(Name, line));
                             continue;
                         case ParserVariables.interfaceNetwokIf:
                             AC = AddToList(AC, Name, AC.configureNetwork.interfacenetworkif, subIdent, interfaceNetwokIfListTndex, getVar(Name, line));
@@ -170,7 +172,7 @@ namespace ACConfigBuilder
             }
             return AC;
         }
-        public dynamic getVar(string Name,string line)
+        public dynamic getVar(string Name, string line)
         {
             if (Name == ParserVariables.activate)
             {
@@ -181,9 +183,9 @@ namespace ACConfigBuilder
                 return ParserGrammar.ValueParser.Parse(line);
             }
         }
-        public ACConfig AddToList(ACConfig AC, string Name, dynamic List, string subIdent,int Index, dynamic value )
+        public ACConfig AddToList(ACConfig AC, string Name, dynamic List, string subIdent, int Index, dynamic value)
         {
-                AC = ListParsing(AC, Name, value, Index, List, subIdent);
+            AC = ListParsing(AC, Name, value, Index, List, subIdent);
             return AC;
         }
         /// <summary>
@@ -260,73 +262,74 @@ namespace ACConfigBuilder
         /// <param name="myList">SubList like Network-dev</param>
         /// <param name="subIdent">Name of the Subident like network-dev</param>
         /// <returns>ACConfig</returns>
-        protected ACConfig ListParsing(ACConfig Config, string Name, dynamic Value, int Index, dynamic myList, string subIdent) 
+        protected ACConfig ListParsing<T>(ACConfig Config, string Name, dynamic Value, int Index, IList<T> myList, string subIdent) where T : class
         {
             if (String.IsNullOrWhiteSpace(Value.ToString())) // falls es keine Value gibt brauch es nix machen
             {
                 return Config;
             }
-            foreach (var item in myList[Index].GetType().GetProperties()) //property aus index X   bekommeb
+            var property = myList[Index].GetType().GetProperties().Where(a => a.Name == Name).FirstOrDefault(); // Gets the type of the property
+            var propertyType = property.PropertyType;
+            if (propertyType == typeof(Int32) || propertyType == typeof(Nullable<Int32>)) //if type = int then parse Value into an integer
             {
-                var property = item;
-                if (property.Name != Name) // wenn die property nicht den selben bezeichner hat wie der gegebene Name
-                {
-                    continue;
-                }
-                var propertyType = property.PropertyType; // Gets the type of the property
-
-                if (propertyType == typeof(Int32) || propertyType == typeof(Nullable<Int32>)) //if type = int then parse Value into an integer
-                {
-                    property.SetValue(myList[Index], Convert.ToInt32(Value));
-                }
-                else if (propertyType.IsEnum) // if type = enum then parse Value into a enum
-                {
-                    var enumMember = propertyType
-                        .GetFields(); // List all fields of an enum
-                    foreach (var member in enumMember)
-                    {
-                        if (member.Name == Convert.ToString(Value) ||
-                             Convert.ToString(Value) == Convert.ToString(member.GetCustomAttributes(typeof(NameAttribute), false))) // if the name of the field = Name or the Attribute = Name 
-                        {
-                            if (member == null)
-                            {
-                                Console.WriteLine($"Warn: skip property {property.Name} because the value {Value} is not valid for this field.");
-                                return Config;
-                            }
-                            var enumValue = Enum.Parse(propertyType, member.Name);  // parses Value into an enumValue
-                            property.SetValue(myList[Index], enumValue);
-
-                        }  //Console.WriteLine($"Warn: skip property {property.Name} because enums currently not supported.");
-                    }
-                }
-                else if (propertyType == typeof(Boolean)) // if type = boolean then parse Value into a boolean
-                {
-                    property.SetValue(myList[Index], Convert.ToBoolean(Value));
-                }
-                else                            //if type is something else (hopefully a string) then replace the old value with the new
-                {
-                    property.SetValue(myList[Index], Value);
-                }
-                switch (subIdent) // returns the right Config 
-                {
-                    case ParserVariables.networkDev:
-                        Config.configureNetwork.networkdev = myList;
-                        return Config;
-                    case ParserVariables.interfaceNetwokIf:
-                        Config.configureNetwork.interfacenetworkif = myList;
-                        return Config;
-                    case ParserVariables.proxySet:
-                        Config.configureviop.proxyset = myList;
-                        return Config;
-                    case ParserVariables.proxyIp:
-                        Config.configureviop.proxyip = myList;
-                        return Config;
-                    default:
-                        break;
-                }
-                return Config;
+                property.SetValue(myList[Index], Convert.ToInt32(Value));
             }
-            return Config;
+            else if (propertyType.IsEnum) // if type = enum then parse Value into a enum
+            {
+                var newValue = selectRightEnummember(Value, property);
+                if (newValue == null)
+                {
+                    return Config;
+                }
+                else
+                {
+                    property.SetValue(myList[Index], newValue); // List all fields of an enum
+                }
+            }
+            else if (propertyType == typeof(Boolean)) // if type = boolean then parse Value into a boolean
+            {
+                property.SetValue(myList[Index], Convert.ToBoolean(Value));
+            }
+            else                            //if type is something else (hopefully a string) then replace the old value with the new
+            {
+                property.SetValue(myList[Index], Value);
+            }
+
+            return SetInTheRightList(Config, myList, subIdent);
+
+        }
+        private ACConfig SetInTheRightList(ACConfig Config, dynamic myList, string subIdent)
+        {
+            switch (subIdent) // returns the right Config 
+            {
+                case ParserVariables.networkDev:
+                    Config.configureNetwork.networkdev = myList;
+                    return Config;
+                case ParserVariables.interfaceNetwokIf:
+                    Config.configureNetwork.interfacenetworkif = myList;
+                    return Config;
+                case ParserVariables.proxySet:
+                    Config.configureviop.proxyset = myList;
+                    return Config;
+                case ParserVariables.proxyIp:
+                    Config.configureviop.proxyip = myList;
+                    return Config;
+                default:
+                    return Config;
+            }
+        }
+        private object selectRightEnummember(dynamic Value, PropertyInfo property)
+        {
+            var member = property.PropertyType.GetFields()
+            .Where(p => 
+             p.Name == Convert.ToString(Value) ||
+             Convert.ToString(Value) == Convert.ToString(p.GetCustomAttributes(typeof(NameAttribute), false)))
+            .FirstOrDefault();
+            if (member == null)
+            {
+                return member;
+            }
+            return Enum.Parse(property.PropertyType, member.Name);  // parses Value into an enumValue/
         }
     }
 }
