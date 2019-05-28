@@ -7,6 +7,7 @@ using ACConfigBuilder;
 using Sprache;
 using System.IO;
 using Moq;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace Tests
 {
@@ -190,8 +191,10 @@ namespace Tests
         [Fact]
         public void findTestDirectory()
         {
-            string TestDirectory = new Arrangement().GetToolPath();
-            List<string> Testlist = new TestArrangement().FindTestDirectory(new TestArrangement().ProofTestDirectory(TestDirectory));
+            var TestDirectory = new TestArrangement().GetTestDefaultPath(new CommandOption("--blub",CommandOptionType.SingleValue) ,
+                new CommandOption("--blib", CommandOptionType.SingleValue), 
+                new CommandOption("--bleb", CommandOptionType.SingleValue));
+            List<string> Testlist = new TestArrangement().FindTestDirectory(new TestArrangement().ProofTestDirectory(TestDirectory.Path));
             Assert.NotNull(Testlist);
             Assert.Empty(Testlist);
         }
@@ -379,6 +382,14 @@ namespace Tests
            int? Empty =  new TestCommands().TestIdel(null);
             Assert.Equal(0,Empty);
         }
+        [Fact]
+        public void TestLoadSystemConfig()
+        {
+            var Config = new TestArrangement().TestLoadConfig(Path.Combine(new TestArrangement().GetTestDefaultPath(new CommandOption("--blub", CommandOptionType.SingleValue),
+                new CommandOption("--blib", CommandOptionType.SingleValue),
+                new CommandOption("--bleb", CommandOptionType.SingleValue)).configPath, @"Config.json"));
+            Assert.NotNull(Config);
+        }
     }
     public class Input2Object : InputToACObject
     {
@@ -404,9 +415,17 @@ namespace Tests
         {
             return findFilesInDirectory(path);
         }
+        public ACConfig TestLoadConfig(string path)
+        {
+            return LoadSystemConfig(path);
+        }
         public string ProofTestDirectory(string path)
         {
             return fileproof(path);
+        }
+        public (string Path, string configPath, string templatePath) GetTestDefaultPath(CommandOption Path, CommandOption configPath, CommandOption templatePath)
+        {
+            return getDefaultPaths(Path,configPath,templatePath);
         }
     }
     public class TestCommands : Commands
