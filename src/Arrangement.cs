@@ -64,17 +64,7 @@ namespace ACConfigBuilder
             string[] dirs = Directory.GetFiles(mypath, "*.txt", SearchOption.TopDirectoryOnly);
             return dirs.ToList<string>();
         }
-        /// <summary>
-        /// Loads the Config, which is the base for the ACConfig
-        /// </summary>
-        /// <param name="ConfigLodingPath">Path to the config that forms the basis of the program </param>
-        public ACConfig LoadSystemConfig(string ConfigLodingPath)
-        {
-            var config = File.ReadAllText(ConfigLodingPath);
-            config = config.Replace(@"\", "/");//get json
-            return JsonConvert.DeserializeObject<ACConfig>(config);
-        }
-        private string GetToolPath()
+        public string GetToolPath()
         {
             var path = Assembly.GetExecutingAssembly().Location;
             path = Path.GetDirectoryName(path).ToString();
@@ -98,6 +88,16 @@ namespace ACConfigBuilder
                configPath,
                tempaltePath
                 );
+        }
+        /// <summary>
+        /// Loads the Config, which is the base for the ACConfig
+        /// </summary>
+        /// <param name="ConfigLodingPath">Path to the config that forms the basis of the program </param>
+        public ACConfig LoadSystemConfig(string ConfigLodingPath)
+        {
+            var config = File.ReadAllText(ConfigLodingPath);
+            config = config.Replace(@"\", "/");//get json
+            return JsonConvert.DeserializeObject<ACConfig>(config);
         }
         public void prepareForStart(CommandOption Path, CommandOption configPath, CommandOption templatePath, out ACConfig ConfigWithChanges, out List<string> dirs)
         {

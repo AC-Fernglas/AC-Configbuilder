@@ -190,8 +190,8 @@ namespace Tests
         [Fact]
         public void findTestDirectory()
         {
-            string TestDirectory = @"C:\";
-            List<string> Testlist = new TestArrangement().FindTestDirectory(TestDirectory);
+            string TestDirectory = new Arrangement().GetToolPath();
+            List<string> Testlist = new TestArrangement().FindTestDirectory(new TestArrangement().ProofTestDirectory(TestDirectory));
             Assert.NotNull(Testlist);
             Assert.Empty(Testlist);
         }
@@ -403,6 +403,10 @@ namespace Tests
         public List<string> FindTestDirectory(string path)
         {
             return findFilesInDirectory(path);
+        }
+        public string ProofTestDirectory(string path)
+        {
+            return fileproof(path);
         }
     }
     public class TestCommands : Commands
