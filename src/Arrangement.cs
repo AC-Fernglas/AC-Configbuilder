@@ -28,23 +28,23 @@ namespace ACConfigBuilder
         /// <summary>
         ///  Checks if the Directory exists, if not it creates the Directory and change.json 
         /// </summary>
-        public string fileproof(string outputDirectory)
+        public string fileproof(string CurrentPath ,string outputDirectory)
         {
             var exist = Directory.Exists(outputDirectory);
             if (!exist)
             {
-                exist = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory));
+                exist = Directory.Exists(Path.Combine(CurrentPath, outputDirectory));
             }
             if (exist == false)
             {
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
+                var path = Path.Combine(CurrentPath, outputDirectory);
                 Directory.CreateDirectory(path);
                 File.Create(path + "\\change.json").Dispose();
                 return path;
             }
             if (Directory.Exists(outputDirectory))
             {
-                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory, "\\change.json")))
+                if (!Directory.Exists(Path.Combine(CurrentPath, outputDirectory, "\\change.json")))
                 {
                     File.Create(outputDirectory + "\\change.json").Dispose();
                 }
@@ -52,7 +52,7 @@ namespace ACConfigBuilder
             }
             else
             {
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), outputDirectory);
+                return Path.Combine(CurrentPath, outputDirectory);
             }
         }
         /// <summary>
@@ -103,8 +103,8 @@ namespace ACConfigBuilder
         {
             var paths = getDefaultPaths(Path, configPath, templatePath);
             var configuration = LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
-            var outputPath = fileproof(configuration.outputDirectory);
-            var changePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(fileproof(outputPath), "change.json"));
+            var outputPath = fileproof(paths.path ,configuration.outputDirectory);
+            var changePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(fileproof(paths.path, configuration.outputDirectory), "change.json"));
             ConfigWithChanges = JsonConvert.DeserializeObject<ACConfig>(File.ReadAllText(changePath));//open json to use
             dirs = findFilesInDirectory(outputPath);
         }

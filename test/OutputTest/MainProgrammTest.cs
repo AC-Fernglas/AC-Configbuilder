@@ -421,7 +421,7 @@ namespace Tests
         }
         public string ProofTestDirectory(string path)
         {
-            return fileproof(path);
+            return fileproof( Directory.GetCurrentDirectory() ,path);
         }
         public (string Path, string configPath, string templatePath) GetTestDefaultPath(CommandOption Path, CommandOption configPath, CommandOption templatePath)
         {

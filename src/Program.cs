@@ -42,7 +42,8 @@ namespace ACConfigBuilder
                 var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als OutputDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);                
                 var configPath = u.Option("--config <fullpath>", "Benutzt ein benutzerdefinierte Konfiguration. Wenn dieser Befehl nicht benutzt wird die Standardkonfiguration verwendet.", CommandOptionType.SingleValue);
                 var templatePath = u.Option("--template <fullpath>", "Benutzt einen benutzerdefiniertes Templateverzeichnis. Wenn dieser Befehl nicht benutzt wird, werden die Standardtemplates verwendet.", CommandOptionType.SingleValue);
-                u.OnExecute(() => { obj.runReplace(path, configPath, templatePath); });
+                var customer = u.Option("--c <customer>", "Setzt das Kundenkürzel. Wenn nicht benutzt, wird das vorhandene Kürzel benutzt.", CommandOptionType.SingleValue);
+                u.OnExecute(() => { obj.runReplace(path, configPath, templatePath, customer); });
             });
             app.Command("create", c => //creats a new config 
             {
@@ -66,7 +67,8 @@ namespace ACConfigBuilder
         public void runReplace(
             CommandOption Path,
             CommandOption configPath,
-            CommandOption templatePath) //run for replace
+            CommandOption templatePath,
+            CommandOption customer) //run for replace
         {
             ACConfig AC = new ACConfig();
             Output obj = new Output();
@@ -78,6 +80,10 @@ namespace ACConfigBuilder
             foreach (var file in dirs)
             {
                 AC = new InputToACObject().parseinobject(new StreamReader(file)); //parses current configuration into the AC object
+                if (customer.HasValue())
+                {
+
+                }
                 if (ConfigWithChanges.configureNetwork != null)
                 {
                     AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.networkdev, "networkdev");
@@ -167,7 +173,7 @@ namespace ACConfigBuilder
             Arrangement arrangement = new Arrangement();
             var paths = arrangement.getDefaultPaths(Path, configPath, templatePath);
             var configuration = arrangement.LoadSystemConfig(System.IO.Path.GetFullPath(System.IO.Path.Combine(paths.configPath, "Config.json")));
-            var outputPath = arrangement.fileproof(configuration.outputDirectory);
+            var outputPath = arrangement.fileproof(paths.path, configuration.outputDirectory);
             var time = DateTime.Now;
             var filepath = outputPath + @"\" + time.ToString("yyyy.mm.dd.hh.mm") + ".txt"; //creats a time
             new Output().Write(Net, Int, Set, Ip, filepath, paths.tempaltePath);
