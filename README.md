@@ -65,7 +65,6 @@ Dazu muss man in der Change.json im Outputordner angeben, wo etwas geändert wer
 
 ```
 {
-    "Costumer" : <\value>,
     "configurenetwork": {
       "networkdev": [
         {
