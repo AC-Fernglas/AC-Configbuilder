@@ -61,7 +61,7 @@ Dazu muss man in der Change.json im Outputordner angeben, wo etwas geändert wer
 
 <details close>
 
-<summary>**Beispiel für Change.json**</summary>
+<summary>Beispiel für Change.json</summary>
 
 ```
 {
