@@ -142,7 +142,7 @@ Der Create-Command erzuegt eine leere AudioCodes Konfiguration mit bestimmten Ei
 
 | Parameter              | Beschreibung                             | Standardwert                             | Erforderlich | Typ    |
 |------------------------|------------------------------------------|------------------------------------------|--------------|--------|
-| `--path`               | Setzt den Pfad in dem eine neue AudioCodes Konfiguration abgelegt wird. | `Desktop\ACConfigbuilder` | nein         | string |
+| `--path`               | Setzt den Pfad in dem eine neue AudioCodes Konfiguration abgelegt wird. | Derzeitige CLI Location - ACConfigbuilder | nein         | string |
 | `--config`             | Don't do anything                        | Pfad zur Standard ACB Konfiguration die mit dem Tool mitgeliefert wird | nein         | string |
 | `--template`           | Setzt den Pfad zum Template Verzeichnis. Dort liegen AudioCodes Konfiguration Blöcke die das Tool Standardmäßig durch AC-Configuration Builder ausgeliefert werden. | Pfad zum Standard ACB Template Verzeichnis. Dort liegen AudioCodes Konfiguration Blöcke die das Tool Standardm | nein         | string |
 | `--networkdev`         | Eine Anzahl von Netzwerkgeräten die in der generierten AudioCodes Konfiguration vorhanden sein sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
