@@ -57,7 +57,7 @@ Commands:
 ## Replace-Command
 
 Der Replace-Command soll eine bereits bestehende Konfiguration editieren. 
-Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert werden muss.
+Dazu muss man in der Change.json im Outputordner angeben, wo etwas geändert werden muss.
 
 <details close>
 
@@ -68,47 +68,51 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
     "configurenetwork": {
       "networkdev": [
         {
-          "listid": <\value>,
-          "vlan": "<\value>",
-          "underlyingif": "<\value>",
-          "Name" : "<\value>",
-          "tag": "<\value>"
+          "network-dev" :  <\value>,
+          "vlan-id " : <\value>,
+          "underlying-if" : <\value>,
+          "name" : <\value>,
+          "tagging" : <\value>,
+          "activate"
         }
       ],
       "interfacenetworkif":[
         {
-          "listid": <\value>,
-          "apptype": "<\value>",
-          "ipaddress":"<\value>",
-          "prefixlength": <\value>,
-          "gateway": "<\value>",
-          "Name": "<\value>",
-          "underlyingdev": "<\value>"
+           "interface network-if" : <\value>,
+           "application-type" : <\value>,
+           "ip-address" : <\value>,
+           "prefix-length" : <\value>,
+           "gateway" : <\value>,
+           "name" : <\value>,
+           "underlying-dev" : <\value>, 
+           "activate"
         }
       ]
     },
     "configureviop":{
       "proxyset":[
         {
-          "listid": <\value>,
-          "proxyname": "<\value>",
-          "proxyenablekeepalive": "<\value>",
-          "srdname":"<\value>",
-          "sbcipv4sipintname": "<\value>",
-          "keepalivefailresp":"<\value>",
-          "successdetectretries": <\vaule>,
-          "successdetectint" : <\value>,
-          "proxyredundancymode" : "<\value>",
-          "isproxyhotswap": <\value>,
-          "proxyloadbalancingmethod": <\value>,
-          "minactiveservlb": <\value>
+            "proxy-set" : <\value>, 
+            "proxy-name" : <\value>, 
+            "proxy-enable-keep-alive" : <\value>,  
+            "srd-name" : <\value>, 
+            "sbcipv4-sip-int-name" : <\value>,  
+            "keepalive-fail-resp" : <\value>, 
+            "success-detect-retries" : <\value>, 
+            "success-detect-int" :  <\value>, 
+            "proxy-redundancy-mode" : <\value>, 
+            "is-proxy-hot-swap" : <\value>, 
+            "proxy-load-balancing-method" : <\value>, 
+            "min-active-serv-lb" : <\value>, 
+            "activate"
         }
       ],
       "proxyip":[
         {
-          "ip": "<\value>",
-          "proxyadress": "<\value>",
-          "transporttype": "<\value>"
+          "proxy-ip" : <\value>,
+          "proxy-address" : <\value>,
+          "transport-type" : <\value>,
+          "activate"
         }
       ]
     }
@@ -116,20 +120,18 @@ Dazu muss man in der Change.json im Configordner angeben, wo etwas geändert wer
 ```  
 </details>
 
-ListId, beschreibt in diesem Kontext, den Wert, welcher nach `network-dev` , `interface network-if` oder `proxy-set` kommen würde. 
-Damit beschreibt ListId, welcher Abschnitt in der Konfiguration bearbeitet werden soll.
-
 ## Options für die Commands
 
 ### Replace
+
 Der Replace-Command hat eine zusätzliche Option.
 
-```bash 
+```bash
 acb replace --path <path>
 ```
 
 Mit der Option `--path <path>` wird dauerhaft der Pfad, in welchem das Programm nach Konfigurationen zum überarbeiten sucht verädnert.
-Default ist der Wert auf den Samplesordner gelegt.
+Default ist der Wert auf `Desktop\ACConfigbuilder` gelegt.
 
 ### Create
 
@@ -140,15 +142,13 @@ Der Create-Command erzuegt eine leere AudioCodes Konfiguration mit bestimmten Ei
 
 | Parameter              | Beschreibung                             | Standardwert                             | Erforderlich | Typ    |
 |------------------------|------------------------------------------|------------------------------------------|--------------|--------|
-| `--path`               | Setzt den Pfad in dem eine neue AudioCodes Konfiguration abgelegt wird. | aktueller Pfad in der Konsole            | nein         | string |
+| `--path`               | Setzt den Pfad in dem eine neue AudioCodes Konfiguration abgelegt wird. | `Desktop\ACConfigbuilder` | nein         | string |
 | `--config`             | Don't do anything                        | Pfad zur Standard ACB Konfiguration die mit dem Tool mitgeliefert wird | nein         | string |
 | `--template`           | Setzt den Pfad zum Template Verzeichnis. Dort liegen AudioCodes Konfiguration Blöcke die das Tool Standardmäßig durch AC-Configuration Builder ausgeliefert werden. | Pfad zum Standard ACB Template Verzeichnis. Dort liegen AudioCodes Konfiguration Blöcke die das Tool Standardm | nein         | string |
 | `--networkdev`         | Eine Anzahl von Netzwerkgeräten die in der generierten AudioCodes Konfiguration vorhanden sein sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
 | `--interfacenetworkif` | Eine Anzahl von "to be defined" die in der generierten AudioCodes Konfiguration vorhanden sein sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
 | `--proxyset`           | Eine Anzahl von Proxys die in der AudioCodes Konfiguration erzeugt werden sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
 | `--proxyip`            | Eine Anzahl von ProxyIps die in der AudioCodes Konfiguration erzeugt werden sollen. Diese werden leer generiert und sind abhänig von dem Template Blöcken welche verwendet werden. | 1                                        | nein         | number |
-
-
 
 #### Examples
 

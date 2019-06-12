@@ -21,7 +21,7 @@ namespace ACConfigBuilder
               (Parserarguments.interlistident).Or
               (Parserarguments.prosetlistident).Or
               (Parserarguments.proiplistident).Or
-               (findName(ParserVariables.exit));
+              (findName(ParserVariables.exit));
 
         public static readonly Parser<string> subidentvalue =
                      findValue(ParserVariables.networkDev)
