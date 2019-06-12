@@ -61,7 +61,7 @@ Dazu muss man in der Change.json im Outputordner angeben, wo etwas geändert wer
 
 <details close>
 
-<summary>**Beispiel für Change.json**</summary>
+<summary>Beispiel für Change.json</summary>
 
 ```
 {
@@ -132,7 +132,6 @@ acb replace --path <path>
 ```
 
 Mit der Option `--path <path>` wird dauerhaft der Pfad, in welchem das Programm nach Konfigurationen zum überarbeiten sucht verädnert.
-Default ist der Wert auf `Desktop\ACConfigbuilder` gelegt.
 
 ### Create
 
