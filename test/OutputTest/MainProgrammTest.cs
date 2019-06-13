@@ -259,19 +259,21 @@ namespace Tests
             Networkdev Nd = new Networkdev()
             {
                 listid = 21,
-                Name = "blub"
+                Name = "blub_-"
             };
             TestAc.configureNetwork.networkdev.Add(Nd);
             List<Networkdev> list = new List<Networkdev>();
             Networkdev OtherNd = new Networkdev()
             {
                 listid = 21,
-                Name = "blup"
+                Name = "blup_-"
             };
             list.Add(OtherNd);
             var what = "networkdev";
-            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what);
-            Assert.True(TestAc.configureNetwork.networkdev[0].Name == "blup");
+            CommandOption customer = new CommandOption("--blub", CommandOptionType.SingleValue);
+            customer.Values.Add("Klaus");
+            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what, new CommandOption("--blub", CommandOptionType.SingleValue), customer);
+            Assert.True(TestAc.configureNetwork.networkdev[0].Name == "blup_Klaus-");
         }
         [Fact]
         public void TestReplaceItemInterfaceNetworkIf()
@@ -287,19 +289,21 @@ namespace Tests
             Interfacenetworkif INI = new Interfacenetworkif()
             {
                 listid = 21,
-                Name = "blub"
+                Name = "blub_-"
             };
             TestAc.configureNetwork.interfacenetworkif.Add(INI);
             List<Interfacenetworkif> list = new List<Interfacenetworkif>();
             Interfacenetworkif OtherINI = new Interfacenetworkif()
             {
                 listid = 21,
-                Name = "blup"
+                Name = "blup_-"
             };
             list.Add(OtherINI);
             var what = "interfacenetworkif";
-            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what);
-            Assert.True(TestAc.configureNetwork.interfacenetworkif[0].Name == "blup");
+            CommandOption country = new CommandOption("--blub", CommandOptionType.SingleValue);
+            country.Values.Add("de");
+            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what, country, new CommandOption("--blub", CommandOptionType.SingleValue));
+            Assert.True(TestAc.configureNetwork.interfacenetworkif[0].Name == "blup_-de");
         }
         [Fact]
         public void TestReplaceItemProxySet()
@@ -314,19 +318,19 @@ namespace Tests
             Proxyset PS = new Proxyset()
             {
                 listid = 21,
-                proxyname = "blub"
+                proxyname = "blub_-"
             };
             TestAc.configureviop.proxyset.Add(PS);
             List<Proxyset> list = new List<Proxyset>();
             Proxyset OtherPS = new Proxyset()
             {
                 listid = 21,
-                proxyname = "blup"
+                proxyname = "blup_-"
             };
             list.Add(OtherPS);
             var what = "proxyset";
-            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what);
-            Assert.True(TestAc.configureviop.proxyset[0].proxyname == "blup");
+            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what, new CommandOption("--blub", CommandOptionType.SingleValue), new CommandOption("--blub", CommandOptionType.SingleValue));
+            Assert.True(TestAc.configureviop.proxyset[0].proxyname == "blup_-");
         }
         [Fact]
         public void TestReplaceItemProxyIp()
@@ -341,19 +345,19 @@ namespace Tests
             Proxyip PIP = new Proxyip()
             {
                 ip = "21/32",
-                proxyaddress = "blub"
+                proxyaddress = "blub_-"
             };
             TestAc.configureviop.proxyip.Add(PIP);
             List<Proxyip> list = new List<Proxyip>();
             Proxyip OtherPIP = new Proxyip()
             {
                 ip = "21/32",
-                proxyaddress = "blup"
+                proxyaddress = "blup_-"
             };
             list.Add(OtherPIP);
             var what = "proxyip";
-            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what);
-            Assert.True(TestAc.configureviop.proxyip[0].proxyaddress == "blup");
+            TestAc = new TestMainProgramm().replaceitem(TestAc, list, what, new CommandOption("--blub", CommandOptionType.SingleValue),new CommandOption("--blub", CommandOptionType.SingleValue));
+            Assert.True(TestAc.configureviop.proxyip[0].proxyaddress == "blup_-");
         }
         [Fact]
         public void TestReplaceItemNullList()
@@ -373,7 +377,7 @@ namespace Tests
             Ac.configureNetwork.networkdev.Add(Nd);
             List<string> list = new List<string>(); 
             var what = "networkdev";
-            var TestAc = new TestMainProgramm().ReplaceTestValues(Ac, list, what);
+            var TestAc = new TestMainProgramm().ReplaceTestValues(Ac, list, what, new CommandOption("--blub", CommandOptionType.SingleValue), new CommandOption("--blub", CommandOptionType.SingleValue));
             Assert.Same(Ac,TestAc);
         }
         [Fact]
@@ -404,9 +408,9 @@ namespace Tests
     }
     public class TestMainProgramm : Execute
         {
-            public ACConfig ReplaceTestValues(ACConfig AC, dynamic list, string whatlist)
+            public ACConfig ReplaceTestValues(ACConfig AC, dynamic list, string whatlist, CommandOption country, CommandOption customer)
             {
-                return replaceitem(AC, list, whatlist);
+                return replaceitem(AC, list, whatlist, country, customer);
             }
         }
     public class TestArrangement : Arrangement

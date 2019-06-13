@@ -39,11 +39,12 @@ namespace ACConfigBuilder
             {
                 u.HelpOption(helptemplate);
                 u.Description = "Dieser Befehl soll es ermöglichen die hinterlegte Konfiguration zu editieren.";
-                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als OutputDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);                
+                var path = u.Option("--path <fullpath>", "Setzt einen dauerhaften benutzerdefinierten Pfad. Wenn dieser Befehl nicht benutzt wird, wird der Pfad , welcher in der Config.json als OutputDirectory angegeben ist verwendet.", CommandOptionType.SingleValue);
                 var configPath = u.Option("--config <fullpath>", "Benutzt ein benutzerdefinierte Konfiguration. Wenn dieser Befehl nicht benutzt wird die Standardkonfiguration verwendet.", CommandOptionType.SingleValue);
                 var templatePath = u.Option("--template <fullpath>", "Benutzt einen benutzerdefiniertes Templateverzeichnis. Wenn dieser Befehl nicht benutzt wird, werden die Standardtemplates verwendet.", CommandOptionType.SingleValue);
-                var customer = u.Option("--c <customer>", "Setzt das Kundenkürzel. Wenn nicht benutzt, wird das vorhandene Kürzel benutzt.", CommandOptionType.SingleValue);
-                u.OnExecute(() => { obj.runReplace(path, configPath, templatePath, customer); });
+                var customer = u.Option("--customer <customer>", "Setzt das Kundenkürzel. Wenn nicht benutzt, wird das vorhandene Kürzel benutzt.", CommandOptionType.SingleValue);
+                var country = u.Option("--country <contry>", "Setzt das länderkürzel. Wenn nicht benutzt, wird das vorhandene Kürzel benutzt.", CommandOptionType.SingleValue);
+                u.OnExecute(() => { obj.runReplace(path, configPath, templatePath, customer, country); });
             });
             app.Command("create", c => //creats a new config 
             {
@@ -68,48 +69,123 @@ namespace ACConfigBuilder
             CommandOption Path,
             CommandOption configPath,
             CommandOption templatePath,
-            CommandOption customer) //run for replace
+            CommandOption customer,
+            CommandOption country) //run for replace
         {
             ACConfig AC = new ACConfig();
             Output obj = new Output();
             Execute exe = new Execute();
             ACConfig ConfigWithChanges = new ACConfig();
             List<string> dirs = new List<string>();
-            new Arrangement().prepareForStart(Path, configPath, templatePath,out ConfigWithChanges,out dirs);
+            new Arrangement().prepareForStart(Path, configPath, templatePath, out ConfigWithChanges, out dirs);
             //search all files in Directory 
             foreach (var file in dirs)
             {
                 AC = new InputToACObject().parseinobject(new StreamReader(file)); //parses current configuration into the AC object
-                if (customer.HasValue())
-                {
-
-                }
                 if (ConfigWithChanges.configureNetwork != null)
                 {
-                    AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.networkdev, "networkdev");
-                    AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.interfacenetworkif, "interfacenetworkif");
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.networkdev, "networkdev", country, customer);
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureNetwork.interfacenetworkif, "interfacenetworkif", country, customer);
                 }
                 if (ConfigWithChanges.configureviop != null)
                 {
-                    AC = exe.replaceitem(AC, ConfigWithChanges.configureviop.proxyset, "proxyset");
-                    AC = exe.replaceitem(AC, ConfigWithChanges.configureviop.proxyip, "proxyip"); //replaces the wanted details
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureviop.proxyset, "proxyset", country, customer);
+                    AC = exe.replaceitem(AC, ConfigWithChanges.configureviop.proxyip, "proxyip", country, customer); //replaces the wanted details
                 }
                 var objList = obj.objectToList(AC);
                 obj.writeOutput(objList, file); //output
             }
         }
-        protected void change(dynamic i, dynamic item) //replaces the Item
+        protected void change(dynamic i, dynamic item, CommandOption country, CommandOption customer) //replaces the Item
         {
             foreach (var propertyInfo in item.GetType().GetProperties())
             {
                 var value = propertyInfo.GetValue(item);
-                if (value != null)
+                if (value == null)
+                {
+                    if (searchKürzel(propertyInfo.Name))
+                    {
+                        swapKürzel(i, item, country, customer, propertyInfo);
+                    }
+                    continue;
+                }else
+                { 
+                if (searchKürzel(propertyInfo.Name))
+                {
+                    swapKürzel(i, item, country, customer, propertyInfo);
+                }
+                else
                 {
                     i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
                 }
+                }
             }
         }
-        public ACConfig replaceitem(ACConfig AC, dynamic list, string whatlist)
+        protected void swapKürzel(dynamic oldconfig, dynamic item, CommandOption country, CommandOption customer, PropertyInfo propertyInfo)
+        {
+            var value = propertyInfo.GetValue(item);
+            var i = oldconfig.GetType().GetProperty(propertyInfo.Name).GetValue(oldconfig);
+            if (i == null)
+            {
+                return;
+            }
+            if (country.HasValue() && customer.HasValue())
+            {
+                if (value == null)
+                {
+                    value = i.Substring(0, i.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
+                }
+                value = value.Substring(0, i.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
+                oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
+            }
+            if (country.HasValue() && !customer.HasValue())
+            {
+                if (value == null)
+                {
+                    value = i.Substring(0, i.IndexOf('-') + 1)  + country.Value();
+                }
+                value = value.Substring(0, value.IndexOf('_') + 1)+ i.Substring(i.IndexOf('_')+1, i.IndexOf('-') - i.IndexOf('_')) + country.Value();
+                oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
+            }
+            if (!country.HasValue() && customer.HasValue())
+            {
+                if (value == null)
+                {
+                    value = i.Substring(0, i.IndexOf('_') + 1) + customer.Value() + i.Substring(i.IndexOf('-'));
+                }
+                value = value.Substring(0, i.IndexOf('_') + 1) + customer.Value() + i.Substring(i.IndexOf('-'));
+                oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
+            }
+            if (!country.HasValue() && !customer.HasValue())
+            {
+
+                if (value == null)
+                {
+                    value = i;
+                }
+                value = value.Substring(0, i.IndexOf('_')) + i.Substring(i.IndexOf('_'));
+                oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
+            }
+        }
+        protected bool searchKürzel(string Name)
+        {
+            switch (Name)
+            {
+                case ParserVariables.name:
+                    return true;
+                case ParserVariables.sbcipv:
+                    return true;
+                case ParserVariables.udev:
+                    return true;
+                case ParserVariables.pname:
+                    return true;
+                case ParserVariables.sname:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public ACConfig replaceitem(ACConfig AC, dynamic list, string whatlist, CommandOption country, CommandOption customer)
         {
             if (list == null)
             {
@@ -122,37 +198,41 @@ namespace ACConfigBuilder
                     case "networkdev":
                         foreach (var i in AC.configureNetwork.networkdev)
                         {
-                            if (config.listid == i.listid)
+                            if (config.listid != i.listid)
                             {
-                                change(i, config);
+                                continue;
                             }
+                            change(i, config, country, customer);
                         }
                         break;
                     case "interfacenetworkif":
                         foreach (var i in AC.configureNetwork.interfacenetworkif)
                         {
-                            if (config.listid == i.listid)
+                            if (config.listid != i.listid)
                             {
-                                change(i, config);
+                                continue;
                             }
+                            change(i, config, country, customer);
                         }
                         break;
                     case "proxyset":
                         foreach (var i in AC.configureviop.proxyset)
                         {
-                            if (config.listid == i.listid)
+                            if (config.listid != i.listid)
                             {
-                                change(i, config);
+                                continue;
                             }
+                            change(i, config, country, customer);
                         }
                         break;
                     case "proxyip":
                         foreach (var i in AC.configureviop.proxyip)
                         {
-                            if (config.ip == i.ip)
+                            if (config.ip != i.ip)
                             {
-                                change(i, config);
+                                continue;
                             }
+                            change(i, config, country, customer);
                         }
                         break;
                     default:
