@@ -96,7 +96,7 @@ namespace ACConfigBuilder
                 obj.writeOutput(objList, file); //output
             }
         }
-        protected void change(dynamic i, dynamic item, CommandOption country, CommandOption customer) //replaces the Item
+        protected void change(dynamic configItem, dynamic item, CommandOption country, CommandOption customer) //replaces the Item
         {
             foreach (var propertyInfo in item.GetType().GetProperties())
             {
@@ -105,18 +105,18 @@ namespace ACConfigBuilder
                 {
                     if (searchAcronym(propertyInfo.Name))
                     {
-                        swapAcronym(i, item, country, customer, propertyInfo);
+                        swapAcronym(configItem, item, country, customer, propertyInfo);
                     }
                     continue;
                 }else
                 { 
                 if (searchAcronym(propertyInfo.Name))
                 {
-                    swapAcronym(i, item, country, customer, propertyInfo);
+                    swapAcronym(configItem, item, country, customer, propertyInfo);
                 }
                 else
                 {
-                    i.GetType().GetProperty(propertyInfo.Name).SetValue(i, value);
+                        configItem.GetType().GetProperty(propertyInfo.Name).SetValue(configItem, value);
                 }
                 }
             }
@@ -124,8 +124,8 @@ namespace ACConfigBuilder
         protected void swapAcronym(dynamic oldconfig, dynamic item, CommandOption country, CommandOption customer, PropertyInfo propertyInfo)
         {
             var value = propertyInfo.GetValue(item);
-            var i = oldconfig.GetType().GetProperty(propertyInfo.Name).GetValue(oldconfig);
-            if (i == null)
+            var configValue = oldconfig.GetType().GetProperty(propertyInfo.Name).GetValue(oldconfig);
+            if (configValue == null)
             {
                 return;
             }
@@ -133,27 +133,27 @@ namespace ACConfigBuilder
             {
                 if (value == null)
                 {
-                    value = i.Substring(0, i.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
+                    value = configValue.Substring(0, configValue.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
                 }
-                value = value.Substring(0, i.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
+                value = value.Substring(0, configValue.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
             else if (country.HasValue() && !customer.HasValue())
             {
                 if (value == null)
                 {
-                    value = i.Substring(0, i.IndexOf('-') + 1)  + country.Value();
+                    value = configValue.Substring(0, configValue.IndexOf('-') + 1)  + country.Value();
                 }
-                value = value.Substring(0, value.IndexOf('_') + 1)+ i.Substring(i.IndexOf('_')+1, i.IndexOf('-') - i.IndexOf('_')) + country.Value();
+                value = value.Substring(0, value.IndexOf('_') + 1)+ configValue.Substring(configValue.IndexOf('_')+1, configValue.IndexOf('-') - configValue.IndexOf('_')) + country.Value();
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
             else if (!country.HasValue() && customer.HasValue())
             {
                 if (value == null)
                 {
-                    value = i.Substring(0, i.IndexOf('_') + 1) + customer.Value() + i.Substring(i.IndexOf('-'));
+                    value = configValue.Substring(0, configValue.IndexOf('_') + 1) + customer.Value() + configValue.Substring(configValue.IndexOf('-'));
                 }
-                value = value.Substring(0, i.IndexOf('_') + 1) + customer.Value() + i.Substring(i.IndexOf('-'));
+                value = value.Substring(0, configValue.IndexOf('_') + 1) + customer.Value() + configValue.Substring(configValue.IndexOf('-'));
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
             if (!country.HasValue() && !customer.HasValue())
@@ -161,9 +161,9 @@ namespace ACConfigBuilder
 
                 if (value == null)
                 {
-                    value = i;
+                    value = configValue;
                 }
-                value = value.Substring(0, i.IndexOf('_')) + i.Substring(i.IndexOf('_'));
+                value = value.Substring(0, configValue.IndexOf('_')) + configValue.Substring(configValue.IndexOf('_'));
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
         }
@@ -196,43 +196,43 @@ namespace ACConfigBuilder
                 switch (whatlist)   // switches on which list is now given 
                 {
                     case "networkdev":
-                        foreach (var i in AC.configureNetwork.networkdev)
+                        foreach (var configItem in AC.configureNetwork.networkdev)
                         {
-                            if (config.listid != i.listid)
+                            if (config.listid != configItem.listid)
                             {
                                 continue;
                             }
-                            change(i, config, country, customer);
+                            change(configItem, config, country, customer);
                         }
                         break;
                     case "interfacenetworkif":
-                        foreach (var i in AC.configureNetwork.interfacenetworkif)
+                        foreach (var configItem in AC.configureNetwork.interfacenetworkif)
                         {
-                            if (config.listid != i.listid)
+                            if (config.listid != configItem.listid)
                             {
                                 continue;
                             }
-                            change(i, config, country, customer);
+                            change(configItem, config, country, customer);
                         }
                         break;
                     case "proxyset":
-                        foreach (var i in AC.configureviop.proxyset)
+                        foreach (var configItem in AC.configureviop.proxyset)
                         {
-                            if (config.listid != i.listid)
+                            if (config.listid != configItem.listid)
                             {
                                 continue;
                             }
-                            change(i, config, country, customer);
+                            change(configItem, config, country, customer);
                         }
                         break;
                     case "proxyip":
-                        foreach (var i in AC.configureviop.proxyip)
+                        foreach (var configItem in AC.configureviop.proxyip)
                         {
-                            if (config.ip != i.ip)
+                            if (config.ip != configItem.ip)
                             {
                                 continue;
                             }
-                            change(i, config, country, customer);
+                            change(configItem, config, country, customer);
                         }
                         break;
                     default:
