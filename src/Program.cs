@@ -103,16 +103,16 @@ namespace ACConfigBuilder
                 var value = propertyInfo.GetValue(item);
                 if (value == null)
                 {
-                    if (searchKürzel(propertyInfo.Name))
+                    if (searchAcronym(propertyInfo.Name))
                     {
-                        swapKürzel(i, item, country, customer, propertyInfo);
+                        swapAcronym(i, item, country, customer, propertyInfo);
                     }
                     continue;
                 }else
                 { 
-                if (searchKürzel(propertyInfo.Name))
+                if (searchAcronym(propertyInfo.Name))
                 {
-                    swapKürzel(i, item, country, customer, propertyInfo);
+                    swapAcronym(i, item, country, customer, propertyInfo);
                 }
                 else
                 {
@@ -121,7 +121,7 @@ namespace ACConfigBuilder
                 }
             }
         }
-        protected void swapKürzel(dynamic oldconfig, dynamic item, CommandOption country, CommandOption customer, PropertyInfo propertyInfo)
+        protected void swapAcronym(dynamic oldconfig, dynamic item, CommandOption country, CommandOption customer, PropertyInfo propertyInfo)
         {
             var value = propertyInfo.GetValue(item);
             var i = oldconfig.GetType().GetProperty(propertyInfo.Name).GetValue(oldconfig);
@@ -129,7 +129,7 @@ namespace ACConfigBuilder
             {
                 return;
             }
-            if (country.HasValue() && customer.HasValue())
+            else if (country.HasValue() && customer.HasValue())
             {
                 if (value == null)
                 {
@@ -138,7 +138,7 @@ namespace ACConfigBuilder
                 value = value.Substring(0, i.IndexOf('_') + 1) + customer.Value() + "-" + country.Value();
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
-            if (country.HasValue() && !customer.HasValue())
+            else if (country.HasValue() && !customer.HasValue())
             {
                 if (value == null)
                 {
@@ -147,7 +147,7 @@ namespace ACConfigBuilder
                 value = value.Substring(0, value.IndexOf('_') + 1)+ i.Substring(i.IndexOf('_')+1, i.IndexOf('-') - i.IndexOf('_')) + country.Value();
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
-            if (!country.HasValue() && customer.HasValue())
+            else if (!country.HasValue() && customer.HasValue())
             {
                 if (value == null)
                 {
@@ -167,7 +167,7 @@ namespace ACConfigBuilder
                 oldconfig.GetType().GetProperty(propertyInfo.Name).SetValue(oldconfig, value);
             }
         }
-        protected bool searchKürzel(string Name)
+        protected bool searchAcronym(string Name)
         {
             switch (Name)
             {
