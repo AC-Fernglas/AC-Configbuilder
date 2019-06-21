@@ -1,6 +1,5 @@
 mode: ContinuousDelivery
-assembly-versioning-scheme: Major.Minor.Patch
-next-version: 1.5.1
+next-version: 1.1.0
 major-version-bump-message: '\s?(breaking|major)'
 minor-version-bump-message: '\s?(feature|minor)'
 patch-version-bump-message: '\s?(fix|patch)'
