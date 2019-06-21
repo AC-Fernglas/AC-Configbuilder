@@ -4,6 +4,13 @@
 
 <details open>
 
+### Version 1.5.0
+
+* added customer and country acronym
+* refactored pathhandling
+* simplify setup
+* create folder for usage
+
 ### Version 1.4.2
 
 * fixed issues with commands
